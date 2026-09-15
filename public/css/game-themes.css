@@ -1,0 +1,55 @@
+/**
+ * Kogofox Gaming Arena - Stadium Theme System
+ * Exact color harmony matching the live stadium arena & official Kogofox logo:
+ * Electric Cyan (#00f0ff) & Neon Magenta (#ff2a85) on Deep Stadium Midnight (#050813)
+ */
+
+:root {
+  /* Official Kogofox Cyber Palette */
+  --primary-glow: #00f0ff;      /* Electric Cyan */
+  --secondary-glow: #ff2a85;    /* Neon Magenta / Hot Pink */
+  --stadium-dark: #050813;      /* Deep Arena Stadium Background */
+  --stadium-navy: #0a0f22;      /* Midnight Blue */
+  --card-bg: rgba(10, 15, 34, 0.78);
+  --card-border: rgba(0, 240, 255, 0.22);
+  --border-magenta: rgba(255, 42, 133, 0.28);
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --glass-reflect: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.01));
+}
+
+/* Dynamic Game Accents with Cyan/Magenta Stadium Harmony */
+body[data-theme="valorant"] {
+  --primary-glow: #ff2a85;
+  --secondary-glow: #00f0ff;
+  --card-border: rgba(255, 42, 133, 0.35);
+  --card-bg: rgba(18, 10, 24, 0.85);
+}
+
+body[data-theme="pubg"] {
+  --primary-glow: #f59e0b;
+  --secondary-glow: #00f0ff;
+  --card-border: rgba(245, 158, 11, 0.35);
+  --card-bg: rgba(18, 14, 10, 0.85);
+}
+
+body[data-theme="freefire"] {
+  --primary-glow: #ff4612;
+  --secondary-glow: #ff2a85;
+  --card-border: rgba(255, 70, 18, 0.35);
+  --card-bg: rgba(22, 10, 14, 0.85);
+}
+
+body[data-theme="mobalegends"] {
+  --primary-glow: #00f0ff;
+  --secondary-glow: #a855f7;
+  --card-border: rgba(0, 240, 255, 0.35);
+  --card-bg: rgba(8, 16, 38, 0.85);
+}
+
+body[data-theme="clashroyale"] {
+  --primary-glow: #38bdf8;
+  --secondary-glow: #ffd700;
+  --card-border: rgba(56, 189, 248, 0.35);
+  --card-bg: rgba(10, 18, 36, 0.85);
+}
