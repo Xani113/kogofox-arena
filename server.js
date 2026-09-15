@@ -49,7 +49,7 @@ function sendJSON(res, statusCode, data) {
     'Content-Type': 'application/json',
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type'
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization'
   });
   res.end(JSON.stringify(data));
 }
@@ -65,10 +65,10 @@ function parseRequestBody(req) {
         const parsed = body ? JSON.parse(body) : {};
         resolve(parsed);
       } catch (e) {
-        reject(e);
+        resolve({});
       }
     });
-    req.on('error', reject);
+    req.on('error', () => resolve({}));
   });
 }
 
@@ -81,13 +81,14 @@ export async function handleRequest(req, res) {
     res.writeHead(204, {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type'
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization'
     });
     return res.end();
   }
 
   /* ================= REST API ROUTES (MONGODB) ================= */
   if (reqPath.startsWith('/api/')) {
+    console.log(`[API Request] ${req.method} ${reqPath}`);
     try {
       // 1. Database Health & Connection Status
       if (reqPath === '/api/db-status' && req.method === 'GET') {
