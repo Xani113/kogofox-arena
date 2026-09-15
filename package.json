@@ -4,6 +4,7 @@
   "description": "Kogofox Gaming Arena - Multi-Game eSports Championship Platform",
   "type": "module",
   "scripts": {
+    "build": "node scripts/build-vercel.js",
     "start": "node dev-server.js"
   },
   "dependencies": {
