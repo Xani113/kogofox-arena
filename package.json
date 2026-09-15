@@ -1,0 +1,14 @@
+{
+  "name": "kogofox-arena",
+  "version": "1.0.0",
+  "description": "Kogofox Gaming Arena - Multi-Game eSports Championship Platform",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "axios": "^1.20.0",
+    "dotenv": "^17.4.2",
+    "mongodb": "^7.6.0"
+  }
+}

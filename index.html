@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KOGOFOX — Esports Arena</title>
+  <meta name="description" content="KOGOFOX — Esports Arena & Competitive Gaming Platform. Compete in verified campus scrims & tournaments for Free Fire, MOBA Legends, Valorant, PUBG, and Clash Royale.">
+  <meta name="theme-color" content="#030508">
+  <link rel="icon" href="assets/kogofox_logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Orbitron:wght@500;700;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/game-themes.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/korg-layout.css">
+  <link rel="stylesheet" href="css/auth-modal.css">
+</head>
+<body data-theme="all">
+  <!-- Dynamic Cybernetic Starfield Canvas -->
+  <canvas id="bg-cyber-canvas"></canvas>
+
+  <div class="app-layout-root">
+    <!-- TOP NAVIGATION BAR (Exact korg.buzz replica) -->
+    <header class="korg-topbar" id="korg-topbar">
+      <!-- Brand Logo Left -->
+      <div class="korg-brand-box" id="brand-home-btn">
+        <img src="assets/kogofox_logo.png" alt="KOGOFOX" class="korg-brand-icon">
+        <span class="korg-brand-name">KOGOFOX</span>
+      </div>
+
+      <!-- Center Nav Pills -->
+      <nav class="korg-center-nav" aria-label="Main Navigation">
+        <button class="korg-nav-pill active" data-nav="home" id="top-nav-home">HOME</button>
+        <button class="korg-nav-pill" data-nav="games" id="top-nav-games">Games</button>
+        <button class="korg-nav-pill" data-nav="community" id="top-nav-community">Community</button>
+        <button class="korg-nav-pill" data-nav="squads" id="top-nav-squads">Squads</button>
+        <button class="korg-nav-pill" data-nav="events" id="top-nav-events">Events & Scrims</button>
+        <button class="korg-nav-pill" data-nav="leaderboard" id="top-nav-leaderboard">Leaderboard</button>
+      </nav>
+
+      <!-- Right Header Actions -->
+      <div class="korg-right-actions">
+        <button class="btn-find-team" id="find-team-btn">
+          <span class="icon-user">👥</span>
+          <span>FIND TEAM</span>
+          <span class="badge-new-pill">NEW</span>
+        </button>
+
+        <button class="btn-icon-round" id="notification-btn" title="Notifications">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+          </svg>
+        </button>
+
+        <button class="btn-sign-in" id="sign-in-btn">
+          SIGN IN
+        </button>
+      </div>
+    </header>
+
+    <!-- MAIN BODY SPLIT CONTAINER (Sidebar + Main Stage) -->
+    <div class="korg-body-split">
+      <!-- LEFT SIDEBAR (Exact korg.buzz layout) -->
+      <aside class="korg-sidebar" id="korg-sidebar">
+        <!-- Top active white line accent -->
+        <div class="sidebar-top-line"></div>
+
+        <!-- Sidebar Navigation Menu -->
+        <div class="sidebar-menu-list">
+          <button class="sidebar-menu-item active" data-target="games" id="sb-nav-games">
+            <div class="sb-item-left">
+              <span class="sb-icon">🎮</span>
+              <span class="sb-label">Games</span>
+            </div>
+            <span class="sb-count">02</span>
+          </button>
+
+          <button class="sidebar-menu-item" data-target="community" id="sb-nav-comm">
+            <div class="sb-item-left">
+              <span class="sb-icon">💬</span>
+              <span class="sb-label">Community</span>
+            </div>
+            <span class="sb-count">03</span>
+          </button>
+
+          <button class="sidebar-menu-item" data-target="squads" id="sb-nav-squads">
+            <div class="sb-item-left">
+              <span class="sb-icon">👥</span>
+              <span class="sb-label">Squads</span>
+            </div>
+            <span class="sb-count">04</span>
+          </button>
+
+          <button class="sidebar-menu-item" data-target="findteam" id="sb-nav-findteam">
+            <div class="sb-item-left">
+              <span class="sb-icon">👤</span>
+              <span class="sb-label">Find Team</span>
+            </div>
+            <span class="sb-badge-new">NEW</span>
+          </button>
+
+          <button class="sidebar-menu-item" data-target="events" id="sb-nav-events">
+            <div class="sb-item-left">
+              <span class="sb-icon">📅</span>
+              <span class="sb-label">Events & Scrims</span>
+            </div>
+            <span class="sb-count">05</span>
+          </button>
+
+          <button class="sidebar-menu-item" data-target="leaderboard" id="sb-nav-lb">
+            <div class="sb-item-left">
+              <span class="sb-icon">🏆</span>
+              <span class="sb-label">Leaderboard</span>
+            </div>
+            <span class="sb-count">06</span>
+          </button>
+        </div>
+
+        <!-- Horizontal Divider -->
+        <div class="sidebar-divider"></div>
+
+        <!-- FEATURED GAMES LIST -->
+        <div class="sidebar-featured-games">
+          <div class="sb-featured-header">
+            <span class="sb-f-title">FEATURED GAMES</span>
+            <button class="sb-f-link" id="sb-view-all-btn">View All ➔</button>
+          </div>
+
+          <div class="sb-games-list" id="sb-games-list">
+            <!-- 1st: Free Fire -->
+            <button class="sb-game-row active" data-game="freefire">
+              <img src="assets/logos/freefire.png" alt="Free Fire" class="sb-game-thumb">
+              <span class="sb-game-name">Free Fire</span>
+            </button>
+
+            <!-- 2nd: MOBA Legends -->
+            <button class="sb-game-row" data-game="mobalegends">
+              <img src="assets/logos/mobalegends.png" alt="MOBA Legends" class="sb-game-thumb">
+              <span class="sb-game-name">Mobile Legends</span>
+            </button>
+
+            <!-- 3rd: Valorant -->
+            <button class="sb-game-row" data-game="valorant">
+              <img src="assets/logos/valorant.png" alt="Valorant" class="sb-game-thumb">
+              <span class="sb-game-name">Valorant</span>
+            </button>
+
+            <!-- 4th: PUBG -->
+            <button class="sb-game-row" data-game="pubg">
+              <img src="assets/logos/pubg.png" alt="PUBG" class="sb-game-thumb">
+              <span class="sb-game-name">PUBG</span>
+            </button>
+
+            <!-- 5th: Clash Royale -->
+            <button class="sb-game-row" data-game="clashroyale">
+              <img src="assets/logos/clashroyale.png" alt="Clash Royale" class="sb-game-thumb">
+              <span class="sb-game-name">Clash Royale</span>
+            </button>
+          </div>
+        </div>
+      </aside>
+
+      <!-- MAIN CONTENT STAGE -->
+      <main class="korg-main-area" id="korg-main-area">
+
+        <!-- HERO SECTION (Cyberpunk Enter The Fox Arena with Interactive Headphone) -->
+        <section class="korg-hero-section cyberpunk-hero-section" id="section-hero">
+          <!-- LEFT COLUMN: Cyberpunk Title & CTA -->
+          <div class="hero-left-col">
+            <!-- Cyber Protocol Badge -->
+            <div class="hero-protocol-tag cyber-badge">
+              <span class="tag-dot cyber-pulse-dot"></span>
+              <span>PROTOCOL // 001.FOX-CYBER</span>
+            </div>
+
+            <!-- Bold Massive Title: ENTER THE FOX ARENA (Custom Cyberpunk Font in Blue Color) -->
+            <h1 class="hero-main-title cyber-font-title-wrapper" aria-label="ENTER THE FOX ARENA">
+              <span class="sr-only">ENTER THE FOX ARENA</span>
+              <div class="cyber-title-img-group" title="ENTER THE FOX ARENA">
+                <div class="title-line title-line-1">
+                  <img src="assets/cyberfont/blue_ENTER_THE.png" alt="ENTER THE" class="cyber-font-img enter-the-img" />
+                </div>
+                <div class="title-line title-line-2">
+                  <img src="assets/cyberfont/blue_FOX_ARENA.png" alt="FOX ARENA" class="cyber-font-img fox-arena-img" />
+                </div>
+              </div>
+            </h1>
+
+            <!-- Subtitle -->
+            <p class="hero-subtext">
+              Enter the ultimate collegiate esports matrix. Next-gen verified player IGN matchmaking, 3D stadium brackets, and high-fidelity spatial arena audio.
+            </p>
+
+            <!-- Cyber Telemetry Spec Badges -->
+            <div class="hero-cyber-telemetry">
+              <div class="telemetry-pill">
+                <span class="pill-dot glow-cyan"></span>
+                <span>7.1 SPATIAL AUDIO</span>
+              </div>
+              <div class="telemetry-pill">
+                <span class="pill-dot glow-magenta"></span>
+                <span>1.2MS TICK RATE</span>
+              </div>
+              <div class="telemetry-pill">
+                <span class="pill-dot glow-green"></span>
+                <span>ANTI-CHEAT V3</span>
+              </div>
+            </div>
+
+            <!-- CTA Button Row -->
+            <div class="hero-btns-row">
+              <button class="btn-hero-solid cyber-btn-primary" id="hero-enter-arena-btn">
+                <span class="cyber-btn-text">ENTER ARENA</span>
+                <svg class="cyber-btn-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </button>
+              <button class="btn-hero-ghost cyber-btn-secondary" id="hero-explore-scrims-btn">
+                <span class="cyber-btn-text">EXPLORE SCRIMS</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- RIGHT COLUMN: Interactive Cyberpunk Esports Headphone -->
+          <div class="hero-right-col" id="hero-headphone-col">
+            <div class="cyber-headphone-wrapper" id="cyber-headphone-interactive" title="Click Headphone to cycle RGB LED modes & trigger sub-bass drop">
+              <!-- Holographic HUD Badges -->
+              <div class="hp-hud-badge top-left">
+                <span class="hp-badge-icon">🎧</span>
+                <span class="hp-badge-label">KOGO // APEX-X7</span>
+              </div>
+              <div class="hp-hud-badge top-right" id="hp-rgb-badge">
+                <span class="hp-badge-dot" id="hp-rgb-badge-dot"></span>
+                <span class="hp-badge-label" id="hp-rgb-badge-text">CYBER NEON</span>
+              </div>
+
+              <!-- 3/4 Perspective Headset Stage with Interactive RGB & Movement -->
+              <div class="hyperx-headset-stage" id="hyperx-headset-stage">
+                <!-- Background Sonar Radar & Sonic Pulse Waves -->
+                <svg class="headset-radar-bg" viewBox="0 0 560 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <!-- Outer Orbital Radar Rings -->
+                  <ellipse cx="290" cy="250" rx="255" ry="175" stroke="rgba(255, 255, 255, 0.12)" stroke-width="1.2" stroke-dasharray="4 8" class="hp-orbit-ring-1"/>
+                  <ellipse cx="290" cy="250" rx="230" ry="150" stroke="var(--hp-led-primary, #00f0ff)" stroke-width="1.5" stroke-dasharray="12 6" opacity="0.35" class="hp-orbit-ring-2"/>
+                  
+                  <!-- Radiating Sonic Arcs from Earcup -->
+                  <circle cx="365" cy="280" r="75" stroke="var(--hp-led-primary, #00f0ff)" stroke-width="1.8" fill="none" opacity="0.45" class="sonic-wave-arc sonic-wave-1"/>
+                  <circle cx="365" cy="280" r="115" stroke="var(--hp-led-secondary, #ff2a85)" stroke-width="1.4" stroke-dasharray="8 6" fill="none" opacity="0.3" class="sonic-wave-arc sonic-wave-2"/>
+                  <circle cx="365" cy="280" r="155" stroke="var(--hp-led-primary, #00f0ff)" stroke-width="1" fill="none" opacity="0.18" class="sonic-wave-arc sonic-wave-3"/>
+                </svg>
+
+                <!-- Exact 3/4 Perspective Headset Image with Dynamic RGB Lighting Overlay -->
+                <div class="headset-photo-wrapper">
+                  <img src="assets/hyperx_headphone_trimmed.png" alt="Esports Gaming Headset" class="headset-main-photo" />
+                  
+                  <!-- Illuminated RGB Rings & Matrix LED Accents (SVG Overlay matching photo) -->
+                  <svg class="headset-rgb-overlay" viewBox="0 0 865 825" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                      <filter id="rgb-led-glow" x="-40%" y="-40%" width="180%" height="180%">
+                        <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur"/>
+                        <feMerge>
+                          <feMergeNode in="blur"/>
+                          <feMergeNode in="blur"/>
+                          <feMergeNode in="SourceGraphic"/>
+                        </feMerge>
+                      </filter>
+                      <linearGradient id="photo-led-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop id="hp-grad-stop1" offset="0%" stop-color="var(--hp-led-primary, #00f0ff)"/>
+                        <stop id="hp-grad-stop2" offset="100%" stop-color="var(--hp-led-secondary, #ff2a85)"/>
+                      </linearGradient>
+                    </defs>
+
+                    <!-- Earcup Outer RGB Halo Ring (Calibrated to 3/4 perspective) -->
+                    <ellipse cx="605" cy="495" rx="122" ry="146" transform="rotate(-17 605 495)" 
+                             stroke="url(#photo-led-grad)" stroke-width="7" fill="none" filter="url(#rgb-led-glow)" class="earcup-neon-ring" opacity="0.95"/>
+                    <ellipse cx="605" cy="495" rx="118" ry="142" transform="rotate(-17 605 495)" 
+                             stroke="#ffffff" stroke-width="1.8" stroke-dasharray="8 12" fill="none" opacity="0.65"/>
+
+                    <!-- Headband Matrix LED Strip Overlay -->
+                    <path d="M 446 260 L 460 264 L 434 354 L 412 350 Z" 
+                          fill="url(#photo-led-grad)" filter="url(#rgb-led-glow)" opacity="0.85" class="headband-led-strip"/>
+
+                    <!-- Upper Earcup Pivot Matrix Vent Overlay -->
+                    <path d="M 682 264 Q 712 258 742 278 L 736 284 Q 710 266 684 268 Z" 
+                          fill="url(#photo-led-grad)" filter="url(#rgb-led-glow)" opacity="0.85" class="earcup-vent-led"/>
+
+                    <!-- Central Logo Ambient Glow Highlight -->
+                    <circle cx="610" cy="495" r="45" fill="url(#photo-led-grad)" opacity="0.25" filter="url(#rgb-led-glow)"/>
+                  </svg>
+                </div>
+              </div>
+
+              <!-- Interactive Controls Bar under Headphone -->
+              <div class="hp-interactive-controls">
+                <button class="hp-interactive-btn" id="hp-btn-rgb" title="Cycle RGB Chromatic LED profiles">
+                  <span class="hp-btn-icon">🎨</span>
+                  <span>CYCLE RGB</span>
+                </button>
+                <button class="hp-interactive-btn" id="hp-btn-bass" title="Synthesize Cyber Sub-Bass Drop">
+                  <span class="hp-btn-icon">🔊</span>
+                  <span>BASS DROP</span>
+                </button>
+                <button class="hp-interactive-btn active" id="hp-btn-spatial" title="Toggle 360 Spatial Audio Radar">
+                  <span class="btn-dot active"></span>
+                  <span>360° SPATIAL: ON</span>
+                </button>
+              </div>
+
+              <!-- Interactive Micro Hint -->
+              <div class="hp-hint-pill">
+                <span>⚡ CLICK HEADPHONE TO CYCLE RGB // HOVER TO 3D TILT</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- HORIZONTAL STATUS DIVIDER STRIP (Photo 1 exact replica) -->
+        <div class="korg-status-strip">
+          <div class="status-left">
+            <span class="status-item"><span class="status-green-dot"></span> SYSTEM.ACTIVE</span>
+            <span class="status-divider">|</span>
+            <span class="status-item">60 FPS LOCKED</span>
+            <span class="status-divider">|</span>
+            <span class="status-item">V2.0.0</span>
+          </div>
+
+          <div class="status-right">
+            <span class="status-item">ARENA: ONLINE</span>
+            <span class="status-dots">••</span>
+            <span class="status-item">FRAME: ∞</span>
+          </div>
+        </div>
+
+        <!-- PHOTO 2: 3D COVERFLOW PERSPECTIVE GALLERY (Campus Gaming Gallery) -->
+        <section class="gallery-container-section" id="section-gallery">
+          <div id="coverflow-gallery-mount">
+            <!-- Injected by coverflow.js -->
+          </div>
+        </section>
+
+        <!-- OFFICIAL BATTLE ARENAS EXPANDED HUB -->
+        <section class="korg-section" id="section-games">
+          <div class="korg-section-header">
+            <div class="sh-left">
+              <span class="sh-icon">🏟️</span>
+              <h2 class="sh-title">Official Battle Arenas</h2>
+            </div>
+            <p class="sh-desc">Explore live competitive formats, active prize pools, and agent arsenals.</p>
+          </div>
+
+          <div class="game-cards-grid" id="games-showcase-grid">
+            <!-- Rendered by app.js -->
+          </div>
+        </section>
+
+        <!-- LIVE SPECTATOR BROADCAST FEED -->
+        <section class="korg-section" id="section-broadcast">
+          <div class="korg-section-header">
+            <div class="sh-left">
+              <span class="sh-icon">🔴</span>
+              <h2 class="sh-title">Live Spectator Broadcast Feed</h2>
+            </div>
+            <p class="sh-desc">Real-time match feed simulation with live commentary and spectator chat.</p>
+          </div>
+
+          <div id="stream-hud-container">
+            <!-- Populated by streamHud.js -->
+          </div>
+        </section>
+
+        <!-- TACTICAL LAB & COMBAT DRILLS -->
+        <section class="korg-section" id="section-minigames">
+          <div class="korg-section-header">
+            <div class="sh-left">
+              <span class="sh-icon">⚡</span>
+              <h2 class="sh-title">Tactical Lab & Combat Drills</h2>
+            </div>
+            <p class="sh-desc">Sharpen reaction speeds, build meta deck strategies, simulate 5v5 drafts, and radar drop zones.</p>
+          </div>
+
+          <div class="minigames-tabs-bar" id="mg-tabs-bar">
+            <button class="mg-tab active" data-mg="freefire" onclick="switchMgTab('freefire')">
+              <img src="assets/logos/freefire.png" alt="Free Fire" class="tab-game-logo"> Free Fire Synergy Lab
+            </button>
+            <button class="mg-tab" data-mg="mobalegends" onclick="switchMgTab('mobalegends')">
+              <img src="assets/logos/mobalegends.png" alt="MOBA Legends" class="tab-game-logo"> MOBA 5v5 Draft Sim
+            </button>
+            <button class="mg-tab" data-mg="valorant" onclick="switchMgTab('valorant')">
+              <img src="assets/logos/valorant.png" alt="Valorant" class="tab-game-logo"> Valorant Aim Drill
+            </button>
+            <button class="mg-tab" data-mg="pubg" onclick="switchMgTab('pubg')">
+              <img src="assets/logos/pubg.png" alt="PUBG" class="tab-game-logo"> PUBG Drop Radar
+            </button>
+            <button class="mg-tab" data-mg="clashroyale" onclick="switchMgTab('clashroyale')">
+              <img src="assets/logos/clashroyale.png" alt="Clash Royale" class="tab-game-logo"> Clash Royale Deck Lab
+            </button>
+          </div>
+
+          <div class="mg-panel-group">
+            <!-- Free Fire Synergy Lab -->
+            <div class="mg-panel active-panel" id="mg-panel-freefire">
+              <div id="freefire-synergy-container"></div>
+            </div>
+
+            <!-- MOBA Legends Draft Simulator -->
+            <div class="mg-panel" id="mg-panel-mobalegends">
+              <div id="moba-draft-container"></div>
+            </div>
+
+            <!-- Valorant Aim Trainer -->
+            <div class="mg-panel" id="mg-panel-valorant">
+              <div id="valorant-reflex-container"></div>
+            </div>
+
+            <!-- PUBG Drop Zone Radar -->
+            <div class="mg-panel" id="mg-panel-pubg">
+              <div id="pubg-drop-container"></div>
+            </div>
+
+            <!-- Clash Royale Deck Builder -->
+            <div class="mg-panel" id="mg-panel-clashroyale">
+              <div id="clash-deck-container"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- COMPETITOR STANDINGS & DOSSIERS -->
+        <section class="korg-section" id="section-leaderboard">
+          <div class="korg-section-header">
+            <div class="sh-left">
+              <span class="sh-icon">🎖️</span>
+              <h2 class="sh-title">Competitor Standings & Dossiers</h2>
+            </div>
+            <p class="sh-desc">Official verified ladder rankings and career statistics across all 5 titles.</p>
+          </div>
+
+          <div id="leaderboard-container">
+            <!-- Populated by leaderboard.js -->
+          </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="korg-footer">
+          <div class="footer-logo-row">
+            <img src="assets/kogofox_logo.png" alt="KOGOFOX" class="footer-fox-logo">
+            <span class="footer-brand-title">KOGOFOX — ESPORTS ARENA</span>
+          </div>
+          <div class="footer-games-list">
+            <span class="f-game-pill"><img src="assets/logos/freefire.png" class="f-game-icon" alt="Free Fire"> Free Fire</span> • 
+            <span class="f-game-pill"><img src="assets/logos/mobalegends.png" class="f-game-icon" alt="MOBA Legends"> MOBA Legends</span> • 
+            <span class="f-game-pill"><img src="assets/logos/valorant.png" class="f-game-icon" alt="Valorant"> Valorant</span> • 
+            <span class="f-game-pill"><img src="assets/logos/pubg.png" class="f-game-icon" alt="PUBG"> PUBG: Battlegrounds</span> • 
+            <span class="f-game-pill"><img src="assets/logos/clashroyale.png" class="f-game-icon" alt="Clash Royale"> Clash Royale</span>
+          </div>
+          <p class="footer-copy">
+            &copy; 2026 Kogofox Arena. All game titles belong to their respective publishers.
+          </p>
+        </footer>
+      </main>
+    </div>
+  </div>
+
+  <!-- TOAST CONTAINER -->
+  <div id="toast-container"></div>
+
+  <!-- Tab Switcher Helper -->
+  <script>
+    function switchMgTab(tabId) {
+      document.querySelectorAll('.mg-tab').forEach(t => t.classList.remove('active'));
+      const activeBtn = document.querySelector(`.mg-tab[data-mg="${tabId}"]`);
+      if (activeBtn) activeBtn.classList.add('active');
+
+      document.querySelectorAll('.mg-panel').forEach(p => p.classList.remove('active-panel'));
+      const activePanel = document.getElementById(`mg-panel-${tabId}`);
+      if (activePanel) activePanel.classList.add('active-panel');
+
+      if (window.kogofox && window.kogofox.sound) {
+        window.kogofox.sound.playTabSwitch();
+      }
+    }
+  </script>
+
+  <!-- Main Application Script -->
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
