@@ -1,5 +1,5 @@
 /**
- * Kogofox Gaming Arena - Leaderboard Module
+ * Kugofox Gaming Arena - Leaderboard Module
  */
 
 import { sound } from './soundEngine.js';
@@ -177,7 +177,7 @@ export class LeaderboardManager {
             <span class="a-tag">⭐ MVP Award Stage 1</span>
             <span class="a-tag">🎯 First Blood Specialist</span>
             <span class="a-tag">🛡️ Grand Finalist 2026</span>
-            <span class="a-tag">👑 Kogofox Hall of Fame</span>
+            <span class="a-tag">👑 Kugofox Hall of Fame</span>
           </div>
         </div>
       </div>

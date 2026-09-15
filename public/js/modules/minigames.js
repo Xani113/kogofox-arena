@@ -1,5 +1,5 @@
 /**
- * Kogofox Gaming Arena - Tactical Simulators & Minigames
+ * Kugofox Gaming Arena - Tactical Simulators & Minigames
  * Clean, skill-focused tools without coin dependencies
  */
 
@@ -14,7 +14,7 @@ export class MiniGameManager {
       waiting: false,
       startTime: 0,
       timeoutId: null,
-      bestScore: localStorage.getItem('kogofox_reflex_best') || null
+      bestScore: localStorage.getItem('kugofox_reflex_best') || null
     };
     this.crDeck = [];
     this.mobaDraft = {
@@ -127,7 +127,7 @@ export class MiniGameManager {
 
         if (!this.reflexState.bestScore || reactionTime < this.reflexState.bestScore) {
           this.reflexState.bestScore = reactionTime;
-          localStorage.setItem('kogofox_reflex_best', reactionTime);
+          localStorage.setItem('kugofox_reflex_best', reactionTime);
           bestVal.textContent = `${reactionTime} ms`;
           sound.playVictory();
           this.app.showToast(`New Personal Record: ${reactionTime} ms!`, 'success');
@@ -212,7 +212,7 @@ export class MiniGameManager {
           </div>
 
           <div class="deck-actions-bar">
-            <button id="sim-deck-battle-btn" class="btn-kogofox">
+            <button id="sim-deck-battle-btn" class="btn-kugofox">
               ⚔️ Test Deck Match Simulation
             </button>
             <button id="reset-deck-btn" class="btn-ghost">
@@ -430,7 +430,7 @@ export class MiniGameManager {
         <div class="radar-header">
           <div>
             <h4 class="title-glow">🪂 Erangel Drop Zone Radar</h4>
-            <p class="subtitle">Spin the Kogofox tactical trajectory radar to calculate your optimal drop location!</p>
+            <p class="subtitle">Spin the Kugofox tactical trajectory radar to calculate your optimal drop location!</p>
           </div>
         </div>
 
@@ -452,7 +452,7 @@ export class MiniGameManager {
             <p class="intel-desc" id="intel-desc">
               Dense urban hot-drop in center of map with immediate street CQB. High survival reward!
             </p>
-            <button id="spin-radar-btn" class="btn-kogofox">
+            <button id="spin-radar-btn" class="btn-kugofox">
               🎯 Spin Tactical Radar
             </button>
           </div>

@@ -1,5 +1,5 @@
 /* ==========================================================
-   KOGOFOX GAMING ARENA - STADIUM & KORG.BUZZ AESTHETIC
+   KUGOFOX GAMING ARENA - STADIUM & KORG.BUZZ AESTHETIC
    Cyan (#00f0ff) & Magenta (#ff2a85) on Deep Obsidian (#040508)
    ========================================================== */
 
@@ -500,7 +500,7 @@ body::before {
 }
 
 /* ================== COMMON BUTTONS ================== */
-.btn-kogofox {
+.btn-kugofox {
   background: linear-gradient(135deg, #00f0ff, #ff2a85);
   border: none;
   color: #fff;
@@ -520,7 +520,7 @@ body::before {
   box-shadow: 0 4px 20px rgba(0, 240, 255, 0.35), 0 0 15px rgba(255, 42, 133, 0.25);
 }
 
-.btn-kogofox:hover {
+.btn-kugofox:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 28px rgba(255, 42, 133, 0.5), 0 0 20px rgba(0, 240, 255, 0.4);
 }

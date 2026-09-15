@@ -1,5 +1,5 @@
 /**
- * Kogofox Gaming Arena - Tournament & Bracket Engine
+ * Kugofox Gaming Arena - Tournament & Bracket Engine
  * Integrated with MongoDB backend API
  */
 
@@ -11,8 +11,8 @@ export class TournamentSystem {
     this.app = app;
     this.activeFilter = 'all';
     this.selectedTourneyId = TOURNAMENTS_DATA[0].id;
-    this.userPredictions = JSON.parse(localStorage.getItem('kogofox_predictions') || '{}');
-    this.userRegistrations = JSON.parse(localStorage.getItem('kogofox_registrations') || '[]');
+    this.userPredictions = JSON.parse(localStorage.getItem('kugofox_predictions') || '{}');
+    this.userRegistrations = JSON.parse(localStorage.getItem('kugofox_registrations') || '[]');
     this.tournaments = [...TOURNAMENTS_DATA];
   }
 
@@ -85,7 +85,7 @@ export class TournamentSystem {
             `).join('')}
           </div>
 
-          <button id="open-register-modal-btn" class="btn-kogofox">
+          <button id="open-register-modal-btn" class="btn-kugofox">
             <span>🛡️</span> Register Squad (MongoDB)
           </button>
         </div>
@@ -242,7 +242,7 @@ export class TournamentSystem {
         const matchId = btn.dataset.match;
         const team = btn.dataset.team;
         this.userPredictions[matchId] = team;
-        localStorage.setItem('kogofox_predictions', JSON.stringify(this.userPredictions));
+        localStorage.setItem('kugofox_predictions', JSON.stringify(this.userPredictions));
 
         // Save vote to MongoDB
         try {
@@ -314,7 +314,7 @@ export class TournamentSystem {
           <div class="form-row">
             <div class="form-group">
               <label>Team Full Name</label>
-              <input type="text" id="reg-team-name" placeholder="Kogofox Strikers" required>
+              <input type="text" id="reg-team-name" placeholder="Kugofox Strikers" required>
             </div>
             <div class="form-group">
               <label>Captain IGN / Handle</label>
@@ -338,7 +338,7 @@ export class TournamentSystem {
           </div>
 
           <div class="form-actions">
-            <button type="submit" class="btn-kogofox btn-full">
+            <button type="submit" class="btn-kugofox btn-full">
               💾 Save to MongoDB & Issue Pass
             </button>
           </div>
@@ -388,7 +388,7 @@ export class TournamentSystem {
         this.userRegistrations.unshift(newRegistration);
       }
 
-      localStorage.setItem('kogofox_registrations', JSON.stringify(this.userRegistrations));
+      localStorage.setItem('kugofox_registrations', JSON.stringify(this.userRegistrations));
 
       sound.playVictory();
       this.app.showToast(`[${tag}] ${teamName} registered to MongoDB!`, 'success');

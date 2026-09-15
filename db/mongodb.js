@@ -1,5 +1,5 @@
 /**
- * Kogofox Gaming Arena - MongoDB Database Layer
+ * Kugofox Gaming Arena - MongoDB Database Layer
  * Connects to MongoDB (Local or MongoDB Atlas) with resilient auto-seeding & fallback
  */
 
@@ -18,8 +18,8 @@ try {
   // Ignore if dns.setServers is unavailable in runtime
 }
 
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/kogofox_arena';
-const DB_NAME = process.env.DB_NAME || 'kogofox_arena';
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/kugofox_arena';
+const DB_NAME = process.env.DB_NAME || 'kugofox_arena';
 
 let client = null;
 let db = null;
@@ -34,7 +34,7 @@ const fallbackStore = {
   chat: [
     { user: 'RadiantDemon', badge: 'VIP', text: 'THAT FLICK ON C-SITE WAS DISGUSTING!! 🔥', time: '19:10' },
     { user: 'ErangelSniper', badge: 'PRO', text: 'AWM collateral incoming in the final circle!', time: '19:11' },
-    { user: 'FoxFanatic', badge: 'FAN', text: 'KOGOFOX RUNNING THE BRACKET TODAY 🦊🦊🦊', time: '19:12' }
+    { user: 'FoxFanatic', badge: 'FAN', text: 'KUGOFOX RUNNING THE BRACKET TODAY 🦊🦊🦊', time: '19:12' }
   ],
   leaderboard: { ...LEADERBOARD_DATA },
   users: [

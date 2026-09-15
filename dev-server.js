@@ -330,7 +330,7 @@ const server = http.createServer(handleRequest);
 
 if (!process.env.VERCEL) {
   server.listen(PORT, () => {
-    console.log(`Kogofox Arena Server running at http://localhost:${PORT}`);
+    console.log(`Kugofox Arena Server running at http://localhost:${PORT}`);
     console.log(`MongoDB REST API available at http://localhost:${PORT}/api/db-status`);
   });
 }

@@ -1,7 +1,7 @@
 {
-  "name": "kogofox-arena",
+  "name": "kugofox-arena",
   "version": "1.0.0",
-  "description": "Kogofox Gaming Arena - Multi-Game eSports Championship Platform",
+  "description": "Kugofox Gaming Arena - Multi-Game eSports Championship Platform",
   "type": "module",
   "scripts": {
     "build": "node scripts/build-vercel.js",

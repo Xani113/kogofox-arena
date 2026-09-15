@@ -1,5 +1,5 @@
 /**
- * Kogofox Gaming Arena - Main Application Orchestrator
+ * Kugofox Gaming Arena - Main Application Orchestrator
  * Clean, streamlined eSports platform with stadium aesthetic
  * Replicating Photo 1 (Home Stage) & Photo 2 (3D Coverflow Gallery)
  */
@@ -14,7 +14,7 @@ import { LeaderboardManager } from './modules/leaderboard.js';
 import { CyberHeadphoneController } from './modules/cyberHeadphone.js';
 import { AuthModal } from './modules/authModal.js';
 
-class KogofoxApp {
+class KugofoxApp {
   constructor() {
     this.sound = sound;
     this.activeGame = 'freefire'; // Default to 1st title Free Fire
@@ -74,7 +74,7 @@ class KogofoxApp {
 
     const toast = document.createElement('div');
     toast.className = `cyber-toast toast-${type}`;
-    toast.innerHTML = `<img src="assets/kogofox_logo.png" alt="Kogofox" class="toast-brand-icon"> <span>${msg}</span>`;
+    toast.innerHTML = `<img src="assets/kugofox_logo.png" alt="Kugofox" class="toast-brand-icon"> <span>${msg}</span>`;
     toastContainer.appendChild(toast);
 
     setTimeout(() => {
@@ -411,7 +411,7 @@ class KogofoxApp {
           </div>
 
           <div class="card-footer">
-            <button class="btn-kogofox btn-enter-game" data-game="${g.id}">
+            <button class="btn-kugofox btn-enter-game" data-game="${g.id}">
               Launch ${g.name} Drill ➔
             </button>
           </div>
@@ -468,7 +468,7 @@ class KogofoxApp {
           <div class="syn-metric">
             <span>Revival Pulse:</span> <strong class="text-success">Self-Revive Zone Active</strong>
           </div>
-          <button id="ff-test-squad-btn" class="btn-kogofox">Test Clash Squad Simulation</button>
+          <button id="ff-test-squad-btn" class="btn-kugofox">Test Clash Squad Simulation</button>
         </div>
         <div id="ff-test-results" class="deck-sim-results" style="display:none;"></div>
       </div>
@@ -497,7 +497,7 @@ class KogofoxApp {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  const app = new KogofoxApp();
+  const app = new KugofoxApp();
   app.init();
-  window.kogofox = app;
+  window.kugofox = app;
 });

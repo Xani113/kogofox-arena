@@ -1,5 +1,5 @@
 /**
- * Kogofox Gaming Arena - Cyber Loot Crate System
+ * Kugofox Gaming Arena - Cyber Loot Crate System
  */
 
 import { sound } from './soundEngine.js';
@@ -8,7 +8,7 @@ export class LootCrateSystem {
   constructor(app) {
     this.app = app;
     this.isOpening = false;
-    this.inventory = JSON.parse(localStorage.getItem('kogofox_inventory') || '[]');
+    this.inventory = JSON.parse(localStorage.getItem('kugofox_inventory') || '[]');
 
     this.lootTable = [
       { id: "loot-1", name: "Radiant Vandal: Kogo-Fox Edition", game: "Valorant", rarity: "Radiant", type: "Weapon Skin", icon: "🔫", value: 500 },
@@ -35,7 +35,7 @@ export class LootCrateSystem {
         <div class="crate-hero-card">
           <div class="crate-header">
             <div>
-              <h3 class="title-glow">📦 Kogofox Cyber Matrix Crate</h3>
+              <h3 class="title-glow">📦 Kugofox Cyber Matrix Crate</h3>
               <p class="subtitle">Crack open the high-tier arena container for legendary weapon skins, badges & bonuses.</p>
             </div>
             <div class="crate-cost-tag">
@@ -57,7 +57,7 @@ export class LootCrateSystem {
           </div>
 
           <div class="crate-actions">
-            <button id="open-crate-btn" class="btn-kogofox btn-glow btn-lg" ${this.app.coins < 100 ? 'disabled' : ''}>
+            <button id="open-crate-btn" class="btn-kugofox btn-glow btn-lg" ${this.app.coins < 100 ? 'disabled' : ''}>
               🔓 Open Matrix Crate (100 Coins)
             </button>
           </div>
@@ -69,7 +69,7 @@ export class LootCrateSystem {
         <div class="vault-container">
           <div class="vault-header">
             <h4>🏆 Your Arena Vault (${this.inventory.length} Unlocked)</h4>
-            <span class="vault-sub">Items synced to your Kogofox profile</span>
+            <span class="vault-sub">Items synced to your Kugofox profile</span>
           </div>
 
           <div class="vault-grid">
@@ -118,7 +118,7 @@ export class LootCrateSystem {
           // Pick random reward
           const randItem = this.lootTable[Math.floor(Math.random() * this.lootTable.length)];
           this.inventory.unshift(randItem);
-          localStorage.setItem('kogofox_inventory', JSON.stringify(this.inventory));
+          localStorage.setItem('kugofox_inventory', JSON.stringify(this.inventory));
 
           rewardCard.innerHTML = `
             <div class="reward-content rarity-${randItem.rarity.toLowerCase()}">
@@ -126,8 +126,8 @@ export class LootCrateSystem {
               <div class="reward-icon-huge">${randItem.icon}</div>
               <div class="reward-rarity-pill">${randItem.rarity} • ${randItem.game}</div>
               <h3 class="reward-title">${randItem.name}</h3>
-              <p class="reward-desc">${randItem.type} added to your permanent Kogofox Vault!</p>
-              <button id="claim-reward-btn" class="btn-kogofox">Claim & Equip</button>
+              <p class="reward-desc">${randItem.type} added to your permanent Kugofox Vault!</p>
+              <button id="claim-reward-btn" class="btn-kugofox">Claim & Equip</button>
             </div>
           `;
           rewardCard.style.display = 'block';

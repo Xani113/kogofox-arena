@@ -1,5 +1,5 @@
 /**
- * Kogofox Gaming Arena - 3D Coverflow Gallery
+ * Kugofox Gaming Arena - 3D Coverflow Gallery
  * Direct replication of korg.buzz Campus Gaming Gallery
  */
 

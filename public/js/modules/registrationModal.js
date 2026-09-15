@@ -1,5 +1,5 @@
 /**
- * Kogofox Gaming Arena - Player & Squad Registration Modal with Live IGN Verification
+ * Kugofox Gaming Arena - Player & Squad Registration Modal with Live IGN Verification
  * Integrates verifyPlayerGameID API endpoint
  */
 
@@ -51,7 +51,7 @@ export class RegistrationModal {
         <!-- Modal Header -->
         <div class="reg-modal-header">
           <div class="rm-header-left">
-            <img src="assets/kogofox_logo.png" alt="KOGOFOX" class="rm-fox-logo">
+            <img src="assets/kugofox_logo.png" alt="KUGOFOX" class="rm-fox-logo">
             <div>
               <h3 class="rm-title">Player & Squad Registration</h3>
               <p class="rm-subtitle">Official Scrims & Tournament Entry • Live IGN Verification</p>
@@ -113,7 +113,7 @@ export class RegistrationModal {
             </div>
             <div class="rm-form-group">
               <span class="rm-field-lbl">Squad / Team Tag</span>
-              <input type="text" id="rm-team-input" class="rm-text-input" placeholder="e.g. Kogofox Esports">
+              <input type="text" id="rm-team-input" class="rm-text-input" placeholder="e.g. Kugofox Esports">
             </div>
             <div class="rm-form-group">
               <span class="rm-field-lbl">Discord / Contact Handle</span>

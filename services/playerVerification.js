@@ -1,5 +1,5 @@
 /**
- * Kogofox Gaming Arena - Player IGN Verification Service
+ * Kugofox Gaming Arena - Player IGN Verification Service
  * Verifies player IDs across Free Fire, Mobile Legends, Valorant, PUBG, and Clash Royale
  * Using Axios with fallback to certified sandbox player registry
  */
@@ -35,7 +35,7 @@ const VERIFIED_PLAYERS_CACHE = {
   clashroyale: {
     '#9q8v2c': 'MohamedLight_CR',
     '#pp88grl': 'Mugi_Champion',
-    '#crfox77': 'Kogofox_Pekka',
+    '#crfox77': 'Kugofox_Pekka',
     'defaultPrefix': 'Royale_Clasher'
   }
 };

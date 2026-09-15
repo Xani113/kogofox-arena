@@ -1,5 +1,5 @@
 /**
- * Kogofox Gaming Arena - Comprehensive Game Database
+ * Kugofox Gaming Arena - Comprehensive Game Database
  * Order: 1st Free Fire, 2nd MOBA Legends, 3rd Valorant, 4th PUBG, 5th Clash Royale
  */
 
@@ -31,7 +31,7 @@ export const GAMES_DATA = {
     features: [
       { title: "Gloo Wall Master", desc: "Fast-reaction shield placement tactical drill simulator." },
       { title: "Character Synergy Lab", desc: "Pair active & passive skills to build the ultimate competitive Rusher loadout." },
-      { title: "Booyah Pass Rewards", desc: "Earn exclusive neon Kogofox skins and weapon vouchers." }
+      { title: "Booyah Pass Rewards", desc: "Earn exclusive neon Kugofox skins and weapon vouchers." }
     ]
   },
 
@@ -105,7 +105,7 @@ export const GAMES_DATA = {
       { name: "Sheriff", type: "Sidearm", cost: "800 Creds", fireRate: "4 rds/sec", headshot: "159 DMG (<30m)" }
     ],
     features: [
-      { title: "Aim & Reflex Range", desc: "Test your reaction time with the Kogofox Radiant crosshair test." },
+      { title: "Aim & Reflex Range", desc: "Test your reaction time with the Kugofox Radiant crosshair test." },
       { title: "Scrim Matchmaker", desc: "Find ready-to-scrim 5-stacks for competitive Ascendant/Immortal lobbies." },
       { title: "Spike Plant Protocol", desc: "Simulate defuse timing down to 0.01s pressure scenarios." }
     ]

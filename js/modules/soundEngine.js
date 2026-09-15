@@ -1,5 +1,5 @@
 /**
- * Kogofox Gaming Arena - Web Audio API Synthesizer
+ * Kugofox Gaming Arena - Web Audio API Synthesizer
  * Zero-dependency, reliable procedural sound effects
  */
 

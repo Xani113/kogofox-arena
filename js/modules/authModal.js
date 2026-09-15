@@ -1,5 +1,5 @@
 /**
- * Kogofox Gaming Arena - KORG Authentication Modal Controller
+ * Kugofox Gaming Arena - KORG Authentication Modal Controller
  * Features:
  * - Segmented Tabs: "Log In" & "Create Account"
  * - Social Sign-In with Google
@@ -53,11 +53,11 @@ export class AuthModal {
         <div class="auth-modal-header">
           <div class="auth-brand-box">
             <div class="auth-brand-icon">
-              <!-- Official KOGOFOX Fox Mascot Logo -->
-              <img src="assets/kogofox_logo.png" alt="KOGOFOX" style="width: 28px; height: 28px; object-fit: contain;">
+              <!-- Official KUGOFOX Fox Mascot Logo -->
+              <img src="assets/kugofox_logo.png" alt="KUGOFOX" style="width: 28px; height: 28px; object-fit: contain;">
             </div>
             <div class="auth-brand-info">
-              <span class="auth-brand-title" id="auth-modal-title">KOGOFOX</span>
+              <span class="auth-brand-title" id="auth-modal-title">KUGOFOX</span>
               <span class="auth-brand-sub">Esports Arena</span>
             </div>
           </div>
@@ -132,7 +132,7 @@ export class AuthModal {
           </div>
 
           <button type="submit" class="auth-submit-btn" id="login-submit-btn">
-            <span>Log In to KOGOFOX</span>
+            <span>Log In to KUGOFOX</span>
           </button>
         </form>
 
@@ -156,7 +156,7 @@ export class AuthModal {
           <div class="auth-form-group">
             <div class="auth-label-row">
               <label class="auth-label" for="create-username">Username</label>
-              <span class="auth-label-sub">Permanent KOGOFOX Identity</span>
+              <span class="auth-label-sub">Permanent KUGOFOX Identity</span>
             </div>
             <div class="auth-input-wrapper">
               <span class="auth-input-icon">
@@ -424,7 +424,7 @@ export class AuthModal {
       this.showAlert(err.message || 'Login failed. Please verify your credentials.');
     } finally {
       submitBtn.classList.remove('loading');
-      submitBtn.innerHTML = `<span>Log In to KOGOFOX</span>`;
+      submitBtn.innerHTML = `<span>Log In to KUGOFOX</span>`;
     }
   }
 
@@ -550,7 +550,7 @@ export class AuthModal {
 
         <div class="google-chooser-header">
           <h3 class="google-chooser-title">Choose an account</h3>
-          <p class="google-chooser-sub">to continue to <strong>kogofox.arena</strong></p>
+          <p class="google-chooser-sub">to continue to <strong>kugofox.arena</strong></p>
         </div>
 
         <div class="google-account-list">
@@ -603,7 +603,7 @@ export class AuthModal {
           <label class="google-custom-lbl">Enter Any Gmail Address</label>
           <input type="text" id="google-custom-name" class="google-dark-input" placeholder="Your Name (e.g. Alex Mercer)" />
           <input type="email" id="google-custom-email" class="google-dark-input" placeholder="Email or phone (e.g. gamer@gmail.com)" />
-          <button type="button" id="google-custom-submit" class="google-dark-btn">Continue to Kogofox Arena</button>
+          <button type="button" id="google-custom-submit" class="google-dark-btn">Continue to Kugofox Arena</button>
         </div>
 
         <!-- Footer Bar -->

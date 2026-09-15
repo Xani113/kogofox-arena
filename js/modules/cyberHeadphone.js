@@ -1,5 +1,5 @@
 /**
- * Kogofox Gaming Arena - Cyberpunk Headphone Interactive Controller
+ * Kugofox Gaming Arena - Cyberpunk Headphone Interactive Controller
  * Features:
  * - 3D Mouse Parallax Tilt & Gyro Dynamics
  * - Interactive RGB Chromatic Lighting Modes (Click to cycle colors)

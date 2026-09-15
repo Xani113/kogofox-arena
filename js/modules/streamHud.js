@@ -1,5 +1,5 @@
 /**
- * Kogofox Gaming Arena - Live Spectator Broadcast Feed
+ * Kugofox Gaming Arena - Live Spectator Broadcast Feed
  * Connected to MongoDB live chat collection
  */
 
@@ -12,7 +12,7 @@ export class StreamHud {
     this.chatMessages = [
       { user: 'RadiantDemon', badge: 'VIP', text: 'THAT FLICK ON C-SITE WAS DISGUSTING!! 🔥', time: '19:10' },
       { user: 'ErangelSniper', badge: 'PRO', text: 'AWM collateral incoming in the final circle!', time: '19:11' },
-      { user: 'FoxFanatic', badge: 'FAN', text: 'KOGOFOX RUNNING THE BRACKET TODAY 🦊🦊🦊', time: '19:12' }
+      { user: 'FoxFanatic', badge: 'FAN', text: 'KUGOFOX RUNNING THE BRACKET TODAY 🦊🦊🦊', time: '19:12' }
     ];
 
     this.streams = {
@@ -41,7 +41,7 @@ export class StreamHud {
         ]
       },
       freefire: {
-        title: "Booyah Clash Squad Finals: LOUD FF vs Kogofox Rushers",
+        title: "Booyah Clash Squad Finals: LOUD FF vs Kugofox Rushers",
         game: "Free Fire • Factory Bo7 Round 7 Match Point",
         viewers: "189,550",
         roundStatus: "MATCH POINT • 1V1 TIEBREAKER",
@@ -122,7 +122,7 @@ export class StreamHud {
           <div class="stage-visual-canvas">
             <div class="cyber-scanlines"></div>
             <div class="stream-center-hud">
-              <div class="hud-tournament-logo">🦊 KOGOFOX ARENA BROADCAST</div>
+              <div class="hud-tournament-logo">🦊 KUGOFOX ARENA BROADCAST</div>
               <div class="hud-match-title">${stream.game}</div>
               <div class="hud-match-state">${stream.roundStatus}</div>
               <div class="hud-stats-ticker">
@@ -194,7 +194,7 @@ export class StreamHud {
 
       sound.playClick();
       const msgObj = {
-        user: 'You (Kogofox)',
+        user: 'You (Kugofox)',
         badge: 'ARENA',
         text: text,
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
@@ -241,7 +241,7 @@ export class StreamHud {
       { user: 'BooyahQueen', badge: 'VIP', text: 'Clash Squad rush is unmatched today 🔥' },
       { user: 'ShadowMage', badge: 'FAN', text: 'GG WP to both teams!' },
       { user: 'AirdropHunter', badge: 'PRO', text: 'Final blue zone closing in 10 seconds!' },
-      { user: 'KogoHype', badge: 'ARENA', text: 'KOGOFOX ARENA CHAMPIONSHIP IS WILD 🦊🏆' }
+      { user: 'KogoHype', badge: 'ARENA', text: 'KUGOFOX ARENA CHAMPIONSHIP IS WILD 🦊🏆' }
     ];
 
     setInterval(() => {

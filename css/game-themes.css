@@ -1,11 +1,11 @@
 /**
- * Kogofox Gaming Arena - Stadium Theme System
- * Exact color harmony matching the live stadium arena & official Kogofox logo:
+ * Kugofox Gaming Arena - Stadium Theme System
+ * Exact color harmony matching the live stadium arena & official Kugofox logo:
  * Electric Cyan (#00f0ff) & Neon Magenta (#ff2a85) on Deep Stadium Midnight (#050813)
  */
 
 :root {
-  /* Official Kogofox Cyber Palette */
+  /* Official Kugofox Cyber Palette */
   --primary-glow: #00f0ff;      /* Electric Cyan */
   --secondary-glow: #ff2a85;    /* Neon Magenta / Hot Pink */
   --stadium-dark: #050813;      /* Deep Arena Stadium Background */
