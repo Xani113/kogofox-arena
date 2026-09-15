@@ -74,7 +74,17 @@ function parseRequestBody(req) {
 
 export async function handleRequest(req, res) {
   const parsedUrl = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
-  const reqPath = parsedUrl.pathname;
+  let reqPath = parsedUrl.pathname;
+
+  // Handle Vercel serverless query rewrite: /api/index.js?__path=db-status -> /api/db-status
+  if (parsedUrl.searchParams.has('__path')) {
+    const p = parsedUrl.searchParams.get('__path');
+    reqPath = p.startsWith('/') ? `/api${p}` : `/api/${p}`;
+  } else if (req.headers['x-matched-path'] && req.headers['x-matched-path'].startsWith('/api/')) {
+    reqPath = req.headers['x-matched-path'];
+  } else if (reqPath.startsWith('/api/index.js')) {
+    reqPath = reqPath.replace('/api/index.js', '/api');
+  }
 
   // Handle CORS preflight
   if (req.method === 'OPTIONS') {
