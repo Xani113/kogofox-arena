@@ -2,10 +2,12 @@
   "name": "kugofox-arena",
   "version": "1.0.0",
   "description": "Kugofox Gaming Arena - Multi-Game eSports Championship Platform",
+  "main": "server.js",
   "type": "module",
   "scripts": {
     "build": "node scripts/build-vercel.js",
-    "start": "node dev-server.js"
+    "start": "node server.js",
+    "dev": "node server.js"
   },
   "dependencies": {
     "axios": "^1.20.0",

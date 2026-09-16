@@ -1,20 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>KUGOFOX — Esports Arena</title>
-  <meta name="description" content="KUGOFOX — Esports Arena & Competitive Gaming Platform. Compete in verified campus scrims & tournaments for Free Fire, MOBA Legends, Valorant, PUBG, and Clash Royale.">
+  <meta name="description"
+    content="KUGOFOX — Esports Arena & Competitive Gaming Platform. Compete in verified campus scrims & tournaments for Free Fire, MOBA Legends, Valorant, PUBG, and Clash Royale.">
   <meta name="theme-color" content="#030508">
   <link rel="icon" href="assets/kugofox_logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Orbitron:wght@500;700;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Orbitron:wght@500;700;900&family=JetBrains+Mono:wght@400;600;700&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="css/game-themes.css">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/korg-layout.css">
   <link rel="stylesheet" href="css/auth-modal.css">
 </head>
+
 <body data-theme="all">
   <!-- Dynamic Cybernetic Starfield Canvas -->
   <canvas id="bg-cyber-canvas"></canvas>
@@ -47,7 +52,8 @@
         </button>
 
         <button class="btn-icon-round" id="notification-btn" title="Notifications">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
             <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
             <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
           </svg>
@@ -189,7 +195,8 @@
 
             <!-- Subtitle -->
             <p class="hero-subtext">
-              Enter the ultimate collegiate esports matrix. Next-gen verified player IGN matchmaking, 3D stadium brackets, and high-fidelity spatial arena audio.
+              Enter the ultimate collegiate esports matrix. Next-gen verified player IGN matchmaking, 3D stadium
+              brackets, and high-fidelity spatial arena audio.
             </p>
 
             <!-- Cyber Telemetry Spec Badges -->
@@ -212,7 +219,10 @@
             <div class="hero-btns-row">
               <button class="btn-hero-solid cyber-btn-primary" id="hero-enter-arena-btn">
                 <span class="cyber-btn-text">ENTER ARENA</span>
-                <svg class="cyber-btn-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                <svg class="cyber-btn-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2.5">
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
               </button>
               <button class="btn-hero-ghost cyber-btn-secondary" id="hero-explore-scrims-btn">
                 <span class="cyber-btn-text">EXPLORE SCRIMS</span>
@@ -222,7 +232,8 @@
 
           <!-- RIGHT COLUMN: Interactive Cyberpunk Esports Headphone -->
           <div class="hero-right-col" id="hero-headphone-col">
-            <div class="cyber-headphone-wrapper" id="cyber-headphone-interactive" title="Click Headphone to cycle RGB LED modes & trigger sub-bass drop">
+            <div class="cyber-headphone-wrapper" id="cyber-headphone-interactive"
+              title="Click Headphone to cycle RGB LED modes & trigger sub-bass drop">
               <!-- Holographic HUD Badges -->
               <div class="hp-hud-badge top-left">
                 <span class="hp-badge-icon">🎧</span>
@@ -238,52 +249,60 @@
                 <!-- Background Sonar Radar & Sonic Pulse Waves -->
                 <svg class="headset-radar-bg" viewBox="0 0 560 500" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <!-- Outer Orbital Radar Rings -->
-                  <ellipse cx="290" cy="250" rx="255" ry="175" stroke="rgba(255, 255, 255, 0.12)" stroke-width="1.2" stroke-dasharray="4 8" class="hp-orbit-ring-1"/>
-                  <ellipse cx="290" cy="250" rx="230" ry="150" stroke="var(--hp-led-primary, #00f0ff)" stroke-width="1.5" stroke-dasharray="12 6" opacity="0.35" class="hp-orbit-ring-2"/>
-                  
+                  <ellipse cx="290" cy="250" rx="255" ry="175" stroke="rgba(255, 255, 255, 0.12)" stroke-width="1.2"
+                    stroke-dasharray="4 8" class="hp-orbit-ring-1" />
+                  <ellipse cx="290" cy="250" rx="230" ry="150" stroke="var(--hp-led-primary, #00f0ff)"
+                    stroke-width="1.5" stroke-dasharray="12 6" opacity="0.35" class="hp-orbit-ring-2" />
+
                   <!-- Radiating Sonic Arcs from Earcup -->
-                  <circle cx="365" cy="280" r="75" stroke="var(--hp-led-primary, #00f0ff)" stroke-width="1.8" fill="none" opacity="0.45" class="sonic-wave-arc sonic-wave-1"/>
-                  <circle cx="365" cy="280" r="115" stroke="var(--hp-led-secondary, #ff2a85)" stroke-width="1.4" stroke-dasharray="8 6" fill="none" opacity="0.3" class="sonic-wave-arc sonic-wave-2"/>
-                  <circle cx="365" cy="280" r="155" stroke="var(--hp-led-primary, #00f0ff)" stroke-width="1" fill="none" opacity="0.18" class="sonic-wave-arc sonic-wave-3"/>
+                  <circle cx="365" cy="280" r="75" stroke="var(--hp-led-primary, #00f0ff)" stroke-width="1.8"
+                    fill="none" opacity="0.45" class="sonic-wave-arc sonic-wave-1" />
+                  <circle cx="365" cy="280" r="115" stroke="var(--hp-led-secondary, #ff2a85)" stroke-width="1.4"
+                    stroke-dasharray="8 6" fill="none" opacity="0.3" class="sonic-wave-arc sonic-wave-2" />
+                  <circle cx="365" cy="280" r="155" stroke="var(--hp-led-primary, #00f0ff)" stroke-width="1" fill="none"
+                    opacity="0.18" class="sonic-wave-arc sonic-wave-3" />
                 </svg>
 
                 <!-- Exact 3/4 Perspective Headset Image with Dynamic RGB Lighting Overlay -->
                 <div class="headset-photo-wrapper">
-                  <img src="assets/hyperx_headphone_trimmed.png" alt="Esports Gaming Headset" class="headset-main-photo" />
-                  
+                  <img src="assets/hyperx_headphone_trimmed.png" alt="Esports Gaming Headset"
+                    class="headset-main-photo" />
+
                   <!-- Illuminated RGB Rings & Matrix LED Accents (SVG Overlay matching photo) -->
                   <svg class="headset-rgb-overlay" viewBox="0 0 865 825" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <defs>
                       <filter id="rgb-led-glow" x="-40%" y="-40%" width="180%" height="180%">
-                        <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur"/>
+                        <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur" />
                         <feMerge>
-                          <feMergeNode in="blur"/>
-                          <feMergeNode in="blur"/>
-                          <feMergeNode in="SourceGraphic"/>
+                          <feMergeNode in="blur" />
+                          <feMergeNode in="blur" />
+                          <feMergeNode in="SourceGraphic" />
                         </feMerge>
                       </filter>
                       <linearGradient id="photo-led-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop id="hp-grad-stop1" offset="0%" stop-color="var(--hp-led-primary, #00f0ff)"/>
-                        <stop id="hp-grad-stop2" offset="100%" stop-color="var(--hp-led-secondary, #ff2a85)"/>
+                        <stop id="hp-grad-stop1" offset="0%" stop-color="var(--hp-led-primary, #00f0ff)" />
+                        <stop id="hp-grad-stop2" offset="100%" stop-color="var(--hp-led-secondary, #ff2a85)" />
                       </linearGradient>
                     </defs>
 
                     <!-- Earcup Outer RGB Halo Ring (Calibrated to 3/4 perspective) -->
-                    <ellipse cx="605" cy="495" rx="122" ry="146" transform="rotate(-17 605 495)" 
-                             stroke="url(#photo-led-grad)" stroke-width="7" fill="none" filter="url(#rgb-led-glow)" class="earcup-neon-ring" opacity="0.95"/>
-                    <ellipse cx="605" cy="495" rx="118" ry="142" transform="rotate(-17 605 495)" 
-                             stroke="#ffffff" stroke-width="1.8" stroke-dasharray="8 12" fill="none" opacity="0.65"/>
+                    <ellipse cx="605" cy="495" rx="122" ry="146" transform="rotate(-17 605 495)"
+                      stroke="url(#photo-led-grad)" stroke-width="7" fill="none" filter="url(#rgb-led-glow)"
+                      class="earcup-neon-ring" opacity="0.95" />
+                    <ellipse cx="605" cy="495" rx="118" ry="142" transform="rotate(-17 605 495)" stroke="#ffffff"
+                      stroke-width="1.8" stroke-dasharray="8 12" fill="none" opacity="0.65" />
 
                     <!-- Headband Matrix LED Strip Overlay -->
-                    <path d="M 446 260 L 460 264 L 434 354 L 412 350 Z" 
-                          fill="url(#photo-led-grad)" filter="url(#rgb-led-glow)" opacity="0.85" class="headband-led-strip"/>
+                    <path d="M 446 260 L 460 264 L 434 354 L 412 350 Z" fill="url(#photo-led-grad)"
+                      filter="url(#rgb-led-glow)" opacity="0.85" class="headband-led-strip" />
 
                     <!-- Upper Earcup Pivot Matrix Vent Overlay -->
-                    <path d="M 682 264 Q 712 258 742 278 L 736 284 Q 710 266 684 268 Z" 
-                          fill="url(#photo-led-grad)" filter="url(#rgb-led-glow)" opacity="0.85" class="earcup-vent-led"/>
+                    <path d="M 682 264 Q 712 258 742 278 L 736 284 Q 710 266 684 268 Z" fill="url(#photo-led-grad)"
+                      filter="url(#rgb-led-glow)" opacity="0.85" class="earcup-vent-led" />
 
                     <!-- Central Logo Ambient Glow Highlight -->
-                    <circle cx="610" cy="495" r="45" fill="url(#photo-led-grad)" opacity="0.25" filter="url(#rgb-led-glow)"/>
+                    <circle cx="610" cy="495" r="45" fill="url(#photo-led-grad)" opacity="0.25"
+                      filter="url(#rgb-led-glow)" />
                   </svg>
                 </div>
               </div>
@@ -373,7 +392,8 @@
               <span class="sh-icon">⚡</span>
               <h2 class="sh-title">Tactical Lab & Combat Drills</h2>
             </div>
-            <p class="sh-desc">Sharpen reaction speeds, build meta deck strategies, simulate 5v5 drafts, and radar drop zones.</p>
+            <p class="sh-desc">Sharpen reaction speeds, build meta deck strategies, simulate 5v5 drafts, and radar drop
+              zones.</p>
           </div>
 
           <div class="minigames-tabs-bar" id="mg-tabs-bar">
@@ -444,11 +464,16 @@
             <span class="footer-brand-title">KUGOFOX — ESPORTS ARENA</span>
           </div>
           <div class="footer-games-list">
-            <span class="f-game-pill"><img src="assets/logos/freefire.png" class="f-game-icon" alt="Free Fire"> Free Fire</span> • 
-            <span class="f-game-pill"><img src="assets/logos/mobalegends.png" class="f-game-icon" alt="MOBA Legends"> MOBA Legends</span> • 
-            <span class="f-game-pill"><img src="assets/logos/valorant.png" class="f-game-icon" alt="Valorant"> Valorant</span> • 
-            <span class="f-game-pill"><img src="assets/logos/pubg.png" class="f-game-icon" alt="PUBG"> PUBG: Battlegrounds</span> • 
-            <span class="f-game-pill"><img src="assets/logos/clashroyale.png" class="f-game-icon" alt="Clash Royale"> Clash Royale</span>
+            <span class="f-game-pill"><img src="assets/logos/freefire.png" class="f-game-icon" alt="Free Fire"> Free
+              Fire</span> •
+            <span class="f-game-pill"><img src="assets/logos/mobalegends.png" class="f-game-icon" alt="MOBA Legends">
+              MOBA Legends</span> •
+            <span class="f-game-pill"><img src="assets/logos/valorant.png" class="f-game-icon" alt="Valorant">
+              Valorant</span> •
+            <span class="f-game-pill"><img src="assets/logos/pubg.png" class="f-game-icon" alt="PUBG"> PUBG:
+              Battlegrounds</span> •
+            <span class="f-game-pill"><img src="assets/logos/clashroyale.png" class="f-game-icon" alt="Clash Royale">
+              Clash Royale</span>
           </div>
           <p class="footer-copy">
             &copy; 2026 Kugofox Arena. All game titles belong to their respective publishers.
@@ -481,4 +506,5 @@
   <!-- Main Application Script -->
   <script type="module" src="js/app.js"></script>
 </body>
+
 </html>
