@@ -301,7 +301,7 @@ const PARTICLE_DRIFT_SOURCE = `<!doctype html>
                         b.x = Math.random() * width;
                     }
                     let g = ctx.createLinearGradient(b.x, b.y, b.x, b.y + b.length);
-                    g.addColorStop(0, \`rgba(96, 165, 250, \${b.opacity})\`);
+                    g.addColorStop(0, 'rgba(96, 165, 250, ' + b.opacity + ')');
                     g.addColorStop(1, 'transparent');
                     ctx.strokeStyle = g;
                     ctx.lineWidth = 1.5;
@@ -324,7 +324,7 @@ const PARTICLE_DRIFT_SOURCE = `<!doctype html>
                         let n2 = nodes[j];
                         let d = Math.hypot(n1.x - n2.x, n1.y - n2.y);
                         if(d < 120) {
-                            ctx.strokeStyle = \`rgba(156, 163, 175, \${0.15 * (1 - d/120)})\`;
+                            ctx.strokeStyle = 'rgba(156, 163, 175, ' + (0.15 * (1 - d/120)) + ')';
                             ctx.beginPath();
                             ctx.moveTo(n1.x, n1.y);
                             ctx.lineTo(n2.x, n2.y);
@@ -347,7 +347,7 @@ const PARTICLE_DRIFT_SOURCE = `<!doctype html>
 
                     // Mouse Connection
                     if (dist < 180) {
-                        ctx.strokeStyle = \`rgba(96, 165, 250, \${0.5 * (1 - dist/180)})\`;
+                        ctx.strokeStyle = 'rgba(96, 165, 250, ' + (0.5 * (1 - dist/180)) + ')';
                         ctx.beginPath(); 
                         ctx.moveTo(n.x, n.y); 
                         ctx.lineTo(mouse.x, mouse.y); 
@@ -418,7 +418,7 @@ const PARTICLE_DRIFT_SOURCE = `<!doctype html>
         });
     </script>
 </body>
-</html>\`;
+</html>`;
 
 const PARTICLE_DRIFT_DEFINITION: EffectDefinition = {
   title: "Particle Drift",
@@ -432,18 +432,18 @@ const PARTICLE_DRIFT_DEFINITION: EffectDefinition = {
     let next = source
       .replace(
         "Array.from({ length: 90 })",
-        \`Array.from({ length: \${scaleCount(90, 1, 12)} })\`.replace(
+        `Array.from({ length: ${scaleCount(90, 1, 12)} })`.replace(
           String(scaleCount(90, 1, 12)),
           String(scaleCount(90, density, 12)),
         ),
       )
       .replace(
         "Array.from({ length: 25 })",
-        \`Array.from({ length: \${scaleCount(25, density, 4)} })\`,
+        `Array.from({ length: ${scaleCount(25, density, 4)} })`,
       )
       .replace(
         "length: Math.random() * 100 + 50,",
-        \`length: (Math.random() * 100 + 50) * \${length},\`,
+        `length: (Math.random() * 100 + 50) * ${length},`,
       )
       .replace(
         "n.y += n.vy; // Slow drift",
@@ -453,11 +453,11 @@ const PARTICLE_DRIFT_DEFINITION: EffectDefinition = {
         "b.y -= b.speed;",
         "b.y -= b.speed * ((window.__SF_CONTROLS&&window.__SF_CONTROLS.speed)||1);",
       )
-      .replace("if(d < 120) {", \`if(d < \${link}) {\`)
-      .replace("0.15 * (1 - d/120)", \`\${proximityAlpha} * (1 - d/\${link})\`)
+      .replace("if(d < 120) {", `if(d < ${link}) {`)
+      .replace("0.15 * (1 - d/120)", `${proximityAlpha} * (1 - d/${link})`)
       .replace(
         "ctx.lineWidth = 1.5;",
-        \`ctx.lineWidth = \${Number((1.5 * size).toFixed(2))};\`,
+        `ctx.lineWidth = ${Number((1.5 * size).toFixed(2))};`,
       );
     if (mode === "light") {
       next = next
@@ -483,7 +483,7 @@ function buildFocusedDocument(
   const background = resolveBackground(definition.background, mode);
   const targetJson = JSON.stringify(definition.targets).replace(
     /</g,
-    "\\\\u003c",
+    "\\u003c",
   );
   const controlsJson = JSON.stringify({
     mode,
@@ -494,7 +494,7 @@ function buildFocusedDocument(
     density: knobs.density,
     strokeWidth: knobs.strokeWidth,
     opacity: knobs.opacity,
-  }).replace(/</g, "\\\\u003c");
+  }).replace(/</g, "\\u003c");
   const patchedSource = definition.patch
     ? definition.patch(definition.source, {
         size: knobs.size,
@@ -505,19 +505,19 @@ function buildFocusedDocument(
         mode,
       })
     : definition.source;
-  const focusStyle = \`<style data-threeui-focus>
-html, body { width: 100% !important; height: 100% !important; min-height: 0 !important; margin: 0 !important; padding: 0 !important; overflow: hidden !important; background: \${background} !important; }
+  const focusStyle = `<style data-threeui-focus>
+html, body { width: 100% !important; height: 100% !important; min-height: 0 !important; margin: 0 !important; padding: 0 !important; overflow: hidden !important; background: ${background} !important; }
 body { position: relative !important; display: flex !important; align-items: center !important; justify-content: center !important; }
 body > * { visibility: hidden !important; }
 body[data-threeui-ready] > [data-threeui-role] { visibility: visible !important; }
 [data-threeui-residual] { display: none !important; }
 [data-threeui-role="background"] { position: fixed !important; inset: 0 !important; width: 100% !important; height: 100% !important; max-width: none !important; max-height: none !important; z-index: 0 !important; opacity: 1 !important; pointer-events: none !important; }
 [data-threeui-role="ui"] { position: relative !important; z-index: 1 !important; width: min(calc(100% - 32px), var(--threeui-target-width, 1040px)) !important; max-width: none !important; max-height: calc(100% - 32px) !important; margin: auto !important; overflow: auto !important; opacity: 1 !important; transform: none !important; filter: none !important; flex: none !important; box-sizing: border-box !important; }
-\${definition.focusCss ?? ""}
-</style>\`;
-  const controlScript = \`<script data-threeui-controls>
+${definition.focusCss ?? ""}
+</style>`;
+  const controlScript = `<script data-threeui-controls>
 (function () {
-  var controls = \${controlsJson};
+  var controls = ${controlsJson};
   window.__SF_CONTROLS = controls;
   var origin = performance.now();
   var virtual = 0;
@@ -559,13 +559,13 @@ body[data-threeui-ready] > [data-threeui-role] { visibility: visible !important;
   });
   window.__SF_APPLY_CONTROLS = applyVisual;
 })();
-</script>\`;
-  const focusScript = \`<script data-threeui-focus>
+</script>`;
+  const focusScript = `<script data-threeui-focus>
 (function () {
   var isolated = false;
   function isolate() {
     if (isolated) return;
-    var specs = \${targetJson};
+    var specs = ${targetJson};
     var roots = [];
     specs.forEach(function (spec) {
       var element = document.querySelector(spec.selector);
@@ -592,10 +592,10 @@ body[data-threeui-ready] > [data-threeui-role] { visibility: visible !important;
   else scheduleIsolation();
   window.addEventListener("load", isolate, { once: true });
 })();
-</script>\`;
+</script>`;
   return patchedSource
-    .replace(/<head([^>]*)>/i, \`<head$1>\${controlScript}\${focusStyle}\`)
-    .replace(/<\\/body>/i, \`\${focusScript}</body>\`);
+    .replace(/<head([^>]*)>/i, `<head$1>${controlScript}${focusStyle}`)
+    .replace(/<\/body>/i, `${focusScript}</body>`);
 }
 
 export default function ParticleDrift({

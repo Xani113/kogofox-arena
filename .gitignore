@@ -19,4 +19,5 @@ yarn-error.log*
 graphify-out/
 .agent/
 .agents/
+dist/
 
