@@ -11,8 +11,12 @@
   box-sizing: border-box;
 }
 
+html {
+  background-color: #030508 !important;
+}
+
 body {
-  background-color: #040508;
+  background-color: #030508 !important;
   color: #f8fafc;
   font-family: 'Inter', sans-serif;
   overflow-x: hidden;
@@ -40,6 +44,7 @@ h1, h2, h3, h4, h5, .orbitron {
   z-index: 1;
   pointer-events: none;
   opacity: 1;
+  background-color: #030508;
 }
 
 body::before {

@@ -100,7 +100,8 @@ export class ParticleDriftEngine {
     if (this.animationFrameId) cancelAnimationFrame(this.animationFrameId);
 
     const draw = () => {
-      this.ctx.clearRect(0, 0, this.width, this.height);
+      this.ctx.fillStyle = '#030508';
+      this.ctx.fillRect(0, 0, this.width, this.height);
 
       // 1. Upward Beams (Fast Vertical Streams)
       for (let i = 0; i < this.beams.length; i++) {

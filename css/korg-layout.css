@@ -16,8 +16,12 @@
   --korg-magenta: #ff2a85;
 }
 
+html {
+  background-color: #030508 !important;
+}
+
 body {
-  background-color: transparent;
+  background-color: #030508 !important;
   color: var(--korg-text-main);
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   overflow-x: hidden;
