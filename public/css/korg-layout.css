@@ -4,9 +4,9 @@
    ========================================================== */
 
 :root {
-  --korg-bg: #000000;
-  --korg-sidebar-bg: #020408;
-  --korg-topbar-bg: #030508;
+  --korg-bg: #030508;
+  --korg-sidebar-bg: rgba(3, 5, 8, 0.78);
+  --korg-topbar-bg: rgba(3, 5, 8, 0.85);
   --korg-border: rgba(255, 255, 255, 0.08);
   --korg-border-hover: rgba(255, 255, 255, 0.25);
   --korg-text-main: #ffffff;
@@ -17,7 +17,7 @@
 }
 
 body {
-  background-color: var(--korg-bg);
+  background-color: transparent;
   color: var(--korg-text-main);
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   overflow-x: hidden;
@@ -31,6 +31,7 @@ body {
   flex-direction: column;
   position: relative;
   z-index: 2;
+  background: transparent;
 }
 
 /* ================== TOP NAVIGATION BAR (Photo 1) ================== */
@@ -195,6 +196,8 @@ body {
   width: 240px;
   flex-shrink: 0;
   background: var(--korg-sidebar-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border-right: 1px solid var(--korg-border);
   padding: 0.5rem 0.85rem 2.5rem;
   display: flex;
@@ -349,8 +352,9 @@ body {
 .korg-main-area {
   flex: 1;
   min-width: 0;
-  background: var(--korg-bg);
+  background: transparent;
   padding: 2rem 3rem 5rem;
+  position: relative;
 }
 
 /* ================== HERO SECTION (Photo 1) ================== */
