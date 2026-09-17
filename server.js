@@ -171,13 +171,95 @@ export async function handleRequest(req, res) {
         return sendJSON(res, 200, { success: true, message: 'Login successful!', user: result.user, token: result.token });
       }
 
-      // Continue with Google (Social Auth & Fast Demo Login)
+      // Google OAuth & Auth Configuration Endpoint
+      if (reqPath === '/api/auth/config' && req.method === 'GET') {
+        let rawId = (process.env.GOOGLE_CLIENT_ID || '').trim();
+        rawId = rawId.replace(/^VITE_GOOGLE_CLIENT_ID\s*=\s*/i, '').replace(/^["']|["']$/g, '');
+        const isValid = rawId.includes('.apps.googleusercontent.com') && !rawId.includes('your-copied-client-id');
+        return sendJSON(res, 200, {
+          success: true,
+          googleClientId: isValid ? rawId : ''
+        });
+      }
+
+      // Save Google Client ID Endpoint
+      if (reqPath === '/api/auth/google-client-id' && req.method === 'POST') {
+        const payload = await parseRequestBody(req);
+        const clientId = (payload.clientId || '').trim();
+        if (!clientId) {
+          return sendJSON(res, 400, { error: 'Client ID is required' });
+        }
+        process.env.GOOGLE_CLIENT_ID = clientId;
+        try {
+          const envPath = path.join(__dirname, '.env');
+          let content = fs.existsSync(envPath) ? fs.readFileSync(envPath, 'utf8') : '';
+          if (content.includes('GOOGLE_CLIENT_ID=')) {
+            content = content.replace(/GOOGLE_CLIENT_ID=.*/g, `GOOGLE_CLIENT_ID=${clientId}`);
+          } else {
+            content += `\nGOOGLE_CLIENT_ID=${clientId}\n`;
+          }
+          fs.writeFileSync(envPath, content, 'utf8');
+        } catch (e) {
+          console.warn('[Config] Notice writing .env:', e.message);
+        }
+        return sendJSON(res, 200, {
+          success: true,
+          message: 'Google Client ID updated successfully!',
+          googleClientId: clientId
+        });
+      }
+
+      // Continue with Google (Dynamic Official OAuth + Token Verification)
       if (reqPath === '/api/auth/google' && req.method === 'POST') {
         const payload = await parseRequestBody(req);
-        const googleEmail = payload.email || 'rpmohit9@gmail.com';
-        const googleName = payload.name || 'Mohit Gupta';
-        const googleUsername = payload.username || (googleEmail.split('@')[0].replace(/[^a-zA-Z0-9_]/g, '') || 'gamer');
-        const googleAvatar = payload.avatar || '🦊';
+        let googleEmail = payload.email;
+        let googleName = payload.name;
+        let googleAvatar = payload.avatar || '⚡';
+
+        // 1. If Google OAuth Access Token provided, verify with Google UserInfo API
+        if (payload.accessToken) {
+          try {
+            const gRes = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+              headers: { Authorization: `Bearer ${payload.accessToken}` }
+            });
+            if (gRes.ok) {
+              const gData = await gRes.json();
+              if (gData.email) {
+                googleEmail = gData.email;
+                googleName = gData.name || googleName;
+                if (gData.picture) googleAvatar = gData.picture;
+              }
+            }
+          } catch (gErr) {
+            console.warn('[Google Auth] Access token verify warning:', gErr.message);
+          }
+        }
+
+        // 2. If Google ID Token (credential) provided, verify with Google TokenInfo API
+        if (payload.credential && (!googleEmail || !googleEmail.includes('@'))) {
+          try {
+            const gRes = await fetch(`https://oauth2.googleapis.com/tokeninfo?id_token=${encodeURIComponent(payload.credential)}`);
+            if (gRes.ok) {
+              const gData = await gRes.json();
+              if (gData.email) {
+                googleEmail = gData.email;
+                googleName = gData.name || googleName;
+                if (gData.picture) googleAvatar = gData.picture;
+              }
+            }
+          } catch (gErr) {
+            console.warn('[Google Auth] Credential verify warning:', gErr.message);
+          }
+        }
+
+        if (!googleEmail || typeof googleEmail !== 'string' || !googleEmail.includes('@')) {
+          return sendJSON(res, 400, { error: 'A valid email address is required for Google Sign-In.' });
+        }
+
+        googleEmail = googleEmail.trim().toLowerCase();
+        googleName = (googleName && googleName.trim()) || googleEmail.split('@')[0];
+        const rawUsername = payload.username || googleEmail.split('@')[0];
+        const googleUsername = rawUsername.replace(/[^a-zA-Z0-9_]/g, '') || 'gamer';
 
         let user = await findUserByEmail(googleEmail);
         if (!user) {
@@ -187,7 +269,7 @@ export async function handleRequest(req, res) {
             email: googleEmail,
             password: 'google_oauth_verified_' + Math.random(),
             division: 'campus',
-            department: 'Computer Science & AI',
+            department: 'eSports Contender',
             avatar: googleAvatar
           });
         }

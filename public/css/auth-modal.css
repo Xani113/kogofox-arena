@@ -702,6 +702,44 @@
   background: #1e1f20;
 }
 
+.google-account-row-wrap {
+  display: flex;
+  align-items: center;
+  position: relative;
+  border-bottom: 1px solid #303134;
+}
+
+.google-account-row-wrap .google-account-row {
+  border-bottom: none;
+  flex: 1;
+  padding-right: 2.5rem;
+}
+
+.google-remove-acc-btn {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: #9aa0a6;
+  font-size: 0.95rem;
+  cursor: pointer;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+  z-index: 2;
+}
+
+.google-remove-acc-btn:hover {
+  background: rgba(234, 67, 53, 0.15);
+  color: #ea4335;
+}
+
 .google-avatar {
   width: 40px;
   height: 40px;
@@ -717,22 +755,17 @@
   overflow: hidden;
 }
 
+.google-avatar.dynamic {
+  color: #ffffff;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
 .google-avatar img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-}
-
-.google-avatar.mohit {
-  background: #2a3b4c;
-}
-
-.google-avatar.sanidhaya {
-  background: #1a73e8;
-}
-
-.google-avatar.abhijit {
-  background: #9334e6;
 }
 
 .google-avatar.other {
@@ -772,12 +805,38 @@
   animation: fadeInOverlay 0.2s ease;
 }
 
+.google-custom-box.direct {
+  margin-bottom: 1.5rem;
+}
+
 .google-custom-lbl {
-  font-size: 0.8rem;
+  font-size: 0.82rem;
   color: #8ab4f8;
   font-weight: 600;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
   display: block;
+}
+
+.google-field-group {
+  margin-bottom: 0.75rem;
+}
+
+.google-field-label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: #9aa0a6;
+  margin-bottom: 0.35rem;
+}
+
+.google-input-error {
+  background: rgba(234, 67, 53, 0.15);
+  border: 1px solid #ea4335;
+  color: #f28b82;
+  font-size: 0.8rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  margin-bottom: 0.75rem;
 }
 
 .google-dark-input {
@@ -788,7 +847,6 @@
   border-radius: 8px;
   color: #e8eaed;
   font-size: 0.92rem;
-  margin-bottom: 0.65rem;
   outline: none;
   box-sizing: border-box;
 }
@@ -809,6 +867,7 @@
   font-weight: 700;
   cursor: pointer;
   transition: background 0.15s ease;
+  margin-top: 0.4rem;
 }
 
 .google-dark-btn:hover {

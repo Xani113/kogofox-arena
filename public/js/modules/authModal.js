@@ -18,12 +18,81 @@ export class AuthModal {
     this.overlay = null;
     this.currentTab = 'login'; // 'login' | 'create'
     this.currentUser = null;
+    this.googleClientId = '';
   }
 
   init() {
+    this.fetchGoogleConfig();
     this.checkExistingSession();
+    this.checkGoogleOAuthCallback();
     this.injectModal();
     this.bindEvents();
+  }
+
+  async fetchGoogleConfig() {
+    try {
+      let url = '/api/auth/config';
+      if (window.location.protocol === 'file:' || (window.location.port && window.location.port !== '5173')) {
+        url = 'http://localhost:5173/api/auth/config';
+      }
+      const res = await fetch(url);
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data.googleClientId) {
+          this.googleClientId = data.googleClientId;
+        }
+      }
+    } catch (e) {}
+  }
+
+  async checkGoogleOAuthCallback() {
+    const hash = window.location.hash;
+    if (!hash || (!hash.includes('access_token=') && !hash.includes('id_token='))) return;
+
+    try {
+      const params = new URLSearchParams(hash.replace(/^#/, ''));
+      const accessToken = params.get('access_token');
+      const idToken = params.get('id_token');
+
+      // Clear the hash from address bar for clean URL
+      history.replaceState(null, '', window.location.pathname + window.location.search);
+
+      if (accessToken) {
+        const gRes = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+          headers: { Authorization: `Bearer ${accessToken}` }
+        });
+        if (gRes.ok) {
+          const profile = await gRes.json();
+          if (profile && profile.email) {
+            const name = profile.name || profile.email.split('@')[0];
+            const username = profile.email.split('@')[0].replace(/[^a-zA-Z0-9_]/g, '') || 'gamer';
+            const avatar = profile.picture || '⚡';
+            await this.executeGoogleSignIn(name, profile.email, username, avatar);
+            return;
+          }
+        }
+      }
+
+      if (idToken) {
+        const res = await fetch('/api/auth/google', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ credential: idToken })
+        });
+        const data = await res.json();
+        if (res.ok && data.success && data.user) {
+          this.saveSession(data.user, data.token);
+          if (this.app && typeof this.app.onUserLogin === 'function') {
+            this.app.onUserLogin(data.user);
+          }
+          if (this.app && typeof this.app.showToast === 'function') {
+            this.app.showToast(`Signed in with Google! Welcome, ${data.user.fullName}!`, 'success');
+          }
+        }
+      }
+    } catch (err) {
+      console.warn('[Google OAuth Callback] Error:', err.message);
+    }
   }
 
   checkExistingSession() {
@@ -385,20 +454,22 @@ export class AuthModal {
           user = data.user;
           token = data.token;
         } else {
-          throw new Error(data.error || 'Invalid credentials.');
+          const authErr = new Error(data.error || 'Invalid credentials.');
+          authErr.isAuthError = true;
+          throw authErr;
         }
       } catch (networkErr) {
-        if (networkErr.message === 'Invalid credentials.') {
+        if (networkErr.isAuthError || networkErr.message === 'Invalid credentials.' || networkErr.message?.toLowerCase().includes('not found') || networkErr.message?.toLowerCase().includes('password') || networkErr.message?.toLowerCase().includes('required')) {
           throw networkErr;
         }
-        // Resilient fallback: Allow instant entry with entered identifier
+        // Resilient fallback: Allow instant entry with entered identifier if network is truly unreachable
         console.warn('[Auth] Network notice, using resilient fallback:', networkErr.message);
         const cleanName = identifier.includes('@') ? identifier.split('@')[0] : identifier;
         user = {
           id: 'usr_' + Date.now(),
           fullName: cleanName,
           username: cleanName.replace(/[^a-zA-Z0-9_]/g, '') || 'gamer',
-          email: identifier.includes('@') ? identifier : `${identifier}@gmail.com`,
+          email: identifier.includes('@') ? identifier.toLowerCase() : `${identifier.toLowerCase()}@gmail.com`,
           avatar: '🦊',
           division: 'campus'
         };
@@ -520,14 +591,85 @@ export class AuthModal {
     }
   }
 
-  handleGoogleAuth() {
-    sound.playClick();
-    this.openGoogleAccountChooser();
+  escapeHtml(str = '') {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
   }
 
-  openGoogleAccountChooser() {
+  getInitialColor(str = '') {
+    const colors = [
+      'linear-gradient(135deg, #4285F4, #1a73e8)', // Google Blue
+      'linear-gradient(135deg, #EA4335, #c5221f)', // Google Red
+      'linear-gradient(135deg, #FBBC05, #e37400)', // Google Amber
+      'linear-gradient(135deg, #34A853, #1e8e3e)', // Google Green
+      'linear-gradient(135deg, #9334e6, #7922ca)', // Purple
+      'linear-gradient(135deg, #00f0ff, #0088cc)'  // Cyan
+    ];
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    return colors[Math.abs(hash) % colors.length];
+  }
+
+  getDeviceGoogleAccounts() {
+    try {
+      const raw = localStorage.getItem('korg_google_device_accounts');
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) return parsed.filter(a => a && a.email);
+      }
+    } catch (e) {
+      console.warn('[Auth] Could not read device accounts:', e);
+    }
+    return [];
+  }
+
+  saveDeviceGoogleAccount(acc) {
+    try {
+      if (!acc || !acc.email) return;
+      const accounts = this.getDeviceGoogleAccounts().filter(a => a.email.toLowerCase() !== acc.email.toLowerCase());
+      accounts.unshift(acc);
+      localStorage.setItem('korg_google_device_accounts', JSON.stringify(accounts.slice(0, 5)));
+    } catch (e) {
+      console.warn('[Auth] Could not save device account:', e);
+    }
+  }
+
+  removeDeviceGoogleAccount(email) {
+    try {
+      const accounts = this.getDeviceGoogleAccounts().filter(a => a.email.toLowerCase() !== (email || '').toLowerCase());
+      localStorage.setItem('korg_google_device_accounts', JSON.stringify(accounts));
+    } catch (e) {}
+  }
+
+  handleGoogleAuth() {
+    sound.playClick();
+    const hasValidClientId = this.googleClientId && 
+      this.googleClientId.includes('.apps.googleusercontent.com') &&
+      !this.googleClientId.includes('your-copied-client-id');
+
+    if (hasValidClientId) {
+      this.redirectToGoogleOAuth();
+    } else {
+      this.openGoogleSetupOrDirectDialog();
+    }
+  }
+
+  redirectToGoogleOAuth() {
+    const redirectUri = window.location.origin + window.location.pathname;
+    const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${encodeURIComponent(this.googleClientId)}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=token&scope=openid%20email%20profile&prompt=select_account`;
+    window.location.href = authUrl;
+  }
+
+  openGoogleSetupOrDirectDialog() {
     let chooser = document.getElementById('google-chooser-overlay');
     if (chooser) chooser.remove();
+
+    const deviceAccounts = this.getDeviceGoogleAccounts();
+    const hasAccounts = deviceAccounts.length > 0;
 
     chooser = document.createElement('div');
     chooser.id = 'google-chooser-overlay';
@@ -538,7 +680,6 @@ export class AuthModal {
         
         <!-- Google Top Bar -->
         <div class="google-chooser-top">
-          <!-- Official Google 4-Color G -->
           <svg class="google-chooser-top-icon" viewBox="0 0 24 24">
             <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/>
             <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.26v3.15C3.25 21.36 7.34 24 12 24z"/>
@@ -549,61 +690,34 @@ export class AuthModal {
         </div>
 
         <div class="google-chooser-header">
-          <h3 class="google-chooser-title">Choose an account</h3>
-          <p class="google-chooser-sub">to continue to <strong>kugofox.arena</strong></p>
+          <h3 class="google-chooser-title">Connect to accounts.google.com</h3>
+          <p class="google-chooser-sub">To open Google's real account picker screen on all devices</p>
         </div>
 
-        <div class="google-account-list">
-          <!-- Account 1: Mohit Gupta (rpmohit9@gmail.com) -->
-          <button class="google-account-row" data-name="Mohit Gupta" data-email="rpmohit9@gmail.com" data-username="mohit_gupta" data-avatar="🚂">
-            <div class="google-avatar mohit">
-              <span style="font-size:1.2rem;">🚂</span>
-            </div>
-            <div class="google-account-info">
-              <span class="google-name">Mohit Gupta</span>
-              <span class="google-email">rpmohit9@gmail.com</span>
-            </div>
+        <!-- Google OAuth Client ID Configuration Box -->
+        <div class="google-custom-box direct">
+          <label class="google-custom-lbl">Enter Your Google OAuth Client ID</label>
+          <p style="font-size:0.78rem; color:#9aa0a6; margin-bottom:0.75rem; line-height:1.4;">
+            Once entered, clicking <strong>Continue with Google</strong> will redirect directly to <strong>accounts.google.com</strong> on all players' phones and desktops.
+          </p>
+          <div id="google-setup-err" class="google-input-error" style="display:none;"></div>
+          <input type="text" id="setup-google-client-id" class="google-dark-input" placeholder="e.g. 1234567890-xxx.apps.googleusercontent.com" />
+          <button type="button" id="setup-save-client-btn" class="google-dark-btn" style="background:#4285f4; color:#ffffff; margin-bottom:1rem;">
+            Save & Open accounts.google.com
           </button>
 
-          <!-- Account 2: Sanidhaya Gupta (mkgsani9@gmail.com) -->
-          <button class="google-account-row" data-name="Sanidhaya Gupta" data-email="mkgsani9@gmail.com" data-username="sanidhaya_gupta" data-avatar="⚡">
-            <div class="google-avatar sanidhaya">S</div>
-            <div class="google-account-info">
-              <span class="google-name">Sanidhaya Gupta</span>
-              <span class="google-email">mkgsani9@gmail.com</span>
-            </div>
-          </button>
+          <div style="text-align:center; margin:0.8rem 0; font-size:0.75rem; color:#5f6368; font-weight:700; letter-spacing:0.5px;">OR ENTER YOUR GMAIL DIRECTLY</div>
 
-          <!-- Account 3: Abhijit Gupta (abhijitg9226@gmail.com) -->
-          <button class="google-account-row" data-name="Abhijit Gupta" data-email="abhijitg9226@gmail.com" data-username="abhijit_gupta" data-avatar="🦊">
-            <div class="google-avatar abhijit">A</div>
-            <div class="google-account-info">
-              <span class="google-name">Abhijit Gupta</span>
-              <span class="google-email">abhijitg9226@gmail.com</span>
-            </div>
+          <div id="google-custom-err" class="google-input-error" style="display:none;"></div>
+          <div class="google-field-group">
+            <input type="email" id="google-custom-email" class="google-dark-input" placeholder="Your Gmail address (e.g. gamer@gmail.com)" autocomplete="email" required />
+          </div>
+          <div class="google-field-group">
+            <input type="text" id="google-custom-name" class="google-dark-input" placeholder="Your Name (optional)" autocomplete="name" />
+          </div>
+          <button type="button" id="google-custom-submit" class="google-dark-btn">
+            Continue with Email
           </button>
-
-          <!-- Account 4: Use another account -->
-          <button class="google-account-row" id="google-custom-account-btn">
-            <div class="google-avatar other">
-              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                <circle cx="12" cy="7" r="4"/>
-              </svg>
-            </div>
-            <div class="google-account-info">
-              <span class="google-name">Use another account</span>
-              <span class="google-email">Sign in with any Gmail address</span>
-            </div>
-          </button>
-        </div>
-
-        <!-- Custom Account Drawer -->
-        <div id="google-custom-input-box" class="google-custom-box" style="display:none;">
-          <label class="google-custom-lbl">Enter Any Gmail Address</label>
-          <input type="text" id="google-custom-name" class="google-dark-input" placeholder="Your Name (e.g. Alex Mercer)" />
-          <input type="email" id="google-custom-email" class="google-dark-input" placeholder="Email or phone (e.g. gamer@gmail.com)" />
-          <button type="button" id="google-custom-submit" class="google-dark-btn">Continue to Kugofox Arena</button>
         </div>
 
         <!-- Footer Bar -->
@@ -621,53 +735,105 @@ export class AuthModal {
     document.body.appendChild(chooser);
 
     // Close handlers
-    chooser.querySelector('#google-chooser-close').addEventListener('click', () => chooser.remove());
+    chooser.querySelector('#google-chooser-close')?.addEventListener('click', () => chooser.remove());
     chooser.addEventListener('click', (e) => {
       if (e.target === chooser) chooser.remove();
     });
 
-    // Account rows click
-    chooser.querySelectorAll('.google-account-row[data-name]').forEach(row => {
-      row.addEventListener('click', () => {
-        const name = row.getAttribute('data-name');
-        const email = row.getAttribute('data-email');
-        const username = row.getAttribute('data-username');
-        const avatar = row.getAttribute('data-avatar') || '🦊';
-        this.executeGoogleSignIn(name, email, username, avatar, chooser);
-      });
-    });
+    // Save Google Client ID & Immediately Redirect to accounts.google.com
+    const saveBtn = chooser.querySelector('#setup-save-client-btn');
+    const clientIdInput = chooser.querySelector('#setup-google-client-id');
+    const setupErr = chooser.querySelector('#google-setup-err');
 
-    // Custom Account Toggle
-    const customBtn = chooser.querySelector('#google-custom-account-btn');
-    const customBox = chooser.querySelector('#google-custom-input-box');
-    customBtn?.addEventListener('click', () => {
-      const isHidden = customBox.style.display === 'none';
-      customBox.style.display = isHidden ? 'block' : 'none';
-      if (isHidden) {
-        chooser.querySelector('#google-custom-email')?.focus();
+    saveBtn?.addEventListener('click', async () => {
+      const val = clientIdInput?.value.trim();
+      if (!val || !val.includes('.apps.googleusercontent.com')) {
+        if (setupErr) {
+          setupErr.textContent = 'Please enter a valid Google Client ID (ends in .apps.googleusercontent.com)';
+          setupErr.style.display = 'block';
+        }
+        clientIdInput?.focus();
+        return;
+      }
+      try {
+        saveBtn.textContent = 'Saving Client ID...';
+        const res = await fetch('/api/auth/google-client-id', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ clientId: val })
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          this.googleClientId = val;
+          chooser.remove();
+          this.redirectToGoogleOAuth();
+        } else {
+          throw new Error(data.error || 'Failed to save Client ID');
+        }
+      } catch (err) {
+        if (setupErr) {
+          setupErr.textContent = err.message;
+          setupErr.style.display = 'block';
+        }
+        saveBtn.textContent = 'Save & Open accounts.google.com';
       }
     });
 
-    chooser.querySelector('#google-custom-submit')?.addEventListener('click', () => {
-      const name = chooser.querySelector('#google-custom-name')?.value.trim() || 'Google Player';
-      const email = chooser.querySelector('#google-custom-email')?.value.trim() || 'player@gmail.com';
+    // Direct email submit
+    const submitBtn = chooser.querySelector('#google-custom-submit');
+    const emailInput = chooser.querySelector('#google-custom-email');
+    const errBox = chooser.querySelector('#google-custom-err');
+
+    const handleGoogleSubmit = () => {
+      const email = emailInput?.value.trim() || '';
+      if (!email || !email.includes('@') || !email.includes('.')) {
+        if (errBox) {
+          errBox.textContent = 'Please enter a valid Google email address.';
+          errBox.style.display = 'block';
+        }
+        emailInput?.focus();
+        return;
+      }
+      if (errBox) errBox.style.display = 'none';
+
+      const name = chooser.querySelector('#google-custom-name')?.value.trim() || email.split('@')[0];
       const username = email.split('@')[0].replace(/[^a-zA-Z0-9_]/g, '') || 'gamer';
       this.executeGoogleSignIn(name, email, username, '⚡', chooser);
+    };
+
+    submitBtn?.addEventListener('click', handleGoogleSubmit);
+    emailInput?.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        handleGoogleSubmit();
+      }
     });
   }
 
   async executeGoogleSignIn(name, email, username, avatar = '⚡', chooserModal) {
-    // 1. Instantly construct authenticated user payload
-    const cleanUsername = username || (email.split('@')[0].replace(/[^a-zA-Z0-9_]/g, '') || 'player');
+    if (!email || typeof email !== 'string' || !email.includes('@')) {
+      return;
+    }
+    const cleanEmail = email.trim().toLowerCase();
+    const cleanName = (name && name.trim()) || cleanEmail.split('@')[0];
+    const cleanUsername = (username && username.trim().replace(/^@/, '')) || (cleanName.replace(/[^a-zA-Z0-9_]/g, '') || 'player');
     const authUser = {
       id: 'usr_' + Date.now(),
-      fullName: name,
+      fullName: cleanName,
       username: cleanUsername,
-      email: email,
+      email: cleanEmail,
       avatar: avatar || '⚡',
       division: 'campus',
-      department: 'eSports Arena'
+      department: 'eSports Contender'
     };
+
+    // Save into device accounts so this user sees their own account on their own device
+    this.saveDeviceGoogleAccount({
+      name: cleanName,
+      email: cleanEmail,
+      username: cleanUsername,
+      avatar: authUser.avatar
+    });
 
     // Show loading state
     if (chooserModal) {
@@ -677,7 +843,7 @@ export class AuthModal {
           <div style="text-align:center; padding:2.5rem 1rem;">
             <div style="font-size:2.5rem; margin-bottom:1rem; animation:pulse 1s infinite;">⚡</div>
             <h3 style="font-size:1.2rem; color:#e8eaed; margin-bottom:0.5rem; font-weight:500;">Signing in with Google...</h3>
-            <p style="font-size:0.9rem; color:#9aa0a6;">Connecting as <strong>${name}</strong> (${email})</p>
+            <p style="font-size:0.9rem; color:#9aa0a6;">Connecting as <strong>${this.escapeHtml(cleanName)}</strong> (${this.escapeHtml(cleanEmail)})</p>
           </div>
         `;
       }
@@ -689,15 +855,15 @@ export class AuthModal {
       apiUrl = 'http://localhost:5173/api/auth/google';
     }
 
-    // 2. Attempt server sync with 1.8s timeout
+    // Attempt server sync
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 1800);
+      const timeoutId = setTimeout(() => controller.abort(), 2000);
 
       const res = await fetch(apiUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, username: cleanUsername, avatar }),
+        body: JSON.stringify({ name: cleanName, email: cleanEmail, username: cleanUsername, avatar: authUser.avatar }),
         signal: controller.signal
       });
       clearTimeout(timeoutId);
@@ -713,8 +879,8 @@ export class AuthModal {
       console.warn('[Auth] Server sync fallback (using local persistent session):', err.message);
     }
 
-    // 3. Guaranteed Completion: Save session & update UI
-    this.saveSession(authUser, 'korg_google_' + btoa(email + ':' + Date.now()));
+    // Guaranteed Completion: Save session & update UI
+    this.saveSession(authUser, 'korg_google_' + btoa(cleanEmail + ':' + Date.now()));
     sound.playSuccess();
 
     setTimeout(() => {

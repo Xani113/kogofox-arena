@@ -37,35 +37,7 @@ const fallbackStore = {
     { user: 'FoxFanatic', badge: 'FAN', text: 'KUGOFOX RUNNING THE BRACKET TODAY 🦊🦊🦊', time: '19:12' }
   ],
   leaderboard: { ...LEADERBOARD_DATA },
-  users: [
-    {
-      id: 'usr_mohit_1',
-      fullName: 'Mohit Gupta',
-      username: 'mohit_gupta',
-      email: 'rpmohit9@gmail.com',
-      password: 'password123',
-      avatar: '🚂',
-      createdAt: new Date()
-    },
-    {
-      id: 'usr_sanidhaya_2',
-      fullName: 'Sanidhaya Gupta',
-      username: 'sanidhaya_gupta',
-      email: 'mkgsani9@gmail.com',
-      password: 'password123',
-      avatar: '⚡',
-      createdAt: new Date()
-    },
-    {
-      id: 'usr_abhijit_3',
-      fullName: 'Abhijit Gupta',
-      username: 'abhijit_gupta',
-      email: 'abhijitg9226@gmail.com',
-      password: 'password123',
-      avatar: '🦊',
-      createdAt: new Date()
-    }
-  ]
+  users: []
 };
 
 export async function connectDB() {
