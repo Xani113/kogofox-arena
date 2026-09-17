@@ -298,11 +298,10 @@ export class TournamentSystem {
             <div class="form-group">
               <label>Tournament Title</label>
               <select id="reg-game" required>
+                <option value="freefire">Free Fire (Clash Squad 4v4)</option>
+                <option value="bgmi">BGMI (Squad Battle Royale)</option>
                 <option value="valorant">Valorant (5v5)</option>
                 <option value="mobalegends">MOBA Legends (5v5)</option>
-                <option value="pubg">PUBG: Battlegrounds (Squad)</option>
-                <option value="freefire">Free Fire (Clash Squad 4v4)</option>
-                <option value="clashroyale">Clash Royale (1v1 Duels)</option>
               </select>
             </div>
             <div class="form-group">

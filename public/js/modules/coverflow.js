@@ -1,6 +1,7 @@
 /**
- * Kugofox Gaming Arena - 3D Coverflow Gallery
- * Direct replication of korg.buzz Campus Gaming Gallery
+ * Kugofox Gaming Arena - Official Battle Arenas Slider
+ * High-performance horizontal card slider replicating Image 1 reference
+ * 4 Titles: Free Fire, BGMI, Valorant, MOBA Legends
  */
 
 import { sound } from './soundEngine.js';
@@ -9,11 +10,12 @@ import { GAMES_DATA } from '../data/gamesData.js';
 export class CoverflowGallery {
   constructor(app) {
     this.app = app;
-    this.currentIndex = 0; // 0: Free Fire, 1: MOBA Legends, 2: Valorant, 3: PUBG, 4: Clash Royale
-    this.games = Object.keys(GAMES_DATA); // ['freefire', 'mobalegends', 'valorant', 'pubg', 'clashroyale']
+    this.currentIndex = 0;
+    // Exactly 4 titles in requested order
+    this.games = ['freefire', 'bgmi', 'valorant', 'mobalegends'];
     this.isDragging = false;
     this.startX = 0;
-    this.dragThreshold = 40;
+    this.scrollLeft = 0;
   }
 
   init(containerId) {
@@ -26,50 +28,58 @@ export class CoverflowGallery {
 
   render() {
     this.container.innerHTML = `
-      <div class="coverflow-section">
-        <div class="coverflow-header">
-          <div class="cf-title-col">
-            <span class="cf-icon">🎮</span>
-            <h3 class="cf-heading">Campus Gaming Gallery</h3>
+      <div class="battle-arenas-section" id="battle-arenas-hub">
+        <!-- Top Section Header matching Image 1 -->
+        <div class="battle-arenas-header">
+          <div class="ba-title-group">
+            <span class="ba-icon">🎮</span>
+            <h2 class="ba-heading">Official Battle Arenas</h2>
           </div>
-          <div class="cf-nav-tools">
-            <span class="cf-drag-hint">↔ Drag / Swipe</span>
-            <button class="cf-arrow-btn" id="cf-prev-btn" title="Previous Arena" aria-label="Previous">
+
+          <!-- Circular Navigation Buttons matching Image 1 -->
+          <div class="ba-nav-controls">
+            <button class="ba-circle-btn" id="ba-prev-btn" title="Previous Arena" aria-label="Previous Arena">
               ‹
             </button>
-            <button class="cf-arrow-btn" id="cf-next-btn" title="Next Arena" aria-label="Next">
+            <button class="ba-circle-btn" id="ba-next-btn" title="Next Arena" aria-label="Next Arena">
               ›
             </button>
           </div>
         </div>
 
-        <div class="coverflow-viewport" id="cf-viewport">
-          <div class="coverflow-track" id="cf-track">
+        <!-- Horizontal Scroll Viewport & Card Track -->
+        <div class="battle-arenas-viewport" id="ba-viewport">
+          <div class="battle-arenas-track" id="ba-track">
             ${this.games.map((key, idx) => {
               const g = GAMES_DATA[key];
+              if (!g) return '';
+              const isSelected = idx === this.currentIndex;
               return `
-                <div class="coverflow-card ${idx === this.currentIndex ? 'active-card' : ''}" 
+                <div class="arena-card ${isSelected ? 'active-card' : ''}" 
                      data-index="${idx}" 
-                     data-game="${g.id}">
-                  <div class="cf-card-inner">
-                    <img src="assets/banners/${g.id}.jpg" alt="${g.name} Arena" class="cf-banner-img">
-                    <div class="cf-card-gradient"></div>
+                     data-game="${g.id}"
+                     id="arena-card-${g.id}">
+                  <div class="arena-card-inner">
+                    <img src="${g.banner || 'assets/banners/' + g.id + '.jpg'}" 
+                         alt="${g.name} Battle Arena" 
+                         class="arena-banner-img"
+                         loading="lazy">
+                    <div class="arena-card-gradient"></div>
 
-                    <div class="cf-card-overlay">
-                      <div class="cf-card-top">
-                        <img src="${g.logo}" alt="${g.name} Logo" class="cf-game-logo">
-                        <span class="cf-badge-pill">${g.badge}</span>
+                    <div class="arena-card-overlay">
+                      <div class="arena-card-top">
+                        <span class="arena-badge-pill">${g.badge || 'CHAMPIONSHIP'}</span>
+                        <span class="arena-prize-tag">Prize: ${g.prizePool || '$25,000'}</span>
                       </div>
 
-                      <div class="cf-card-info">
-                        <h4 class="cf-game-title">${g.name}</h4>
-                        <p class="cf-game-tagline">${g.tagline}</p>
-                        <div class="cf-card-action">
-                          <button class="cf-enter-btn" data-game="${g.id}">
-                            <span>ENTER ARENA</span> ➔
-                          </button>
-                          <span class="cf-prize-tag">Prize: ${g.prizePool}</span>
+                      <div class="arena-card-bottom">
+                        <div class="arena-info-left">
+                          <h4 class="arena-game-title">${g.name}</h4>
+                          <p class="arena-game-category">${g.category || g.tagline}</p>
                         </div>
+                        <button class="arena-enter-btn" data-game="${g.id}" title="Enter ${g.name} Arena">
+                          <span>ENTER ARENA</span> ➔
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -78,78 +88,35 @@ export class CoverflowGallery {
             }).join('')}
           </div>
         </div>
-
-        <!-- Dot Pagination -->
-        <div class="coverflow-dots-bar" id="cf-dots">
-          ${this.games.map((_, idx) => `
-            <button class="cf-dot ${idx === this.currentIndex ? 'active' : ''}" data-index="${idx}" aria-label="Slide ${idx + 1}"></button>
-          `).join('')}
-        </div>
       </div>
     `;
 
-    this.updateCardTransforms();
+    this.updateActiveCardUI();
   }
 
-  updateCardTransforms() {
-    const cards = this.container.querySelectorAll('.coverflow-card');
-    const total = this.games.length;
-
+  updateActiveCardUI() {
+    const cards = this.container.querySelectorAll('.arena-card');
     cards.forEach((card, idx) => {
-      let offset = idx - this.currentIndex;
-
-      card.classList.toggle('active-card', offset === 0);
-
-      // 3D positioning calculation
-      if (offset === 0) {
-        card.style.transform = `translateX(0%) translateZ(120px) scale(1.08)`;
-        card.style.opacity = '1';
-        card.style.zIndex = '10';
-        card.style.filter = 'brightness(1.05) drop-shadow(0 20px 40px rgba(0, 0, 0, 0.9)) drop-shadow(0 0 25px rgba(0, 240, 255, 0.3))';
-        card.style.pointerEvents = 'auto';
-      } else if (offset === -1 || (offset === total - 1 && total > 2)) {
-        // Immediate left
-        card.style.transform = `translateX(-58%) translateZ(20px) rotateY(34deg) scale(0.86)`;
-        card.style.opacity = '0.72';
-        card.style.zIndex = '6';
-        card.style.filter = 'brightness(0.65) drop-shadow(0 10px 25px rgba(0,0,0,0.8))';
-        card.style.pointerEvents = 'auto';
-      } else if (offset === 1 || (offset === -(total - 1) && total > 2)) {
-        // Immediate right
-        card.style.transform = `translateX(58%) translateZ(20px) rotateY(-34deg) scale(0.86)`;
-        card.style.opacity = '0.72';
-        card.style.zIndex = '6';
-        card.style.filter = 'brightness(0.65) drop-shadow(0 10px 25px rgba(0,0,0,0.8))';
-        card.style.pointerEvents = 'auto';
-      } else if (offset < -1) {
-        // Far left
-        card.style.transform = `translateX(-95%) translateZ(-80px) rotateY(46deg) scale(0.72)`;
-        card.style.opacity = '0.35';
-        card.style.zIndex = '2';
-        card.style.filter = 'brightness(0.4) blur(1px)';
-        card.style.pointerEvents = 'auto';
-      } else {
-        // Far right
-        card.style.transform = `translateX(95%) translateZ(-80px) rotateY(-46deg) scale(0.72)`;
-        card.style.opacity = '0.35';
-        card.style.zIndex = '2';
-        card.style.filter = 'brightness(0.4) blur(1px)';
-        card.style.pointerEvents = 'auto';
-      }
-    });
-
-    // Update dots
-    const dots = this.container.querySelectorAll('.cf-dot');
-    dots.forEach((dot, idx) => {
-      dot.classList.toggle('active', idx === this.currentIndex);
+      card.classList.toggle('active-card', idx === this.currentIndex);
     });
   }
 
-  goTo(index) {
+  goTo(index, smoothScroll = true) {
     const total = this.games.length;
     this.currentIndex = (index + total) % total;
     sound.playTabSwitch();
-    this.updateCardTransforms();
+    this.updateActiveCardUI();
+
+    const activeCard = this.container.querySelector(`.arena-card[data-index="${this.currentIndex}"]`);
+    const viewport = this.container.querySelector('#ba-viewport');
+
+    if (activeCard && viewport && smoothScroll) {
+      activeCard.scrollIntoView({
+        behavior: 'smooth',
+        inline: 'center',
+        block: 'nearest'
+      });
+    }
 
     // Sync active game in app
     const activeGameKey = this.games[this.currentIndex];
@@ -167,21 +134,36 @@ export class CoverflowGallery {
   }
 
   attachEvents() {
-    const prevBtn = this.container.querySelector('#cf-prev-btn');
-    const nextBtn = this.container.querySelector('#cf-next-btn');
+    const prevBtn = this.container.querySelector('#ba-prev-btn');
+    const nextBtn = this.container.querySelector('#ba-next-btn');
+    const viewport = this.container.querySelector('#ba-viewport');
 
-    prevBtn?.addEventListener('click', () => this.prev());
-    nextBtn?.addEventListener('click', () => this.next());
+    prevBtn?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (viewport) {
+        viewport.scrollBy({ left: -360, behavior: 'smooth' });
+      }
+      this.prev();
+    });
 
-    // Card click
-    const cards = this.container.querySelectorAll('.coverflow-card');
+    nextBtn?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (viewport) {
+        viewport.scrollBy({ left: 360, behavior: 'smooth' });
+      }
+      this.next();
+    });
+
+    // Card interactions
+    const cards = this.container.querySelectorAll('.arena-card');
     cards.forEach(card => {
       card.addEventListener('click', (e) => {
         const idx = parseInt(card.dataset.index, 10);
-        if (idx !== this.currentIndex) {
-          this.goTo(idx);
-        } else if (e.target.closest('.cf-enter-btn')) {
-          const gameId = card.dataset.game;
+        const gameId = card.dataset.game;
+
+        if (e.target.closest('.arena-enter-btn')) {
+          e.stopPropagation();
+          sound.playClick();
           if (this.app && this.app.regModal) {
             this.app.regModal.open(gameId);
           } else {
@@ -192,51 +174,43 @@ export class CoverflowGallery {
               if (tabBtn) tabBtn.click();
             }
           }
+          return;
         }
-      });
-    });
 
-    // Dots click
-    const dots = this.container.querySelectorAll('.cf-dot');
-    dots.forEach(dot => {
-      dot.addEventListener('click', () => {
-        const idx = parseInt(dot.dataset.index, 10);
         this.goTo(idx);
       });
     });
 
-    // Drag / Swipe
-    const viewport = this.container.querySelector('#cf-viewport');
-    if (!viewport) return;
+    // Mouse drag scrolling
+    if (viewport) {
+      let isDown = false;
+      let startX = 0;
+      let scrollLeft = 0;
 
-    let isDown = false;
-    let startX = 0;
+      viewport.addEventListener('mousedown', (e) => {
+        isDown = true;
+        viewport.classList.add('dragging');
+        startX = e.pageX - viewport.offsetLeft;
+        scrollLeft = viewport.scrollLeft;
+      });
 
-    const handleStart = (clientX) => {
-      isDown = true;
-      startX = clientX;
-    };
+      viewport.addEventListener('mouseleave', () => {
+        isDown = false;
+        viewport.classList.remove('dragging');
+      });
 
-    const handleEnd = (clientX) => {
-      if (!isDown) return;
-      isDown = false;
-      const diffX = clientX - startX;
-      if (diffX > this.dragThreshold) {
-        this.prev();
-      } else if (diffX < -this.dragThreshold) {
-        this.next();
-      }
-    };
+      viewport.addEventListener('mouseup', () => {
+        isDown = false;
+        viewport.classList.remove('dragging');
+      });
 
-    viewport.addEventListener('mousedown', (e) => handleStart(e.clientX));
-    window.addEventListener('mouseup', (e) => handleEnd(e.clientX));
-
-    viewport.addEventListener('touchstart', (e) => {
-      if (e.touches && e.touches[0]) handleStart(e.touches[0].clientX);
-    }, { passive: true });
-
-    viewport.addEventListener('touchend', (e) => {
-      if (e.changedTouches && e.changedTouches[0]) handleEnd(e.changedTouches[0].clientX);
-    }, { passive: true });
+      viewport.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - viewport.offsetLeft;
+        const walk = (x - startX) * 1.5;
+        viewport.scrollLeft = scrollLeft - walk;
+      });
+    }
   }
 }

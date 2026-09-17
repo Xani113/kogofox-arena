@@ -984,265 +984,274 @@ body {
   letter-spacing: 0.25em;
 }
 
-/* ================== PHOTO 2: 3D COVERFLOW GALLERY ================== */
+/* ================== OFFICIAL BATTLE ARENAS SLIDER (MATCHING IMAGE 1) ================== */
 .gallery-container-section {
-  margin-bottom: 4.5rem;
-  position: relative;
-}
-
-.coverflow-section {
+  margin-bottom: 3.75rem;
   position: relative;
   width: 100%;
 }
 
-.coverflow-header {
+.battle-arenas-section {
+  position: relative;
+  width: 100%;
+}
+
+.battle-arenas-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 2rem;
+  margin-bottom: 1.25rem;
   padding: 0 0.5rem;
 }
 
-.cf-title-col {
+.ba-title-group {
   display: flex;
   align-items: center;
   gap: 0.75rem;
 }
 
-.cf-icon {
-  font-size: 1.3rem;
+.ba-icon {
+  font-size: 1.5rem;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  filter: drop-shadow(0 0 8px rgba(0, 240, 255, 0.4));
 }
 
-.cf-heading {
+.ba-heading {
   font-family: 'Inter', sans-serif;
   font-weight: 800;
-  font-size: 1.45rem;
+  font-size: 1.6rem;
   color: #ffffff;
   margin: 0;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
 }
 
-.cf-nav-tools {
+.ba-nav-controls {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.65rem;
 }
 
-.cf-drag-hint {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
-  color: var(--korg-text-dim);
-  letter-spacing: 0.05em;
-  margin-right: 0.5rem;
-}
-
-.cf-arrow-btn {
-  width: 36px;
-  height: 36px;
+/* Round circle navigation buttons matching Image 1 */
+.ba-circle-btn {
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--korg-border);
+  background: rgba(14, 18, 28, 0.7);
+  backdrop-filter: blur(8px);
+  border: 1.5px solid rgba(255, 255, 255, 0.22);
   color: #ffffff;
-  font-size: 1.4rem;
+  font-size: 1.35rem;
   line-height: 1;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
   user-select: none;
+  padding-bottom: 2px;
 }
 
-.cf-arrow-btn:hover {
-  background: #ffffff;
-  color: #000000;
-  border-color: #ffffff;
-  box-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
+.ba-circle-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: #00f0ff;
+  color: #00f0ff;
+  transform: scale(1.08);
+  box-shadow: 0 0 14px rgba(0, 240, 255, 0.35);
 }
 
-.coverflow-viewport {
+.ba-circle-btn:active {
+  transform: scale(0.94);
+}
+
+/* Horizontal card slider viewport */
+.battle-arenas-viewport {
   width: 100%;
-  height: 420px;
-  position: relative;
-  perspective: 1200px;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  padding: 8px 4px 18px 4px;
   cursor: grab;
+}
+
+.battle-arenas-viewport::-webkit-scrollbar {
+  display: none;
+}
+
+.battle-arenas-viewport.dragging {
+  cursor: grabbing;
+  scroll-behavior: auto;
+}
+
+.battle-arenas-track {
+  display: flex;
+  gap: 1.35rem;
+  width: max-content;
+  align-items: stretch;
+}
+
+/* Rounded Cards matching Image 1 */
+.arena-card {
+  flex: 0 0 340px;
+  width: 340px;
+  height: 200px;
+  border-radius: 20px;
+  overflow: hidden;
+  position: relative;
+  scroll-snap-align: start;
+  border: 1.5px solid rgba(255, 255, 255, 0.14);
+  background: #090d16;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.65);
+  cursor: pointer;
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), 
+              border-color 0.28s ease, 
+              box-shadow 0.28s ease;
   user-select: none;
 }
 
-.coverflow-viewport:active {
-  cursor: grabbing;
+.arena-card:hover {
+  transform: translateY(-5px) scale(1.015);
+  border-color: rgba(0, 240, 255, 0.65);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.8), 0 0 24px rgba(0, 240, 255, 0.3);
 }
 
-.coverflow-track {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transform-style: preserve-3d;
+.arena-card.active-card {
+  border-color: #00f0ff;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.85), 0 0 26px rgba(0, 240, 255, 0.38);
 }
 
-.coverflow-card {
-  position: absolute;
-  width: 580px;
-  height: 330px;
-  transition: transform 0.5s cubic-bezier(0.18, 0.89, 0.32, 1.05), opacity 0.5s ease, filter 0.5s ease;
-  border-radius: 18px;
-  overflow: hidden;
-  cursor: pointer;
-}
-
-.cf-card-inner {
+.arena-card-inner {
   width: 100%;
   height: 100%;
   position: relative;
-  border-radius: 18px;
+  border-radius: 20px;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  background: #080c18;
 }
 
-.cf-banner-img {
+.arena-banner-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   transition: transform 0.4s ease;
+  display: block;
 }
 
-.coverflow-card:hover .cf-banner-img {
-  transform: scale(1.04);
+.arena-card:hover .arena-banner-img {
+  transform: scale(1.05);
 }
 
-.cf-card-gradient {
+.arena-card-gradient {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.3) 40%, rgba(0,0,0,0.92) 100%);
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.08) 0%, rgba(0, 0, 0, 0.35) 45%, rgba(4, 7, 12, 0.94) 100%);
   pointer-events: none;
 }
 
-.cf-card-overlay {
+.arena-card-overlay {
   position: absolute;
   inset: 0;
-  padding: 1.5rem 1.75rem;
+  padding: 1.1rem 1.25rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   z-index: 2;
 }
 
-.cf-card-top {
+.arena-card-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 0.5rem;
 }
 
-.cf-game-logo {
-  width: 42px;
-  height: 42px;
-  border-radius: 9px;
-  object-fit: cover;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 4px 14px rgba(0,0,0,0.8);
-}
-
-.cf-badge-pill {
+.arena-badge-pill {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 10px;
+  font-size: 9.5px;
   font-weight: 700;
-  padding: 0.35rem 0.75rem;
+  padding: 0.28rem 0.65rem;
   border-radius: 999px;
-  background: rgba(0, 0, 0, 0.65);
-  backdrop-filter: blur(10px);
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(8px);
   border: 1px solid rgba(255, 255, 255, 0.2);
   color: #ffffff;
   letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
-.cf-game-title {
+.arena-prize-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  color: #00f0ff;
+  font-weight: 800;
+  background: rgba(0, 240, 255, 0.12);
+  border: 1px solid rgba(0, 240, 255, 0.35);
+  padding: 0.25rem 0.6rem;
+  border-radius: 6px;
+  backdrop-filter: blur(8px);
+}
+
+.arena-card-bottom {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.arena-info-left {
+  flex: 1;
+  min-width: 0;
+}
+
+.arena-game-title {
   font-family: 'Inter', sans-serif;
   font-weight: 900;
-  font-size: 1.75rem;
+  font-size: 1.35rem;
   color: #ffffff;
-  margin: 0 0 0.35rem;
-  text-shadow: 0 2px 10px rgba(0,0,0,0.9);
+  margin: 0 0 0.15rem;
   letter-spacing: -0.01em;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9);
 }
 
-.cf-game-tagline {
-  font-size: 0.85rem;
+.arena-game-category {
+  font-size: 0.75rem;
   color: #cbd5e1;
-  margin: 0 0 1rem;
-  text-shadow: 0 1px 6px rgba(0,0,0,0.9);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9);
 }
 
-.cf-card-action {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.cf-enter-btn {
+.arena-enter-btn {
   display: inline-flex;
   align-items: center;
-  gap: 0.45rem;
+  gap: 0.4rem;
   background: #ffffff;
   color: #000000;
   font-family: 'Inter', sans-serif;
   font-weight: 800;
-  font-size: 0.85rem;
-  letter-spacing: 0.05em;
-  padding: 0.6rem 1.35rem;
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  padding: 0.46rem 0.95rem;
   border-radius: 6px;
   border: none;
   cursor: pointer;
   transition: all 0.2s ease;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
 }
 
-.cf-enter-btn:hover {
+.arena-enter-btn:hover {
+  background: #00f0ff;
+  color: #000000;
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(255, 255, 255, 0.4);
-}
-
-.cf-prize-tag {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
-  color: var(--korg-cyan);
-  font-weight: 700;
-  background: rgba(0, 240, 255, 0.08);
-  border: 1px solid rgba(0, 240, 255, 0.25);
-  padding: 0.3rem 0.65rem;
-  border-radius: 4px;
-}
-
-.coverflow-dots-bar {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  margin-top: 1.5rem;
-}
-
-.cf-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.2);
-  border: none;
-  cursor: pointer;
-  transition: all 0.25s ease;
-  padding: 0;
-}
-
-.cf-dot.active {
-  width: 24px;
-  border-radius: 999px;
-  background: #ffffff;
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
+  box-shadow: 0 6px 18px rgba(0, 240, 255, 0.45);
 }
 
 /* ================== GENERAL SECTION STYLING ================== */
@@ -1361,9 +1370,10 @@ body {
   .hero-subtext {
     margin: 0 auto 2rem;
   }
-  .coverflow-card {
-    width: 480px;
-    height: 280px;
+  .arena-card {
+    flex: 0 0 320px;
+    width: 320px;
+    height: 190px;
   }
 }
 
@@ -1380,12 +1390,13 @@ body {
   .hero-main-title {
     font-size: 2.8rem;
   }
-  .coverflow-card {
-    width: 340px;
-    height: 220px;
+  .arena-card {
+    flex: 0 0 280px;
+    width: 280px;
+    height: 170px;
   }
-  .cf-game-title {
-    font-size: 1.25rem;
+  .arena-game-title {
+    font-size: 1.15rem;
   }
 }
 

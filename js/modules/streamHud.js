@@ -28,16 +28,16 @@ export class StreamHud {
           { label: "Top Fragger", value: "TenZ_X (28 Kills)" }
         ]
       },
-      pubg: {
-        title: "Erangel Survival Cup: NAVI vs FaZe Final Circle",
-        game: "PUBG • Erangel Phase 7 Water Town",
-        viewers: "112,400",
-        roundStatus: "PHASE 7 BLUE ZONE SHRINKING (3 SQUADS REMAIN)",
-        commentary: "Commentator B: 'NAVI has the high-ground ridge! Smoke grenades deploying across the road!'",
+      bgmi: {
+        title: "BMPS Grand Finals: Team Soul vs GodLike Esports",
+        game: "BGMI • Erangel Phase 6 Zone Shift",
+        viewers: "215,800",
+        roundStatus: "PHASE 6 BLUE ZONE SHRINKING (2 SQUADS REMAIN)",
+        commentary: "Commentator B: 'Mortal holds the ridge! Jonathan connects with the M416 spray transfer!'",
         hudStats: [
-          { label: "Alive Players", value: "8 / 100", alert: true },
-          { label: "Circle DMG", value: "12 HP/sec" },
-          { label: "Airdrop Loot", value: "AWM + Level 3 Helmet" }
+          { label: "Alive Squads", value: "2 / 16", alert: true },
+          { label: "Zone Timer", value: "00:28s" },
+          { label: "MVP Rusher", value: "Jonathan (7 Finishes)" }
         ]
       },
       freefire: {
@@ -62,18 +62,6 @@ export class StreamHud {
           { label: "Lord HP", value: "14,500 HP", alert: true },
           { label: "Kill Score", value: "19 - 17" },
           { label: "Gold Lead", value: "+4.2k ONIC" }
-        ]
-      },
-      clashroyale: {
-        title: "Crown Masters Grand Prix: Mohamed Light vs Mugi",
-        game: "Clash Royale • Overtime Triple Elixir",
-        viewers: "95,800",
-        roundStatus: "TOWER HP: 218 vs 304 • TRIPLE ELIXIR",
-        commentary: "Commentator E: 'Miner sent to the back corner! Poison spell covers the tower! Can the Log finish it?!'",
-        hudStats: [
-          { label: "Overtime Left", value: "00:24s", alert: true },
-          { label: "King Tower", value: "1-1 Crowns" },
-          { label: "Elixir Speed", value: "3x Surge" }
         ]
       }
     };
@@ -144,11 +132,10 @@ export class StreamHud {
           <div class="stage-channel-bar">
             <span class="ch-label">SWITCH ARENA FEED:</span>
             <div class="ch-buttons">
-              <button class="ch-btn ${this.currentChannel === 'valorant' ? 'active' : ''}" data-ch="valorant">🎯 Valorant</button>
-              <button class="ch-btn ${this.currentChannel === 'pubg' ? 'active' : ''}" data-ch="pubg">🪂 PUBG</button>
               <button class="ch-btn ${this.currentChannel === 'freefire' ? 'active' : ''}" data-ch="freefire">🔥 Free Fire</button>
+              <button class="ch-btn ${this.currentChannel === 'bgmi' ? 'active' : ''}" data-ch="bgmi">🪂 BGMI</button>
+              <button class="ch-btn ${this.currentChannel === 'valorant' ? 'active' : ''}" data-ch="valorant">🎯 Valorant</button>
               <button class="ch-btn ${this.currentChannel === 'mobalegends' ? 'active' : ''}" data-ch="mobalegends">⚔️ MOBA Legends</button>
-              <button class="ch-btn ${this.currentChannel === 'clashroyale' ? 'active' : ''}" data-ch="clashroyale">👑 Clash Royale</button>
             </div>
           </div>
         </div>

@@ -48,10 +48,9 @@ export class LeaderboardManager {
         <div class="lb-filter-tabs">
           <button class="lb-tab-btn ${this.activeFilter === 'global' ? 'active' : ''}" data-filter="global">🌐 Global All-Stars</button>
           <button class="lb-tab-btn ${this.activeFilter === 'freefire' ? 'active' : ''}" data-filter="freefire"><img src="assets/logos/freefire.png" class="chip-game-logo" alt="Free Fire"> Free Fire</button>
-          <button class="lb-tab-btn ${this.activeFilter === 'mobalegends' ? 'active' : ''}" data-filter="mobalegends"><img src="assets/logos/mobalegends.png" class="chip-game-logo" alt="MOBA Legends"> MOBA Legends</button>
+          <button class="lb-tab-btn ${this.activeFilter === 'bgmi' ? 'active' : ''}" data-filter="bgmi"><img src="assets/logos/bgmi.png" class="chip-game-logo" alt="BGMI"> BGMI</button>
           <button class="lb-tab-btn ${this.activeFilter === 'valorant' ? 'active' : ''}" data-filter="valorant"><img src="assets/logos/valorant.png" class="chip-game-logo" alt="Valorant"> Valorant</button>
-          <button class="lb-tab-btn ${this.activeFilter === 'pubg' ? 'active' : ''}" data-filter="pubg"><img src="assets/logos/pubg.png" class="chip-game-logo" alt="PUBG"> PUBG</button>
-          <button class="lb-tab-btn ${this.activeFilter === 'clashroyale' ? 'active' : ''}" data-filter="clashroyale"><img src="assets/logos/clashroyale.png" class="chip-game-logo" alt="Clash Royale"> Clash Royale</button>
+          <button class="lb-tab-btn ${this.activeFilter === 'mobalegends' ? 'active' : ''}" data-filter="mobalegends"><img src="assets/logos/mobalegends.png" class="chip-game-logo" alt="MOBA Legends"> MOBA Legends</button>
         </div>
 
         <div class="lb-table-wrapper">

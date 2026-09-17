@@ -47,9 +47,9 @@ body[data-theme="mobalegends"] {
   --card-bg: rgba(8, 16, 38, 0.85);
 }
 
-body[data-theme="clashroyale"] {
-  --primary-glow: #38bdf8;
-  --secondary-glow: #ffd700;
-  --card-border: rgba(56, 189, 248, 0.35);
-  --card-bg: rgba(10, 18, 36, 0.85);
+body[data-theme="bgmi"] {
+  --primary-glow: #f59e0b;
+  --secondary-glow: #ff7700;
+  --card-border: rgba(245, 158, 11, 0.35);
+  --card-bg: rgba(24, 18, 10, 0.85);
 }

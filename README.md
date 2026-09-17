@@ -15,10 +15,9 @@
 
 ### 🏆 Featured Games
 - **Free Fire** (UID In-Game Verification)
-- **Mobile Legends: Bang Bang** (Player ID Verification)
+- **BGMI** (Character ID & IGN Verification)
 - **Valorant** (Riot ID Verification)
-- **PUBG: Battlegrounds** (Character ID Verification)
-- **Clash Royale** (Player Tag Verification)
+- **MOBA Legends** (Player ID & Zone Verification)
 
 ---
 

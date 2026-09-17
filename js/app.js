@@ -54,11 +54,10 @@ class KugofoxApp {
     this.streamHud.init('stream-hud-container');
     this.leaderboard.init('leaderboard-container');
 
-    // Init tactical simulators
+    // Init tactical simulators (4 Titles)
     this.minigames.initReflexTrainer('valorant-reflex-container');
-    this.minigames.initClashDeckBuilder('clash-deck-container');
+    this.minigames.initBgmiDropLab('bgmi-drop-container');
     this.minigames.initMobaDraftSim('moba-draft-container');
-    this.minigames.initPubgDropRoulette('pubg-drop-container');
     this.renderFreeFireSynergy('freefire-synergy-container');
 
     // Enable sound on first interaction
@@ -282,7 +281,7 @@ class KugofoxApp {
 
     document.getElementById('sb-view-all-btn')?.addEventListener('click', () => {
       this.setGameFilter('all', false);
-      document.getElementById('section-games')?.scrollIntoView({ behavior: 'smooth' });
+      document.getElementById('section-gallery')?.scrollIntoView({ behavior: 'smooth' });
     });
   }
 

@@ -12,14 +12,14 @@ export class LootCrateSystem {
 
     this.lootTable = [
       { id: "loot-1", name: "Radiant Vandal: Kogo-Fox Edition", game: "Valorant", rarity: "Radiant", type: "Weapon Skin", icon: "🔫", value: 500 },
-      { id: "loot-2", name: "Glacial Flame M416", game: "PUBG", rarity: "Legendary", type: "Weapon Skin", icon: "🎯", value: 350 },
+      { id: "loot-2", name: "Glacial Flame M416", game: "BGMI", rarity: "Legendary", type: "Weapon Skin", icon: "🎯", value: 350 },
       { id: "loot-3", name: "Cyber Alok: Neon DJ Matrix", game: "Free Fire", rarity: "Legendary", type: "Character Skin", icon: "🎧", value: 350 },
       { id: "loot-4", name: "Fanny Cyber Blade Master", game: "MOBA Legends", rarity: "Mythic", type: "Hero Skin", icon: "⚔️", value: 600 },
-      { id: "loot-5", name: "Golden King Tower Hologram", game: "Clash Royale", rarity: "Epic", type: "Tower Skin", icon: "👑", value: 250 },
+      { id: "loot-5", name: "Glacier AWM Hologram", game: "BGMI", rarity: "Epic", type: "Weapon Skin", icon: "💎", value: 250 },
       { id: "loot-6", name: "Spike Defusal Holographic Tag", game: "Valorant", rarity: "Epic", type: "Gun Buddy", icon: "💣", value: 150 },
-      { id: "loot-7", name: "Level 3 Spetsnaz Gold Helmet", game: "PUBG", rarity: "Rare", type: "Cosmetic", icon: "🪖", value: 100 },
+      { id: "loot-7", name: "Level 3 Spetsnaz Gold Helmet", game: "BGMI", rarity: "Rare", type: "Cosmetic", icon: "🪖", value: 100 },
       { id: "loot-8", name: "Booyah Ultra Pass Voucher", game: "Free Fire", rarity: "Epic", type: "Battle Pass", icon: "🎟️", value: 200 },
-      { id: "loot-9", name: "Grand Champion Emote Pack", game: "Clash Royale", rarity: "Rare", type: "Emotes", icon: "🏆", value: 120 }
+      { id: "loot-9", name: "Conqueror Title Golden Badge", game: "BGMI", rarity: "Rare", type: "Emotes", icon: "🏆", value: 120 }
     ];
   }
 

@@ -16,7 +16,6 @@ export class MiniGameManager {
       timeoutId: null,
       bestScore: localStorage.getItem('kugofox_reflex_best') || null
     };
-    this.crDeck = [];
     this.mobaDraft = {
       blue: [],
       red: []
@@ -138,162 +137,9 @@ export class MiniGameManager {
     });
   }
 
-  /* ---------------- CLASH ROYALE DECK BUILDER ---------------- */
-  initClashDeckBuilder(containerId) {
-    const container = document.getElementById(containerId);
-    if (!container) return;
+  /* ---------------- CLASH ROYALE (REMOVED) ---------------- */
+  initClashDeckBuilder() {}
 
-    const cards = GAMES_DATA.clashroyale.cards;
-    this.crDeck = [cards[0], cards[2], cards[3], cards[4], cards[5], cards[6], cards[9], cards[10]];
-
-    const renderDeckUI = () => {
-      const avgElixir = (this.crDeck.reduce((acc, c) => acc + c.elixir, 0) / (this.crDeck.length || 1)).toFixed(1);
-      
-      let archetype = 'Balanced Control';
-      if (avgElixir < 3.2) archetype = 'Fast Cycle / Spell Bait';
-      else if (avgElixir > 4.2) archetype = 'Heavy Beatdown';
-      else if (this.crDeck.some(c => c.name === 'P.E.K.K.A' || c.name === 'Mega Knight')) archetype = 'Bridge Spam / Counter Push';
-
-      container.innerHTML = `
-        <div class="deck-builder-box">
-          <div class="deck-header">
-            <div>
-              <h4 class="title-glow">👑 8-Card Deck Laboratory</h4>
-              <p class="subtitle">Assemble your tournament deck, calculate elixir cycle speed & test match synergy.</p>
-            </div>
-            <div class="deck-metrics">
-              <div class="metric-card">
-                <span class="m-label">Avg Elixir</span>
-                <span class="m-val text-neon" id="deck-avg-elixir">${avgElixir} 💧</span>
-              </div>
-              <div class="metric-card">
-                <span class="m-label">Archetype</span>
-                <span class="m-val text-magenta">${archetype}</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="active-deck-section">
-            <div class="section-title-sm">Current Battle Deck (${this.crDeck.length}/8 cards)</div>
-            <div class="deck-grid" id="current-deck-slots">
-              ${this.crDeck.map((card, idx) => `
-                <div class="cr-card-slot filled" data-idx="${idx}" title="Click to remove ${card.name}">
-                  <div class="elixir-drop">${card.elixir}</div>
-                  <div class="card-name-tag">${card.name}</div>
-                  <div class="card-role">${card.role.split('/')[0]}</div>
-                  <button class="remove-card-btn" data-idx="${idx}">×</button>
-                </div>
-              `).join('')}
-              ${Array.from({ length: 8 - this.crDeck.length }).map(() => `
-                <div class="cr-card-slot empty">
-                  <div class="empty-icon">+</div>
-                  <div class="empty-label">Select Card</div>
-                </div>
-              `).join('')}
-            </div>
-          </div>
-
-          <div class="card-collection-section">
-            <div class="section-title-sm">Card Collection (Click card to add/remove)</div>
-            <div class="collection-scroll">
-              ${cards.map(card => {
-                const inDeck = this.crDeck.some(c => c.id === card.id);
-                return `
-                  <div class="cr-card-item ${inDeck ? 'already-selected' : ''}" data-id="${card.id}">
-                    <div class="elixir-badge">${card.elixir} 💧</div>
-                    <div class="cr-item-info">
-                      <div class="cr-item-name">${card.name}</div>
-                      <div class="cr-item-type">${card.rarity} • ${card.type}</div>
-                    </div>
-                  </div>
-                `;
-              }).join('')}
-            </div>
-          </div>
-
-          <div class="deck-actions-bar">
-            <button id="sim-deck-battle-btn" class="btn-kugofox">
-              ⚔️ Test Deck Match Simulation
-            </button>
-            <button id="reset-deck-btn" class="btn-ghost">
-              🔄 Reset to Meta Deck
-            </button>
-          </div>
-
-          <div id="deck-sim-results" class="deck-sim-results" style="display:none;"></div>
-        </div>
-      `;
-
-      container.querySelectorAll('.remove-card-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          const idx = parseInt(btn.dataset.idx);
-          this.crDeck.splice(idx, 1);
-          sound.playClick();
-          renderDeckUI();
-        });
-      });
-
-      container.querySelectorAll('.cr-card-item').forEach(item => {
-        item.addEventListener('click', () => {
-          const cardId = item.dataset.id;
-          const cardObj = cards.find(c => c.id === cardId);
-          if (this.crDeck.some(c => c.id === cardId)) {
-            this.crDeck = this.crDeck.filter(c => c.id !== cardId);
-          } else {
-            if (this.crDeck.length >= 8) {
-              alert('Deck has maximum 8 cards! Remove one first.');
-              return;
-            }
-            this.crDeck.push(cardObj);
-          }
-          sound.playClick();
-          renderDeckUI();
-        });
-      });
-
-      const simBtn = container.querySelector('#sim-deck-battle-btn');
-      const resetBtn = container.querySelector('#reset-deck-btn');
-      const simResults = container.querySelector('#deck-sim-results');
-
-      resetBtn.addEventListener('click', () => {
-        this.crDeck = [cards[0], cards[2], cards[3], cards[4], cards[5], cards[6], cards[9], cards[10]];
-        sound.playTabSwitch();
-        renderDeckUI();
-      });
-
-      simBtn.addEventListener('click', () => {
-        if (this.crDeck.length < 8) {
-          alert('You must select 8 cards before testing your deck!');
-          return;
-        }
-        sound.playVictory();
-        simResults.style.display = 'block';
-
-        const hasTank = this.crDeck.some(c => c.name === 'P.E.K.K.A' || c.name === 'Mega Knight' || c.name === 'Knight');
-        const hasAir = this.crDeck.some(c => c.target.includes('Air'));
-        let score = 75;
-        if (hasTank) score += 12;
-        if (hasAir) score += 13;
-
-        simResults.innerHTML = `
-          <div class="sim-banner">
-            <h5>⚔️ Arena Match Simulation Results</h5>
-            <div class="match-score-display">
-              <span class="crown-badge">👑 3 - 1</span> <span class="badge-win">VICTORY</span>
-            </div>
-            <p class="sim-analysis">
-              Synergy Rating: <strong class="text-neon">${score}/100</strong> • Opponent: <em>LavaLoon Beatdown</em>.<br>
-              Frontline held with ${this.crDeck[0].name}. Solid elixir cycle in double overtime secured 3 crowns!
-            </p>
-          </div>
-        `;
-        this.app.showToast('Deck battle test successful: 3-1 Victory!', 'success');
-      });
-    };
-
-    renderDeckUI();
-  }
 
   /* ---------------- MOBA LEGENDS DRAFT SIMULATOR ---------------- */
   initMobaDraftSim(containerId) {
@@ -418,19 +264,27 @@ export class MiniGameManager {
     renderDraftUI();
   }
 
-  /* ---------------- PUBG DROP RADAR ROULETTE ---------------- */
-  initPubgDropRoulette(containerId) {
+  /* ---------------- BGMI DROP RADAR & TACTICAL LAB ---------------- */
+  initBgmiDropLab(containerId) {
     const container = document.getElementById(containerId);
     if (!container) return;
 
-    const drops = GAMES_DATA.pubg.dropZones;
+    const bgmiData = GAMES_DATA.bgmi || GAMES_DATA.freefire;
+    const drops = bgmiData.dropZones || [
+      { name: "Pochinki", map: "Erangel", risk: "EXTREME", lootTier: "Tier 3", desc: "Dense urban hot-drop in center of map with immediate street CQB." },
+      { name: "Military Base (Sosnovka)", map: "Erangel", risk: "MAXIMUM", lootTier: "Tier 3+", desc: "Airfield radar towers, crates, Level 3 armor and military sniper spawns." },
+      { name: "School & Apartments", map: "Erangel", risk: "VERY HIGH", lootTier: "Tier 3", desc: "High octane indoor firefights, rooftop sniping dominance." },
+      { name: "Georgopol Containers", map: "Erangel", risk: "HIGH", lootTier: "Tier 3", desc: "Labyrinth of shipping crates with abundant assault rifles and optics." },
+      { name: "Pecado Casino", map: "Miramar", risk: "EXTREME", lootTier: "Tier 3+", desc: "The deadliest multi-floor boxing ring and hotel brawl in the desert." },
+      { name: "Bootcamp", map: "Sanhok", risk: "INSANE", lootTier: "Tier 3+", desc: "Main central fortress where 20+ players contest weapons inside 15 seconds." }
+    ];
 
     container.innerHTML = `
       <div class="pubg-radar-box">
         <div class="radar-header">
           <div>
-            <h4 class="title-glow">🪂 Erangel Drop Zone Radar</h4>
-            <p class="subtitle">Spin the Kugofox tactical trajectory radar to calculate your optimal drop location!</p>
+            <h4 class="title-glow">🪂 BGMI Tactical Drop Zone Radar</h4>
+            <p class="subtitle">Spin the Kugofox tactical trajectory radar to calculate your optimal squad drop location!</p>
           </div>
         </div>
 
@@ -496,5 +350,9 @@ export class MiniGameManager {
         }
       }, 100);
     });
+  }
+
+  initPubgDropRoulette(containerId) {
+    return this.initBgmiDropLab(containerId);
   }
 }

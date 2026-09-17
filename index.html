@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>KUGOFOX — Esports Arena</title>
   <meta name="description"
-    content="KUGOFOX — Esports Arena & Competitive Gaming Platform. Compete in verified campus scrims & tournaments for Free Fire, MOBA Legends, Valorant, PUBG, and Clash Royale.">
+    content="KUGOFOX — Esports Arena & Competitive Gaming Platform. Compete in verified campus scrims & tournaments for Free Fire, BGMI, Valorant, and MOBA Legends.">
   <meta name="theme-color" content="#030508">
   <link rel="icon" href="assets/kugofox_logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -142,10 +142,10 @@
               <span class="sb-game-name">Free Fire</span>
             </button>
 
-            <!-- 2nd: MOBA Legends -->
-            <button class="sb-game-row" data-game="mobalegends">
-              <img src="assets/logos/mobalegends.png" alt="MOBA Legends" class="sb-game-thumb">
-              <span class="sb-game-name">Mobile Legends</span>
+            <!-- 2nd: BGMI -->
+            <button class="sb-game-row" data-game="bgmi">
+              <img src="assets/logos/bgmi.png" alt="BGMI" class="sb-game-thumb">
+              <span class="sb-game-name">BGMI</span>
             </button>
 
             <!-- 3rd: Valorant -->
@@ -154,16 +154,10 @@
               <span class="sb-game-name">Valorant</span>
             </button>
 
-            <!-- 4th: PUBG -->
-            <button class="sb-game-row" data-game="pubg">
-              <img src="assets/logos/pubg.png" alt="PUBG" class="sb-game-thumb">
-              <span class="sb-game-name">PUBG</span>
-            </button>
-
-            <!-- 5th: Clash Royale -->
-            <button class="sb-game-row" data-game="clashroyale">
-              <img src="assets/logos/clashroyale.png" alt="Clash Royale" class="sb-game-thumb">
-              <span class="sb-game-name">Clash Royale</span>
+            <!-- 4th: MOBA Legends -->
+            <button class="sb-game-row" data-game="mobalegends">
+              <img src="assets/logos/mobalegends.png" alt="MOBA Legends" class="sb-game-thumb">
+              <span class="sb-game-name">MOBA Legends</span>
             </button>
           </div>
         </div>
@@ -350,25 +344,10 @@
           </div>
         </div>
 
-        <!-- PHOTO 2: 3D COVERFLOW PERSPECTIVE GALLERY (Campus Gaming Gallery) -->
+        <!-- OFFICIAL BATTLE ARENAS SLIDER (Replaces Campus Gaming Gallery) -->
         <section class="gallery-container-section" id="section-gallery">
           <div id="coverflow-gallery-mount">
-            <!-- Injected by coverflow.js -->
-          </div>
-        </section>
-
-        <!-- OFFICIAL BATTLE ARENAS EXPANDED HUB -->
-        <section class="korg-section" id="section-games">
-          <div class="korg-section-header">
-            <div class="sh-left">
-              <span class="sh-icon">🏟️</span>
-              <h2 class="sh-title">Official Battle Arenas</h2>
-            </div>
-            <p class="sh-desc">Explore live competitive formats, active prize pools, and agent arsenals.</p>
-          </div>
-
-          <div class="game-cards-grid" id="games-showcase-grid">
-            <!-- Rendered by app.js -->
+            <!-- Injected by coverflow.js: Official Battle Arenas horizontal slider -->
           </div>
         </section>
 
@@ -383,36 +362,47 @@
           </div>
 
           <div id="stream-hud-container">
-            <!-- Populated by streamHud.js -->
+            <!-- Injected by streamHud.js -->
           </div>
         </section>
 
-        <!-- TACTICAL LAB & COMBAT DRILLS -->
+        <!-- TOURNAMENT BRACKET & PREDICTION HUB -->
+        <section class="korg-section" id="section-tournaments">
+          <div class="korg-section-header">
+            <div class="sh-left">
+              <span class="sh-icon">🏆</span>
+              <h2 class="sh-title">Championship Tournament Brackets</h2>
+            </div>
+            <p class="sh-desc">Follow live double-elimination brackets, predict match champions, and view grand finals.</p>
+          </div>
+
+          <div id="tournaments-hub-container">
+            <!-- Populated by tournamentSystem.js -->
+          </div>
+        </section>
+
+        <!-- TACTICAL TOOLS & SIMULATORS (Minigames) -->
         <section class="korg-section" id="section-minigames">
           <div class="korg-section-header">
             <div class="sh-left">
-              <span class="sh-icon">⚡</span>
-              <h2 class="sh-title">Tactical Lab & Combat Drills</h2>
+              <span class="sh-icon">🕹️</span>
+              <h2 class="sh-title">Tactical Simulators & Arsenal Range</h2>
             </div>
-            <p class="sh-desc">Sharpen reaction speeds, build meta deck strategies, simulate 5v5 drafts, and radar drop
-              zones.</p>
+            <p class="sh-desc">Sharpen reaction speeds, calibrate squad synergies, simulate 5v5 drafts, and radar drop zones.</p>
           </div>
 
           <div class="minigames-tabs-bar" id="mg-tabs-bar">
             <button class="mg-tab active" data-mg="freefire" onclick="switchMgTab('freefire')">
               <img src="assets/logos/freefire.png" alt="Free Fire" class="tab-game-logo"> Free Fire Synergy Lab
             </button>
-            <button class="mg-tab" data-mg="mobalegends" onclick="switchMgTab('mobalegends')">
-              <img src="assets/logos/mobalegends.png" alt="MOBA Legends" class="tab-game-logo"> MOBA 5v5 Draft Sim
+            <button class="mg-tab" data-mg="bgmi" onclick="switchMgTab('bgmi')">
+              <img src="assets/logos/bgmi.png" alt="BGMI" class="tab-game-logo"> BGMI Tactical Drop Lab
             </button>
             <button class="mg-tab" data-mg="valorant" onclick="switchMgTab('valorant')">
               <img src="assets/logos/valorant.png" alt="Valorant" class="tab-game-logo"> Valorant Aim Drill
             </button>
-            <button class="mg-tab" data-mg="pubg" onclick="switchMgTab('pubg')">
-              <img src="assets/logos/pubg.png" alt="PUBG" class="tab-game-logo"> PUBG Drop Radar
-            </button>
-            <button class="mg-tab" data-mg="clashroyale" onclick="switchMgTab('clashroyale')">
-              <img src="assets/logos/clashroyale.png" alt="Clash Royale" class="tab-game-logo"> Clash Royale Deck Lab
+            <button class="mg-tab" data-mg="mobalegends" onclick="switchMgTab('mobalegends')">
+              <img src="assets/logos/mobalegends.png" alt="MOBA Legends" class="tab-game-logo"> MOBA 5v5 Draft Sim
             </button>
           </div>
 
@@ -422,9 +412,9 @@
               <div id="freefire-synergy-container"></div>
             </div>
 
-            <!-- MOBA Legends Draft Simulator -->
-            <div class="mg-panel" id="mg-panel-mobalegends">
-              <div id="moba-draft-container"></div>
+            <!-- BGMI Drop Zone & Tactical Lab -->
+            <div class="mg-panel" id="mg-panel-bgmi">
+              <div id="bgmi-drop-container"></div>
             </div>
 
             <!-- Valorant Aim Trainer -->
@@ -432,14 +422,9 @@
               <div id="valorant-reflex-container"></div>
             </div>
 
-            <!-- PUBG Drop Zone Radar -->
-            <div class="mg-panel" id="mg-panel-pubg">
-              <div id="pubg-drop-container"></div>
-            </div>
-
-            <!-- Clash Royale Deck Builder -->
-            <div class="mg-panel" id="mg-panel-clashroyale">
-              <div id="clash-deck-container"></div>
+            <!-- MOBA Legends Draft Simulator -->
+            <div class="mg-panel" id="mg-panel-mobalegends">
+              <div id="moba-draft-container"></div>
             </div>
           </div>
         </section>
@@ -451,7 +436,7 @@
               <span class="sh-icon">🎖️</span>
               <h2 class="sh-title">Competitor Standings & Dossiers</h2>
             </div>
-            <p class="sh-desc">Official verified ladder rankings and career statistics across all 5 titles.</p>
+            <p class="sh-desc">Official verified ladder rankings and career statistics across all 4 competitive titles.</p>
           </div>
 
           <div id="leaderboard-container">
@@ -466,16 +451,10 @@
             <span class="footer-brand-title">KUGOFOX — ESPORTS ARENA</span>
           </div>
           <div class="footer-games-list">
-            <span class="f-game-pill"><img src="assets/logos/freefire.png" class="f-game-icon" alt="Free Fire"> Free
-              Fire</span> •
-            <span class="f-game-pill"><img src="assets/logos/mobalegends.png" class="f-game-icon" alt="MOBA Legends">
-              MOBA Legends</span> •
-            <span class="f-game-pill"><img src="assets/logos/valorant.png" class="f-game-icon" alt="Valorant">
-              Valorant</span> •
-            <span class="f-game-pill"><img src="assets/logos/pubg.png" class="f-game-icon" alt="PUBG"> PUBG:
-              Battlegrounds</span> •
-            <span class="f-game-pill"><img src="assets/logos/clashroyale.png" class="f-game-icon" alt="Clash Royale">
-              Clash Royale</span>
+            <span class="f-game-pill"><img src="assets/logos/freefire.png" class="f-game-icon" alt="Free Fire"> Free Fire</span> •
+            <span class="f-game-pill"><img src="assets/logos/bgmi.png" class="f-game-icon" alt="BGMI"> BGMI</span> •
+            <span class="f-game-pill"><img src="assets/logos/valorant.png" class="f-game-icon" alt="Valorant"> Valorant</span> •
+            <span class="f-game-pill"><img src="assets/logos/mobalegends.png" class="f-game-icon" alt="MOBA Legends"> MOBA Legends</span>
           </div>
           <p class="footer-copy">
             &copy; 2026 Kugofox Arena. All game titles belong to their respective publishers.

@@ -147,10 +147,9 @@ export class RegistrationModal {
   getPlaceholder(game) {
     switch (game) {
       case 'freefire': return 'e.g. 293847192 (Free Fire UID)';
-      case 'mobalegends': return 'e.g. 10293847 (Server 2049)';
+      case 'bgmi': return 'e.g. 5128394029 (BGMI Character ID)';
       case 'valorant': return 'e.g. TenZ#NA1 or Chronicle#EU1';
-      case 'pubg': return 'e.g. 5128394029 (Character ID)';
-      case 'clashroyale': return 'e.g. #9Q8V2C (Player Tag)';
+      case 'mobalegends': return 'e.g. 10293847 (Server 2049)';
       default: return 'Enter Player UID or Gamertag';
     }
   }
@@ -158,10 +157,9 @@ export class RegistrationModal {
   getPlaceholderHint(game) {
     switch (game) {
       case 'freefire': return 'Enter your 8-10 digit Free Fire UID to verify your in-game nickname and CS tier.';
-      case 'mobalegends': return 'Enter your Mobile Legends User ID to fetch your official Mythic ranking.';
+      case 'bgmi': return 'Enter your 10-digit BGMI Character ID to verify your survivor stats and Tier.';
       case 'valorant': return 'Enter your Riot ID with tag (e.g. Name#Region) to verify your competitive rank.';
-      case 'pubg': return 'Enter your 10-digit PUBG Character ID to verify your survivor stats.';
-      case 'clashroyale': return 'Enter your Clash Royale #TAG to verify your King level and current trophies.';
+      case 'mobalegends': return 'Enter your Mobile Legends User ID to fetch your official Mythic ranking.';
       default: return 'Enter your Game ID to check your official in-game handle.';
     }
   }

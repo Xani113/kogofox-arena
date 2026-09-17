@@ -2,10 +2,9 @@
  * Kugofox Gaming Arena - Player IGN Verification Service
  * Fast, accurate verification of player IDs and in-game names across:
  * - Free Fire (UIDs & In-Game Nicknames)
- * - Mobile Legends: Bang Bang (User ID, Zone ID & Gamertags)
+ * - BGMI (Character IDs & Gamertags)
  * - Valorant (Riot IDs Name#Tag & Player Handles)
- * - PUBG Mobile / BGMI (Character IDs & Gamertags)
- * - Clash Royale (Player #Tags & Nicknames)
+ * - Mobile Legends: Bang Bang (User ID, Zone ID & Gamertags)
  */
 
 import axios from 'axios';
@@ -30,21 +29,16 @@ const VERIFIED_PLAYERS_CACHE = {
     'chronicle#eu1': { name: 'FNC Chronicle', rank: 'Radiant #3', level: 'Level 420' },
     'radiant#fox': { name: 'RadiantDemon #FOX', rank: 'Radiant', level: 'Level 215' }
   },
-  pubg: {
-    '5128394029': { name: 'ErangelSniper_Pro', rank: 'Ace Dominator', level: 'Level 72' },
-    '9928174019': { name: 'PochinkiBrawler', rank: 'Ace Master', level: 'Level 66' },
-    '1209384756': { name: 'FaZe_Fuzzface', rank: 'Conqueror Tier', level: 'Level 85' }
-  },
-  clashroyale: {
-    '#9q8v2c': { name: 'MohamedLight_CR', rank: 'Ultimate Champion (9,000 🏆)', level: 'King Level 15' },
-    '#pp88grl': { name: 'Mugi_Champion', rank: 'Grand Champion', level: 'King Level 15' },
-    '#crfox77': { name: 'Kugofox_Pekka', rank: 'Royal Champion (7,800 🏆)', level: 'King Level 14' }
+  bgmi: {
+    '5128394029': { name: 'Soul_Mortal', rank: 'Conqueror Tier', level: 'Level 82' },
+    '9928174019': { name: 'JonathanGod', rank: 'Ace Dominator', level: 'Level 78' },
+    '1209384756': { name: 'ScoutOP', rank: 'Ace Master', level: 'Level 75' }
   }
 };
 
 /**
  * Verifies player Game ID / IGN using certified resolver and format analysis
- * @param {string} gameType - 'freefire', 'mobalegends', 'valorant', 'pubg', 'clashroyale'
+ * @param {string} gameType - 'freefire', 'bgmi', 'valorant', 'mobalegends'
  * @param {string} playerId - User ID, Riot ID, Tag, or In-Game Name
  */
 export async function verifyPlayerGameID(gameType, playerId) {
@@ -168,19 +162,20 @@ function resolvePlayerIdentity(gameType, playerId) {
       break;
     }
 
+    case 'bgmi':
     case 'pubg': {
       if (/^\d{6,14}$/.test(cleanInput)) {
         // Numeric Character ID
         verifiedUsername = `Survivor_${cleanInput.slice(-4)}`;
         rank = 'Ace Dominator';
-        level = 'Level 68';
-        metaType = `PUBG Character ID (${cleanInput})`;
+        level = 'Level 78';
+        metaType = `BGMI Character ID (${cleanInput})`;
       } else {
         // Direct Character Nickname
         verifiedUsername = cleanInput;
-        rank = 'Crown I';
-        level = 'Level 72';
-        metaType = 'PUBG IGN';
+        rank = 'Ace Master';
+        level = 'Level 80';
+        metaType = 'BGMI IGN';
       }
       break;
     }
@@ -198,22 +193,6 @@ function resolvePlayerIdentity(gameType, playerId) {
         rank = 'Mythic Tier';
         level = 'Level 48';
         metaType = 'MLBB IGN';
-      }
-      break;
-    }
-
-    case 'clashroyale': {
-      if (cleanInput.startsWith('#') || /^[0-9a-zA-Z]{6,10}$/.test(cleanInput)) {
-        const tag = cleanInput.startsWith('#') ? cleanInput.toUpperCase() : `#${cleanInput.toUpperCase()}`;
-        verifiedUsername = tag;
-        rank = 'Master II (6,500 🏆)';
-        level = 'King Level 14';
-        metaType = 'Supercell Tag';
-      } else {
-        verifiedUsername = cleanInput;
-        rank = 'Royal Champion';
-        level = 'King Level 13';
-        metaType = 'Clash Royale IGN';
       }
       break;
     }

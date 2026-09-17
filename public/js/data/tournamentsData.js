@@ -124,33 +124,33 @@ export const TOURNAMENTS_DATA = [
     }
   },
   {
-    id: "tourney-cr-01",
-    gameId: "clashroyale",
-    title: "Kugofox Crown Masters Invitational",
+    id: "tourney-bgmi-01",
+    gameId: "bgmi",
+    title: "BGMI Masters Series (BMPS) Grand Finals",
     status: "LIVE",
-    prizePool: "$10,000",
-    date: "TODAY • 1V1 DUELS",
-    timeRemaining: "02h 10m",
-    teamsCount: 32,
-    format: "1v1 Duel Format (Ban 1 Deck, Win with 2 Decks)",
-    tier: "Crown Grand Prix",
-    description: "The ultimate Clash Royale strategy championship. Master cycle, beatdown, and bait archetypes.",
+    prizePool: "$25,000",
+    date: "TODAY • ERANGEL FINALS",
+    timeRemaining: "01h 45m",
+    teamsCount: 16,
+    format: "16-Squad 100-Man Battle Royale",
+    tier: "Tier 1 National Grand Prix",
+    description: "India's premier tactical battle royale championship. Top squads clash in Erangel and Miramar for the Chicken Dinner and championship title.",
     bracket: {
       quarterFinals: [
-        { matchId: "cr-q1", team1: { name: "Mohamed Light", score: 2, odds: "1.30" }, team2: { name: "Surgical Goblin", score: 0, odds: "3.20" }, winner: "Mohamed Light", status: "COMPLETED" },
-        { matchId: "cr-q2", team1: { name: "Mugi Cyber", score: 2, odds: "1.60" }, team2: { name: "LucasXGamer", score: 1, odds: "2.30" }, winner: "Mugi Cyber", status: "COMPLETED" },
-        { matchId: "cr-q3", team1: { name: "Samuel Bassotto", score: 2, odds: "1.70" }, team2: { name: "Airsurfer", score: 1, odds: "2.15" }, winner: "Samuel Bassotto", status: "COMPLETED" },
-        { matchId: "cr-q4", team1: { name: "Kugofox CrownKing", score: 2, odds: "1.75" }, team2: { name: "Ruben CR", score: 0, odds: "2.10" }, winner: "Kugofox CrownKing", status: "COMPLETED" }
+        { matchId: "bgmi-q1", team1: { name: "Team Soul", score: 2, odds: "1.45" }, team2: { name: "Reckoning GG", score: 0, odds: "2.80" }, winner: "Team Soul", status: "COMPLETED" },
+        { matchId: "bgmi-q2", team1: { name: "GodLike Esports", score: 2, odds: "1.60" }, team2: { name: "Blind Esports", score: 1, odds: "2.30" }, winner: "GodLike Esports", status: "COMPLETED" },
+        { matchId: "bgmi-q3", team1: { name: "Entity Gaming", score: 2, odds: "1.75" }, team2: { name: "Team XSpark", score: 1, odds: "2.10" }, winner: "Entity Gaming", status: "COMPLETED" },
+        { matchId: "bgmi-q4", team1: { name: "Kugofox Strikers", score: 2, odds: "1.65" }, team2: { name: "Global Esports", score: 0, odds: "2.25" }, winner: "Kugofox Strikers", status: "COMPLETED" }
       ],
       semiFinals: [
-        { matchId: "cr-s1", team1: { name: "Mohamed Light", score: 1, odds: "1.65" }, team2: { name: "Mugi Cyber", score: 1, odds: "2.20" }, status: "LIVE NOW", currentMap: "Decider Game 3: Miner Poison vs Lava Hound" },
-        { matchId: "cr-s2", team1: { name: "Samuel Bassotto", score: 0, odds: "1.95" }, team2: { name: "Kugofox CrownKing", score: 0, odds: "1.85" }, status: "UPCOMING", currentMap: "Starts after SF1" }
+        { matchId: "bgmi-s1", team1: { name: "Team Soul", score: 1, odds: "1.70" }, team2: { name: "GodLike Esports", score: 1, odds: "1.85" }, status: "LIVE NOW", currentMap: "Match 5: Miramar (Zone 6 Decider)" },
+        { matchId: "bgmi-s2", team1: { name: "Entity Gaming", score: 0, odds: "1.90" }, team2: { name: "Kugofox Strikers", score: 0, odds: "1.80" }, status: "UPCOMING", currentMap: "Match 6: Erangel Pochinki Final" }
       ],
       grandFinal: {
-        matchId: "cr-f1",
-        team1: { name: "TBD", score: 0, odds: "2.00", logo: "👑" },
-        team2: { name: "TBD", score: 0, odds: "2.00", logo: "⚡" },
-        currentMap: "Bo5 Grand Finals",
+        matchId: "bgmi-f1",
+        team1: { name: "TBD", score: 0, odds: "1.90", logo: "🪂" },
+        team2: { name: "TBD", score: 0, odds: "1.90", logo: "🦊" },
+        currentMap: "BMPS Grand Finals (Erangel Match 7)",
         status: "SCHEDULED"
       }
     }
