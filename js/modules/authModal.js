@@ -12,13 +12,15 @@
 
 import { sound } from './soundEngine.js';
 
+const OFFICIAL_GOOGLE_CLIENT_ID = '150459129894-kc8mepcmrio4qm968ue0fdpjc8p7fr5h.apps.googleusercontent.com';
+
 export class AuthModal {
   constructor(app) {
     this.app = app;
     this.overlay = null;
     this.currentTab = 'login'; // 'login' | 'create'
     this.currentUser = null;
-    this.googleClientId = '';
+    this.googleClientId = OFFICIAL_GOOGLE_CLIENT_ID;
   }
 
   init() {
@@ -647,20 +649,47 @@ export class AuthModal {
 
   handleGoogleAuth() {
     sound.playClick();
-    const hasValidClientId = this.googleClientId && 
-      this.googleClientId.includes('.apps.googleusercontent.com') &&
-      !this.googleClientId.includes('your-copied-client-id');
-
-    if (hasValidClientId) {
-      this.redirectToGoogleOAuth();
-    } else {
-      this.openGoogleSetupOrDirectDialog();
-    }
+    this.redirectToGoogleOAuth();
   }
 
   redirectToGoogleOAuth() {
-    const redirectUri = window.location.origin + window.location.pathname;
-    const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${encodeURIComponent(this.googleClientId)}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=token&scope=openid%20email%20profile&prompt=select_account`;
+    const clientId = this.googleClientId || OFFICIAL_GOOGLE_CLIENT_ID;
+
+    // 1. Try Google Identity Services token client if available
+    if (window.google?.accounts?.oauth2) {
+      try {
+        const client = window.google.accounts.oauth2.initTokenClient({
+          client_id: clientId,
+          scope: 'openid email profile',
+          prompt: 'select_account',
+          callback: async (tokenResponse) => {
+            if (tokenResponse && tokenResponse.access_token) {
+              const gRes = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+                headers: { Authorization: `Bearer ${tokenResponse.access_token}` }
+              });
+              if (gRes.ok) {
+                const profile = await gRes.json();
+                if (profile && profile.email) {
+                  const name = profile.name || profile.email.split('@')[0];
+                  const username = profile.email.split('@')[0].replace(/[^a-zA-Z0-9_]/g, '') || 'gamer';
+                  const avatar = profile.picture || '⚡';
+                  await this.executeGoogleSignIn(name, profile.email, username, avatar);
+                  return;
+                }
+              }
+            }
+          }
+        });
+        client.requestAccessToken();
+        return;
+      } catch (e) {
+        console.warn('[Google OAuth] GIS TokenClient fallback to redirect:', e);
+      }
+    }
+
+    // 2. Direct full-page navigation to accounts.google.com (The exact screen in your photo)
+    const redirectUri = window.location.origin;
+    const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${encodeURIComponent(clientId)}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=token&scope=openid%20email%20profile&prompt=select_account`;
     window.location.href = authUrl;
   }
 
