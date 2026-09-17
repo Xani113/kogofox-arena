@@ -251,7 +251,7 @@ export class RegistrationModal {
       const response = await fetch(url);
       const data = await response.json();
 
-      if (data.isValid || data.success) {
+      if (data.isValid && data.exists !== false) {
         sound.playVictory();
         this.verifiedData = data;
         resBox.className = 'rm-verify-status-box success';
@@ -261,8 +261,9 @@ export class RegistrationModal {
             <div class="verify-details">
               <div class="v-ign-title">VERIFIED IGN: <strong>${data.username}</strong></div>
               <div class="v-ign-meta">
-                <span class="v-meta-pill">Rank: ${data.rank || 'Verified Competitor'}</span>
+                <span class="v-meta-pill rank-pill">Rank: ${data.rank || 'Verified Competitor'}</span>
                 <span class="v-meta-pill">Level: ${data.level || 'Active'}</span>
+                <span class="v-meta-pill">${data.region || 'Official Server'}</span>
                 <span class="v-meta-pill status-active">● Verified Competitor</span>
               </div>
             </div>
@@ -273,7 +274,7 @@ export class RegistrationModal {
           ignInput.value = data.username;
         }
 
-        this.app.showToast(`Verified IGN: ${data.username}`, 'success');
+        this.app.showToast(`Verified: ${data.username} (${data.rank || 'Verified'})`, 'success');
       } else {
         sound.playTabSwitch();
         this.verifiedData = null;
@@ -281,42 +282,33 @@ export class RegistrationModal {
         resBox.innerHTML = `
           <div class="verify-error-content">
             <span class="verify-cross">❌</span>
-            <div>
-              <strong>Verification Failed:</strong> ${data.message || 'Player ID or IGN not found.'}
+            <div class="verify-error-details">
+              <div class="v-error-title" style="font-weight:700; color:#fca5a5;">Player Verification Failed</div>
+              <div class="v-error-desc" style="font-size:0.82rem; margin-top:2px; color:#fecaca;">
+                ${data.message || 'Player ID or IGN was not found on official servers.'}
+              </div>
             </div>
           </div>
         `;
-        if (ignInput) ignInput.value = playerId;
+        if (ignInput) ignInput.value = '';
+        this.app.showToast(data.message || 'Player not found on official servers.', 'error');
       }
     } catch (err) {
-      // Resilient fallback: Verify IGN directly so user is never blocked
-      sound.playVictory();
-      const verifiedName = playerId;
-      this.verifiedData = {
-        isValid: true,
-        success: true,
-        username: verifiedName,
-        gameType: this.selectedGame,
-        playerId: playerId,
-        rank: 'Verified Competitor',
-        level: 'Active'
-      };
-      resBox.className = 'rm-verify-status-box success';
+      sound.playTabSwitch();
+      this.verifiedData = null;
+      resBox.className = 'rm-verify-status-box error';
       resBox.innerHTML = `
-        <div class="verify-success-content">
-          <span class="verify-check">✅</span>
-          <div class="verify-details">
-            <div class="v-ign-title">VERIFIED IGN: <strong>${verifiedName}</strong></div>
-            <div class="v-ign-meta">
-              <span class="v-meta-pill">Rank: Verified Competitor</span>
-              <span class="v-meta-pill">ID: ${playerId}</span>
-              <span class="v-meta-pill status-active">● Direct Verified</span>
+        <div class="verify-error-content">
+          <span class="verify-cross">⚠️</span>
+          <div class="verify-error-details">
+            <div class="v-error-title" style="font-weight:700; color:#fca5a5;">Verification Server Offline</div>
+            <div class="v-error-desc" style="font-size:0.82rem; margin-top:2px; color:#fecaca;">
+              Could not communicate with the verification engine. Please ensure your backend is running.
             </div>
           </div>
         </div>
       `;
-      if (ignInput) ignInput.value = verifiedName;
-      this.app.showToast(`Verified IGN: ${verifiedName}`, 'success');
+      this.app.showToast('Could not reach verification server. Please try again.', 'error');
     } finally {
       verifyBtn.disabled = false;
       verifyBtn.innerHTML = `<span>🔍 VERIFY IGN</span>`;
