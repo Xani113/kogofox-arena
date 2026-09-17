@@ -29,7 +29,7 @@ function copyFolderSync(from, to) {
 }
 
 // Copy static entry files and assets
-const itemsToCopy = ['index.html', 'css', 'js', 'assets'];
+const itemsToCopy = ['index.html', 'css', 'js', 'assets', 'components'];
 
 itemsToCopy.forEach(item => {
   const src = path.join(rootDir, item);

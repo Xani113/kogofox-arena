@@ -13,6 +13,7 @@ import { MiniGameManager } from './modules/minigames.js?v=2.2.0';
 import { LeaderboardManager } from './modules/leaderboard.js?v=2.2.0';
 import { CyberHeadphoneController } from './modules/cyberHeadphone.js?v=2.2.0';
 import { AuthModal } from './modules/authModal.js?v=2.2.0';
+import { ParticleDriftEngine } from './modules/particleDrift.js?v=2.2.0';
 
 class KugofoxApp {
   constructor() {
@@ -84,65 +85,16 @@ class KugofoxApp {
   }
 
   initCanvasGrid() {
-    const canvas = document.getElementById('bg-cyber-canvas');
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-
-    let width = (canvas.width = window.innerWidth);
-    let height = (canvas.height = window.innerHeight);
-
-    window.addEventListener('resize', () => {
-      width = canvas.width = window.innerWidth;
-      height = canvas.height = window.innerHeight;
+    this.particleDrift = new ParticleDriftEngine('bg-cyber-canvas', {
+      speed: 0.9,
+      density: 1.1,
+      beamCount: 28,
+      nodeCount: 85,
+      beamColor: 'rgba(0, 240, 255,',
+      nodeColor: 'rgba(156, 163, 175, 0.55)',
+      activeColor: '#00f0ff',
+      interactive: true
     });
-
-    const particles = [];
-    const count = 45;
-    for (let i = 0; i < count; i++) {
-      particles.push({
-        x: Math.random() * width,
-        y: Math.random() * height,
-        vx: (Math.random() - 0.5) * 0.4,
-        vy: (Math.random() - 0.5) * 0.4,
-        size: Math.random() * 2 + 0.8,
-        color: i % 3 === 0 ? 'rgba(0, 240, 255, 0.5)' : (i % 3 === 1 ? 'rgba(255, 42, 133, 0.45)' : 'rgba(255, 255, 255, 0.6)')
-      });
-    }
-
-    const animate = () => {
-      ctx.clearRect(0, 0, width, height);
-
-      for (let i = 0; i < count; i++) {
-        const p1 = particles[i];
-        p1.x += p1.vx;
-        p1.y += p1.vy;
-
-        if (p1.x < 0 || p1.x > width) p1.vx *= -1;
-        if (p1.y < 0 || p1.y > height) p1.vy *= -1;
-
-        ctx.fillStyle = p1.color;
-        ctx.beginPath();
-        ctx.arc(p1.x, p1.y, p1.size, 0, Math.PI * 2);
-        ctx.fill();
-
-        for (let j = i + 1; j < count; j++) {
-          const p2 = particles[j];
-          const dist = Math.hypot(p1.x - p2.x, p1.y - p2.y);
-          if (dist < 110) {
-            ctx.strokeStyle = `rgba(0, 240, 255, ${0.1 * (1 - dist / 110)})`;
-            ctx.lineWidth = 0.65;
-            ctx.beginPath();
-            ctx.moveTo(p1.x, p1.y);
-            ctx.lineTo(p2.x, p2.y);
-            ctx.stroke();
-          }
-        }
-      }
-
-      requestAnimationFrame(animate);
-    };
-
-    animate();
   }
 
   initNavigation() {
