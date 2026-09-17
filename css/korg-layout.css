@@ -1770,12 +1770,258 @@ body {
   box-shadow: 0 6px 20px rgba(255, 255, 255, 0.4);
 }
 
+/* ================== COMPREHENSIVE PHONE & MOBILE OPTIMIZATIONS ================== */
+@media (max-width: 768px) {
+  .korg-sidebar {
+    display: none !important;
+  }
+  .korg-body-split {
+    display: block;
+    width: 100%;
+  }
+  .korg-main-area {
+    padding: 1.25rem 1rem 3rem;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .korg-hero-section {
+    flex-direction: column;
+    text-align: center;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  .hero-left-col {
+    max-width: 100%;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+  }
+  .cyber-title-img-group {
+    align-items: center;
+  }
+  .hero-subtext {
+    margin: 0 auto 1.5rem;
+    text-align: center;
+  }
+  .hero-cyber-telemetry {
+    justify-content: center;
+  }
+  .hero-btns-row {
+    justify-content: center;
+  }
+  .hero-right-col {
+    width: 100%;
+  }
+  .cyber-headphone-wrapper {
+    max-width: 320px;
+    margin: 0 auto;
+  }
+}
+
 @media (max-width: 640px) {
-  .rm-grid-2col {
-    grid-template-columns: 1fr;
+  /* Top Navigation Bar on Phone */
+  .korg-topbar {
+    height: 58px;
+    padding: 0 0.85rem;
+  }
+  .korg-brand-name {
+    font-size: 1.05rem;
+    letter-spacing: 0.04em;
+  }
+  .korg-brand-icon {
+    width: 30px;
+    height: 30px;
+  }
+  .btn-find-team {
+    padding: 0.4rem 0.65rem;
+    font-size: 0.72rem;
+  }
+  .btn-sign-in {
+    padding: 0.45rem 0.85rem;
+    font-size: 0.75rem;
+  }
+  .btn-icon-round {
+    width: 34px;
+    height: 34px;
+  }
+
+  /* Main Area on Phone */
+  .korg-main-area {
+    padding: 1rem 0.75rem 3rem;
+  }
+
+  /* Hero Section on Phone */
+  .cyberpunk-title {
+    font-size: 2.2rem;
+    line-height: 1.05;
+  }
+  .enter-the-img {
+    height: clamp(26px, 7vw, 36px);
+  }
+  .fox-arena-img {
+    height: clamp(38px, 10vw, 52px);
+  }
+  .hero-subtext {
+    font-size: 0.88rem;
+    line-height: 1.45;
+    margin-bottom: 1.25rem;
+    padding: 0 0.25rem;
+  }
+  .hero-cyber-telemetry {
+    gap: 0.35rem;
+  }
+  .telemetry-pill {
+    padding: 0.25rem 0.5rem;
+    font-size: 9px;
+  }
+  .hero-btns-row {
+    flex-direction: column;
+    width: 100%;
+    gap: 0.65rem;
+  }
+  .cyber-btn-primary, .cyber-btn-secondary {
+    width: 100%;
+    justify-content: center;
+    padding: 0.8rem 1rem;
+    font-size: 0.88rem;
+    box-sizing: border-box;
+  }
+
+  /* Interactive Headphone on Phone */
+  .cyber-headphone-wrapper {
+    max-width: 270px;
+    margin: 1rem auto 0;
+  }
+  .hp-interactive-controls {
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    justify-content: center;
+  }
+  .hp-interactive-btn {
+    padding: 0.4rem 0.65rem;
+    font-size: 9px;
+  }
+
+  /* Status Strip on Phone */
+  .korg-status-strip {
+    flex-direction: column;
+    gap: 0.45rem;
+    text-align: center;
+    padding: 0.65rem 0.75rem;
+    font-size: 9.5px;
+    margin: 1rem 0 2rem;
+  }
+  .status-dots {
+    display: none;
+  }
+
+  /* Battle Arenas Carousel on Phone */
+  .battle-arenas-header {
+    padding: 0 0.25rem;
+  }
+  .ba-heading {
+    font-size: 1.25rem;
+  }
+  .ba-circle-btn {
+    width: 34px;
+    height: 34px;
+    font-size: 1.15rem;
+  }
+  .arena-card {
+    flex: 0 0 calc(100vw - 3rem);
+    max-width: 320px;
+    height: 185px;
+    border-radius: 16px;
+  }
+
+  /* Registration Modal on Phone */
+  .reg-modal-overlay {
+    padding: 0.5rem;
+    align-items: flex-end;
+  }
+  .reg-modal-card {
+    width: 100%;
+    max-width: 100%;
+    max-height: 90vh;
+    padding: 1.15rem 0.95rem;
+    border-radius: 16px 16px 0 0;
+    box-sizing: border-box;
+  }
+  .rm-title {
+    font-size: 1.05rem;
+  }
+  .rm-subtitle {
+    font-size: 0.75rem;
+  }
+  .rm-game-chips {
+    gap: 0.35rem;
+  }
+  .rm-game-chip {
+    padding: 0.45rem 0.65rem;
+    font-size: 0.78rem;
+    flex: 1 1 calc(50% - 0.4rem);
+  }
+  .rm-chip-logo {
+    width: 18px;
+    height: 18px;
   }
   .rm-input-row {
     flex-direction: column;
+    gap: 0.5rem;
+  }
+  .rm-input-wrap {
+    width: 100%;
+  }
+  .rm-text-input {
+    font-size: 16px !important; /* Prevents auto-zoom in iOS Safari */
+    padding: 0.7rem 0.85rem;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .btn-verify-ign {
+    width: 100%;
+    justify-content: center;
+    padding: 0.75rem;
+  }
+  .rm-grid-2col {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+  .rm-modal-footer {
+    flex-direction: column-reverse;
+    gap: 0.5rem;
+  }
+  .btn-rm-submit, .btn-rm-cancel {
+    width: 100%;
+    justify-content: center;
+    padding: 0.75rem;
+    box-sizing: border-box;
+  }
+
+  /* Quick Actions Dock & Loot Crate Mobile */
+  .loot-crate-card {
+    width: 96vw;
+    padding: 1.25rem 1rem;
+    border-radius: 14px;
+  }
+  .crate-title {
+    font-size: 1.3rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .korg-topbar {
+    padding: 0 0.5rem;
+  }
+  .btn-find-team span:not(.badge-new-pill) {
+    display: none;
+  }
+  .cyberpunk-title {
+    font-size: 1.8rem;
+  }
+  .arena-card {
+    max-width: 280px;
+    height: 165px;
   }
 }
 

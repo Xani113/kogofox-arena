@@ -13,7 +13,7 @@ import { MiniGameManager } from './modules/minigames.js?v=2.4.0';
 import { LeaderboardManager } from './modules/leaderboard.js?v=2.4.0';
 import { CyberHeadphoneController } from './modules/cyberHeadphone.js?v=2.4.0';
 import { AuthModal } from './modules/authModal.js?v=2.4.0';
-import { ParticleDriftEngine } from './modules/particleDrift.js?v=2.4.0';
+import { PixelStarsEngine } from './modules/pixelStars.js?v=2.5.0';
 
 class KugofoxApp {
   constructor() {
@@ -84,16 +84,7 @@ class KugofoxApp {
   }
 
   initCanvasGrid() {
-    this.particleDrift = new ParticleDriftEngine('bg-cyber-canvas', {
-      speed: 0.9,
-      density: 1.1,
-      beamCount: 28,
-      nodeCount: 85,
-      beamColor: 'rgba(0, 240, 255,',
-      nodeColor: 'rgba(156, 163, 175, 0.55)',
-      activeColor: '#00f0ff',
-      interactive: true
-    });
+    this.pixelStars = new PixelStarsEngine('bg-cyber-canvas');
   }
 
   initNavigation() {
