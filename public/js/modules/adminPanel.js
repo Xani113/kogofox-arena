@@ -258,6 +258,19 @@ function renderAdminView(container) {
           </p>
 
           <form id="admin-award-points-form" style="display: flex; flex-direction: column; gap: 1rem;">
+            <div>
+              <label class="korg-admin-label" style="display: flex; justify-content: space-between; align-items: center;">
+                <span>🔴 Select Ongoing Match (Live Games Only)</span>
+                <span style="color: #38bdf8; font-size: 0.72rem;">Points locked for completed matches</span>
+              </label>
+              <select id="adm-pt-match" class="korg-admin-input" required style="background: #0f172a;">
+                <option value="">-- Choose Active Ongoing Match --</option>
+              </select>
+              <div id="adm-pt-match-warning" style="display: none; margin-top: 0.4rem; padding: 0.6rem 0.8rem; background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239,68,68,0.3); border-radius: 6px; color: #fca5a5; font-size: 0.82rem;">
+                ⚠️ <strong>No matches are currently Live/Ongoing.</strong> Points can only be increased for ongoing games. Change a tournament status to <strong>"Live Now"</strong> in the Events section above to award points.
+              </div>
+            </div>
+
             <div class="korg-admin-form-row">
               <div>
                 <label class="korg-admin-label">Player @Handle or Name</label>
@@ -295,19 +308,25 @@ function renderAdminView(container) {
               </div>
             </div>
 
-            <button type="submit" class="korg-btn-primary" style="align-self: flex-start;">
-              Apply Points & Update Standings
+            <button type="submit" id="adm-pt-submit-btn" class="korg-btn-primary" style="align-self: flex-start;">
+              Apply Points to Ongoing Match
             </button>
           </form>
         </div>
 
         <!-- Live Standings Snapshot with Admin Controls -->
         <div class="korg-standings-card">
-          <div style="padding: 1.2rem 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-between; align-items: center;">
-            <h3 style="color: #fff; margin: 0; font-size: 1.1rem;">Current Leaderboard Points Roster</h3>
-            <button id="adm-refresh-standings-btn" class="korg-btn-outline" style="font-size: 0.75rem; padding: 0.3rem 0.7rem;">
-              ↻ Refresh Standings
-            </button>
+          <div style="padding: 1.2rem 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap;">
+            <div>
+              <h3 style="color: #fff; margin: 0; font-size: 1.1rem;">Match Standings Roster</h3>
+              <p style="color: #94a3b8; font-size: 0.78rem; margin: 0.2rem 0 0;">Inspect standings per match (concluded matches auto-delete after 10 days)</p>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.6rem;">
+              <select id="adm-standings-match-filter" class="korg-admin-input" style="width: auto; margin-bottom: 0; padding: 0.35rem 0.7rem; font-size: 0.82rem; background: #0f172a;"></select>
+              <button id="adm-refresh-standings-btn" class="korg-btn-outline" style="font-size: 0.75rem; padding: 0.3rem 0.7rem;">
+                ↻ Refresh Standings
+              </button>
+            </div>
           </div>
           <div class="korg-standings-table-wrapper">
             <table class="korg-standings-table">
@@ -428,6 +447,11 @@ function renderAdminView(container) {
   if (formAwardPoints) {
     formAwardPoints.addEventListener('submit', async (e) => {
       e.preventDefault();
+      const matchId = document.getElementById('adm-pt-match').value;
+      if (!matchId) {
+        alert('Please select an active ongoing match! Points can only be increased for live games.');
+        return;
+      }
       const identifier = document.getElementById('adm-pt-identifier').value.trim();
       const pointsDelta = parseInt(document.getElementById('adm-pt-delta').value, 10);
       const matches = parseInt(document.getElementById('adm-pt-matches').value, 10) || 0;
@@ -439,6 +463,7 @@ function renderAdminView(container) {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
+            matchId,
             identifier,
             pointsDelta,
             details: { matches, wins, dept }
@@ -447,9 +472,11 @@ function renderAdminView(container) {
         const data = await res.json();
         if (data.success) {
           formAwardPoints.reset();
+          // Restore match select value
+          document.getElementById('adm-pt-match').value = matchId;
           showAdminToast(data.message || `Awarded CP to ${identifier}!`);
-          loadAdminStandings();
-          fetchStandings(); // update public standings table
+          loadAdminStandings(matchId);
+          fetchStandings(matchId); // update public standings table
         } else {
           alert(data.error || 'Failed to award points');
         }
@@ -484,6 +511,34 @@ async function loadAdminEvents() {
     if (data.success && Array.isArray(data.data)) {
       cachedEvents = data.data;
       renderAdminEventsTable(cachedEvents, tbody);
+
+      // Populate Live Match dropdown for Points Awarding
+      const matchSelect = document.getElementById('adm-pt-match');
+      const matchWarning = document.getElementById('adm-pt-match-warning');
+      const submitBtn = document.getElementById('adm-pt-submit-btn');
+
+      if (matchSelect) {
+        const liveMatches = cachedEvents.filter(e => e.status === 'live');
+        if (liveMatches.length === 0) {
+          matchSelect.innerHTML = `<option value="">-- No Live Matches Currently Active --</option>`;
+          if (matchWarning) matchWarning.style.display = 'block';
+          if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.style.opacity = '0.5';
+            submitBtn.style.cursor = 'not-allowed';
+          }
+        } else {
+          matchSelect.innerHTML = liveMatches.map(m => `
+            <option value="${m.id || m._id}">🔴 [LIVE] ${m.title} (${m.gameName || m.game})</option>
+          `).join('');
+          if (matchWarning) matchWarning.style.display = 'none';
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.style.opacity = '1';
+            submitBtn.style.cursor = 'pointer';
+          }
+        }
+      }
     }
   } catch (e) {
     console.error('Error loading admin events:', e);
@@ -517,7 +572,7 @@ function renderAdminEventsTable(events, tbody) {
       <td>
         <select class="korg-admin-input adm-status-select" data-ev-id="${evId}" style="width: 110px; margin-bottom: 0; padding: 0.3rem; font-size: 0.8rem; background: #0f172a;">
           <option value="upcoming" ${ev.status === 'upcoming' ? 'selected' : ''}>Upcoming</option>
-          <option value="live" ${ev.status === 'live' ? 'selected' : ''}>Live</option>
+          <option value="live" ${ev.status === 'live' ? 'selected' : ''}>Live Now</option>
           <option value="completed" ${ev.status === 'completed' ? 'selected' : ''}>Completed</option>
         </select>
       </td>
@@ -572,7 +627,10 @@ function renderAdminEventsTable(events, tbody) {
         const data = await res.json();
         if (data.success) {
           showAdminToast(`Event status updated to "${newStatus}"!`);
+          loadAdminEvents();
+          loadAdminStandings();
           fetchEvents();
+          fetchStandings();
         }
       } catch (err) {
         alert('Error updating status');
@@ -596,7 +654,9 @@ function renderAdminEventsTable(events, tbody) {
         if (data.success) {
           showAdminToast('Event deleted.');
           loadAdminEvents();
+          loadAdminStandings();
           fetchEvents();
+          fetchStandings();
         }
       } catch (err) {
         alert('Error deleting event');
@@ -605,16 +665,36 @@ function renderAdminEventsTable(events, tbody) {
   });
 }
 
-async function loadAdminStandings() {
+async function loadAdminStandings(targetMatchId = null) {
   const tbody = document.getElementById('adm-standings-table-body');
   const datalist = document.getElementById('adm-players-datalist');
+  const matchFilter = document.getElementById('adm-standings-match-filter');
   if (!tbody) return;
 
   try {
-    const res = await fetch('/api/standings');
+    let url = '/api/standings?';
+    if (targetMatchId) url += `matchId=${encodeURIComponent(targetMatchId)}`;
+    else if (matchFilter && matchFilter.value) url += `matchId=${encodeURIComponent(matchFilter.value)}`;
+
+    const res = await fetch(url);
     const data = await res.json();
-    if (data.success && Array.isArray(data.data)) {
-      cachedPlayers = data.data;
+    if (data.success) {
+      const selectedMatch = data.match;
+      cachedPlayers = data.data || [];
+
+      // Update match dropdown filter
+      if (matchFilter && Array.isArray(data.availableMatches)) {
+        const currentVal = targetMatchId || matchFilter.value || (selectedMatch ? selectedMatch.id : '');
+        matchFilter.innerHTML = data.availableMatches.map(m => `
+          <option value="${m.id}" ${m.id === currentVal ? 'selected' : ''}>
+            ${m.status === 'live' ? '🔴 [LIVE]' : '🏁 [COMPLETED]'} ${m.title}
+          </option>
+        `).join('');
+
+        matchFilter.onchange = () => {
+          loadAdminStandings(matchFilter.value);
+        };
+      }
 
       // Update datalist for auto-complete
       if (datalist) {
@@ -623,18 +703,27 @@ async function loadAdminStandings() {
         `).join('');
       }
 
-      renderAdminStandingsTable(cachedPlayers, tbody);
+      renderAdminStandingsTable(cachedPlayers, tbody, selectedMatch);
     }
   } catch (e) {
     console.error('Error loading admin standings:', e);
   }
 }
 
-function renderAdminStandingsTable(players, tbody) {
+function renderAdminStandingsTable(players, tbody, match) {
   if (!players || players.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: #94a3b8; padding: 2rem;">No players in standings.</td></tr>`;
+    const isLive = match && match.status === 'live';
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="8" style="text-align: center; color: #94a3b8; padding: 2rem;">
+          ${isLive ? '🔴 Live match active, but no Combat Points awarded yet. Use the form above to award CP!' : 'No standings for this match.'}
+        </td>
+      </tr>
+    `;
     return;
   }
+
+  const isLive = match && match.status === 'live';
 
   tbody.innerHTML = players.map(p => `
     <tr>
@@ -654,40 +743,49 @@ function renderAdminStandingsTable(players, tbody) {
       <td style="text-align: center; color: #38bdf8;">${p.winRate || '0%'}</td>
       <td><span class="korg-cp-pill" style="font-size: 0.82rem; padding: 0.2rem 0.5rem;">${p.cp || 0} CP</span></td>
       <td style="text-align: right;">
-        <button class="korg-btn-outline adm-quick-award-btn" data-player-handle="${p.handle}" data-delta="25" style="padding: 0.25rem 0.6rem; font-size: 0.72rem; color: #00f0ff; border-color: rgba(0,240,255,0.3);">
-          +25 CP
-        </button>
+        ${isLive ? `
+          <button class="korg-btn-outline adm-quick-award-btn" data-player-handle="${p.handle}" data-delta="25" style="padding: 0.25rem 0.6rem; font-size: 0.72rem; color: #00f0ff; border-color: rgba(0,240,255,0.3);">
+            +25 CP
+          </button>
+        ` : `
+          <span style="font-size: 0.72rem; color: #64748b;">Locked</span>
+        `}
       </td>
     </tr>
   `).join('');
 
-  // Attach quick award listeners
-  tbody.querySelectorAll('.adm-quick-award-btn').forEach(btn => {
-    btn.addEventListener('click', async () => {
-      const handle = btn.getAttribute('data-player-handle');
-      const delta = parseInt(btn.getAttribute('data-delta'), 10);
+  // Attach quick award listeners (only active for live matches)
+  if (isLive && match) {
+    tbody.querySelectorAll('.adm-quick-award-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const handle = btn.getAttribute('data-player-handle');
+        const delta = parseInt(btn.getAttribute('data-delta'), 10);
 
-      try {
-        const res = await fetch('/api/admin/players/points', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            identifier: handle,
-            pointsDelta: delta,
-            details: { matches: 1, wins: 1 }
-          })
-        });
-        const data = await res.json();
-        if (data.success) {
-          showAdminToast(`+${delta} CP awarded to ${handle}!`);
-          loadAdminStandings();
-          fetchStandings();
+        try {
+          const res = await fetch('/api/admin/players/points', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              matchId: match.id,
+              identifier: handle,
+              pointsDelta: delta,
+              details: { matches: 1, wins: 1 }
+            })
+          });
+          const data = await res.json();
+          if (data.success) {
+            showAdminToast(`+${delta} CP awarded to ${handle} in ${match.title}!`);
+            loadAdminStandings(match.id);
+            fetchStandings(match.id);
+          } else {
+            alert(data.error || 'Failed to award points');
+          }
+        } catch (err) {
+          alert('Error awarding quick points');
         }
-      } catch (err) {
-        alert('Error awarding quick points');
-      }
+      });
     });
-  });
+  }
 }
 
 function showAdminToast(msg) {

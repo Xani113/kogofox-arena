@@ -26,6 +26,7 @@ import {
   updateEvent,
   deleteEvent,
   getCompetitiveStandings,
+  getStandingsMatches,
   awardPlayerPoints
 } from './db/mongodb.js';
 import { verifyPlayerGameID } from './services/playerVerification.js';
@@ -427,8 +428,21 @@ export async function handleRequest(req, res) {
       // 9. Competitive Standings (Combat Points)
       if (reqPath === '/api/standings' && req.method === 'GET') {
         const game = parsedUrl.searchParams.get('game');
-        const standings = await getCompetitiveStandings(game);
-        return sendJSON(res, 200, { success: true, count: standings.length, data: standings });
+        const matchId = parsedUrl.searchParams.get('matchId');
+        const result = await getCompetitiveStandings(matchId, game);
+        return sendJSON(res, 200, {
+          success: true,
+          match: result.match,
+          availableMatches: result.availableMatches,
+          notice: result.notice || null,
+          count: (result.standings || []).length,
+          data: result.standings || []
+        });
+      }
+
+      if (reqPath === '/api/standings/matches' && req.method === 'GET') {
+        const matches = await getStandingsMatches();
+        return sendJSON(res, 200, { success: true, count: matches.length, data: matches });
       }
 
       // 10. Admin API endpoints
@@ -506,15 +520,24 @@ export async function handleRequest(req, res) {
 
       if (reqPath === '/api/admin/players/points' && req.method === 'POST') {
         const payload = await parseRequestBody(req);
-        const { identifier, pointsDelta, details } = payload;
+        const { matchId, identifier, pointsDelta, details } = payload;
+        if (!matchId) {
+          return sendJSON(res, 400, {
+            error: 'Match ID is required. Points can only be awarded to a specific ongoing match.'
+          });
+        }
         if (!identifier || pointsDelta === undefined) {
           return sendJSON(res, 400, { error: 'Player identifier and pointsDelta are required' });
         }
-        const result = await awardPlayerPoints(identifier, Number(pointsDelta), details || {});
+        const result = await awardPlayerPoints(matchId, identifier, Number(pointsDelta), details || {});
+        if (!result.success) {
+          return sendJSON(res, 400, { error: result.error || 'Failed to award points' });
+        }
         return sendJSON(res, 200, {
           success: true,
-          message: `Successfully awarded ${pointsDelta >= 0 ? '+' : ''}${pointsDelta} CP to ${result.player.name}!`,
-          data: result.player
+          message: `Successfully awarded ${pointsDelta >= 0 ? '+' : ''}${pointsDelta} CP to ${result.player.name} in match "${result.match.title}"!`,
+          data: result.player,
+          match: result.match
         });
       }
 

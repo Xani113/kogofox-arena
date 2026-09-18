@@ -1125,12 +1125,14 @@
       "prizePool": "₹400",
       "maxSquads": 24,
       "registeredSquads": 0,
-      "status": "upcoming",
+      "status": "live",
       "description": "Official collegiate squad championship. 24 teams battle across Bermuda & Purgatory for the prize pool.",
       "icon": "assets/logos/freefire.png",
       "winner": "",
       "createdAt": "2026-09-18T07:55:01.119Z",
-      "_id": "6aacee5596863c76645e74ac"
+      "_id": "6aacee5596863c76645e74ac",
+      "completedAt": null,
+      "expiresAt": null
     },
     {
       "id": "ev-2",
@@ -1360,6 +1362,26 @@
       "cp": 45,
       "game": "freefire",
       "avatar": "🌸"
+    },
+    {
+      "_id": "6aacf556a845adebc6c74cba",
+      "id": "st-1789719894878-j2e4",
+      "matchId": "ev-1",
+      "matchTitle": "FREEFIRE CHAMPIONSHIP",
+      "game": "freefire",
+      "name": "skie",
+      "handle": "@skie",
+      "dept": "Statistics",
+      "tier": "Gold",
+      "matches": 2,
+      "wins": 2,
+      "bestFinish": "1st",
+      "winRate": "100%",
+      "cp": 100,
+      "avatar": "🎮",
+      "completedAt": null,
+      "expiresAt": null,
+      "createdAt": "2026-09-18T08:24:54.878Z"
     }
   ]
 }

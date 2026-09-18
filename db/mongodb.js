@@ -24,6 +24,7 @@ try {
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const LOCAL_STORE_FILE = path.join(__dirname, 'local_store.json');
+export const STANDINGS_RETENTION_MS = 10 * 24 * 60 * 60 * 1000; // 10 days retention for completed match standings
 
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/kugofox_arena';
 const DB_NAME = process.env.DB_NAME || 'kugofox_arena';
@@ -123,81 +124,69 @@ export const INITIAL_SQUADS = [
     status: "OPEN",
     micRequired: true,
     totalSlots: 4,
-    filledSlots: 2,
-    leader: "Abhinav",
-    color: "#7b2cbf",
-    letter: "A",
+    filledSlots: 4,
+    leader: "Legend1",
+    avatarIcon: "🔥",
     roster: [
-      { name: "Abhinav", role: "Captain", avatar: "👑" },
-      { name: "Satyam", role: "Support", avatar: "🛡️" }
+      { name: "Legend1", role: "Captain", avatar: "🔥" },
+      { name: "BihariBoy", role: "Rusher", avatar: "⚡" },
+      { name: "KGF_King", role: "Sniper", avatar: "🎯" },
+      { name: "PatnaOp", role: "Support", avatar: "🛡️" }
     ]
   },
   {
     id: "sq-6",
-    name: "Assam Gladiators",
+    name: "7_hills_esports",
     game: "freefire",
     gameName: "Free Fire",
     type: "SQUAD",
     status: "OPEN",
     micRequired: true,
-    totalSlots: 4,
-    filledSlots: 2,
-    leader: "Mayank",
-    avatarIcon: "🦁",
+    totalSlots: 5,
+    filledSlots: 5,
+    leader: "HillClimber",
+    avatarIcon: "⛰️",
     roster: [
-      { name: "Mayank", role: "IGL", avatar: "🦁" },
-      { name: "Dipto", role: "Rusher", avatar: "⚡" }
+      { name: "HillClimber", role: "IGL", avatar: "⛰️" },
+      { name: "ValleyKing", role: "Assaulter", avatar: "🗡️" },
+      { name: "RidgeRider", role: "Scout", avatar: "🦅" },
+      { name: "PeakSniper", role: "Sniper", avatar: "🎯" },
+      { name: "SummitDoc", role: "Support", avatar: "💊" }
     ]
   },
   {
     id: "sq-7",
-    name: "Blaze Esports",
-    game: "freefire",
-    gameName: "Free Fire",
-    type: "SQUAD",
+    name: "Phoenix Rising",
+    game: "valorant",
+    gameName: "Valorant",
+    type: "TEAM",
     status: "OPEN",
     micRequired: true,
-    totalSlots: 4,
-    filledSlots: 2,
-    leader: "Rishi",
-    color: "#00b4d8",
-    letter: "R",
+    totalSlots: 5,
+    filledSlots: 3,
+    leader: "Ashes",
+    color: "#ff4655",
+    letter: "P",
     roster: [
-      { name: "Rishi", role: "Sniper", avatar: "🎯" },
-      { name: "Anand", role: "Assaulter", avatar: "🔥" }
+      { name: "Ashes", role: "Duelist / IGL", avatar: "🔥" },
+      { name: "ViperMain", role: "Controller", avatar: "🐍" },
+      { name: "SovaGod", role: "Initiator", avatar: "🏹" }
     ]
   },
   {
     id: "sq-8",
-    name: "Bounty Hunters",
-    game: "freefire",
-    gameName: "Free Fire",
-    type: "SQUAD",
-    status: "OPEN",
-    micRequired: true,
-    totalSlots: 4,
-    filledSlots: 1,
-    leader: "Manish",
-    color: "#8d99ae",
-    letter: "M",
-    roster: [
-      { name: "Manish", role: "Leader", avatar: "🎯" }
-    ]
-  },
-  {
-    id: "sq-9",
-    name: "falana demaka",
+    name: "Shadow Syndicate",
     game: "bgmi",
     gameName: "BGMI",
     type: "SQUAD",
     status: "OPEN",
-    micRequired: true,
+    micRequired: false,
     totalSlots: 4,
     filledSlots: 1,
-    leader: "Phantom",
+    leader: "GhostRider",
     avatarIcon: "👻",
     roster: [
-      { name: "Phantom", role: "Scout / IGL", avatar: "👻" }
+      { name: "GhostRider", role: "Scout / IGL", avatar: "👻" }
     ]
   }
 ];
@@ -215,6 +204,8 @@ export const INITIAL_EVENTS = [
     maxSquads: 24,
     registeredSquads: 0,
     status: "upcoming",
+    completedAt: null,
+    expiresAt: null,
     description: "Official collegiate squad championship. 24 teams battle across Bermuda & Purgatory for the prize pool.",
     icon: "assets/logos/freefire.png"
   },
@@ -230,6 +221,8 @@ export const INITIAL_EVENTS = [
     maxSquads: 25,
     registeredSquads: 14,
     status: "upcoming",
+    completedAt: null,
+    expiresAt: null,
     description: "High-octane Erangel squad custom rooms with point multipliers.",
     icon: "assets/logos/bgmi.png"
   },
@@ -246,6 +239,8 @@ export const INITIAL_EVENTS = [
     registeredSquads: 16,
     status: "completed",
     winner: "Sentinels X",
+    completedAt: new Date(Date.now() - 7 * 86400000), // completed 7 days ago
+    expiresAt: new Date(Date.now() + 3 * 86400000),   // 3 days remaining of 10-day retention
     description: "Collegiate single-elimination tournament across Haven & Ascent.",
     icon: "assets/logos/valorant.png"
   },
@@ -262,24 +257,26 @@ export const INITIAL_EVENTS = [
     registeredSquads: 8,
     status: "completed",
     winner: "Kugofox Mystic",
+    completedAt: new Date(Date.now() - 2 * 86400000), // completed 2 days ago
+    expiresAt: new Date(Date.now() + 8 * 86400000),   // 8 days remaining of 10-day retention
     description: "Ranked 5v5 draft tournament with verified collegiate rosters.",
     icon: "assets/logos/mobalegends.png"
   }
 ];
 
 export const INITIAL_STANDINGS = [
-  { id: "p-1", rank: 1, name: "Prince Nanda", handle: "@skie", dept: "Statistics", tier: "Bronze", matches: 7, wins: 2, bestFinish: "7th", winRate: "29%", cp: 81, game: "freefire", avatar: "🧑‍💻" },
-  { id: "p-2", rank: 2, name: "Gautam Yadav", handle: "@gautam_486", dept: "Computer Science & Engineering", tier: "Bronze", matches: 7, wins: 2, bestFinish: "7th", winRate: "29%", cp: 75, game: "bgmi", avatar: "👨‍🎓" },
-  { id: "p-3", rank: 3, name: "Bicky Sarkar", handle: "@bicky_798", dept: "Computer Science & Engineering", tier: "Bronze", matches: 7, wins: 1, bestFinish: "1st", winRate: "14%", cp: 69, game: "freefire", avatar: "🦸" },
-  { id: "p-4", rank: 4, name: "Sarthak Gupta", handle: "@sarthak", dept: "Computer Science & Engineering", tier: "Bronze", matches: 6, wins: 2, bestFinish: "1st", winRate: "33%", cp: 67, game: "valorant", avatar: "🧑" },
-  { id: "p-5", rank: 5, name: "Suman Nandi", handle: "@suman_590", dept: "Computer Science & Engineering", tier: "Bronze", matches: 5, wins: 2, bestFinish: "1st", winRate: "40%", cp: 64, game: "bgmi", avatar: "⚡" },
-  { id: "p-6", rank: 6, name: "JOD OP", handle: "@jod_581", dept: "Computer Science & Engineering", tier: "Bronze", matches: 5, wins: 2, bestFinish: "1st", winRate: "40%", cp: 62, game: "freefire", avatar: "🔥" },
-  { id: "p-7", rank: 7, name: "Spondon Nath", handle: "@spondon_07", dept: "Computer Science & Engineering", tier: "Bronze", matches: 6, wins: 2, bestFinish: "1st", winRate: "33%", cp: 61, game: "freefire", avatar: "🎯" },
-  { id: "p-8", rank: 8, name: "Gurram yutish govind", handle: "@yutish", dept: "Mechanical Engineering", tier: "Bronze", matches: 5, wins: 1, bestFinish: "2nd", winRate: "20%", cp: 58, game: "bgmi", avatar: "🕶️" },
-  { id: "p-9", rank: 9, name: "Aniket Roy", handle: "@aniket_roy", dept: "Electrical Engineering", tier: "Bronze", matches: 5, wins: 1, bestFinish: "3rd", winRate: "20%", cp: 55, game: "valorant", avatar: "🦊" },
-  { id: "p-10", rank: 10, name: "Tanmay Sharma", handle: "@tanmay_s", dept: "Civil Engineering", tier: "Bronze", matches: 4, wins: 1, bestFinish: "1st", winRate: "25%", cp: 52, game: "mobalegends", avatar: "👑" },
-  { id: "p-11", rank: 11, name: "Kushagra Verma", handle: "@kush_v", dept: "Information Technology", tier: "Bronze", matches: 4, wins: 1, bestFinish: "2nd", winRate: "25%", cp: 48, game: "bgmi", avatar: "🎯" },
-  { id: "p-12", rank: 12, name: "Priya Das", handle: "@priya_d", dept: "Biotechnology", tier: "Bronze", matches: 3, wins: 1, bestFinish: "1st", winRate: "33%", cp: 45, game: "freefire", avatar: "🌸" }
+  { id: "p-1", matchId: "ev-3", matchTitle: "CAMPUS VALORANT SHOWDOWN", rank: 1, name: "Prince Nanda", handle: "@skie", dept: "Statistics", tier: "Bronze", matches: 7, wins: 2, bestFinish: "7th", winRate: "29%", cp: 81, game: "valorant", avatar: "🧑‍💻", completedAt: new Date(Date.now() - 7 * 86400000), expiresAt: new Date(Date.now() + 3 * 86400000) },
+  { id: "p-2", matchId: "ev-3", matchTitle: "CAMPUS VALORANT SHOWDOWN", rank: 2, name: "Gautam Yadav", handle: "@gautam_486", dept: "Computer Science & Engineering", tier: "Bronze", matches: 7, wins: 2, bestFinish: "7th", winRate: "29%", cp: 75, game: "valorant", avatar: "👨‍🎓", completedAt: new Date(Date.now() - 7 * 86400000), expiresAt: new Date(Date.now() + 3 * 86400000) },
+  { id: "p-3", matchId: "ev-3", matchTitle: "CAMPUS VALORANT SHOWDOWN", rank: 3, name: "Bicky Sarkar", handle: "@bicky_798", dept: "Computer Science & Engineering", tier: "Bronze", matches: 7, wins: 1, bestFinish: "1st", winRate: "14%", cp: 69, game: "valorant", avatar: "🦸", completedAt: new Date(Date.now() - 7 * 86400000), expiresAt: new Date(Date.now() + 3 * 86400000) },
+  { id: "p-4", matchId: "ev-3", matchTitle: "CAMPUS VALORANT SHOWDOWN", rank: 4, name: "Sarthak Gupta", handle: "@sarthak", dept: "Computer Science & Engineering", tier: "Bronze", matches: 6, wins: 2, bestFinish: "1st", winRate: "33%", cp: 67, game: "valorant", avatar: "🧑", completedAt: new Date(Date.now() - 7 * 86400000), expiresAt: new Date(Date.now() + 3 * 86400000) },
+  { id: "p-5", matchId: "ev-3", matchTitle: "CAMPUS VALORANT SHOWDOWN", rank: 5, name: "Suman Nandi", handle: "@suman_590", dept: "Computer Science & Engineering", tier: "Bronze", matches: 5, wins: 2, bestFinish: "1st", winRate: "40%", cp: 64, game: "valorant", avatar: "⚡", completedAt: new Date(Date.now() - 7 * 86400000), expiresAt: new Date(Date.now() + 3 * 86400000) },
+  { id: "p-6", matchId: "ev-3", matchTitle: "CAMPUS VALORANT SHOWDOWN", rank: 6, name: "JOD OP", handle: "@jod_581", dept: "Computer Science & Engineering", tier: "Bronze", matches: 5, wins: 2, bestFinish: "1st", winRate: "40%", cp: 62, game: "valorant", avatar: "🔥", completedAt: new Date(Date.now() - 7 * 86400000), expiresAt: new Date(Date.now() + 3 * 86400000) },
+  { id: "p-7", matchId: "ev-4", matchTitle: "MOBA 5V5 DRAFT CUP", rank: 1, name: "Spondon Nath", handle: "@spondon_07", dept: "Computer Science & Engineering", tier: "Bronze", matches: 6, wins: 2, bestFinish: "1st", winRate: "33%", cp: 61, game: "mobalegends", avatar: "🎯", completedAt: new Date(Date.now() - 2 * 86400000), expiresAt: new Date(Date.now() + 8 * 86400000) },
+  { id: "p-8", matchId: "ev-4", matchTitle: "MOBA 5V5 DRAFT CUP", rank: 2, name: "Gurram yutish govind", handle: "@yutish", dept: "Mechanical Engineering", tier: "Bronze", matches: 5, wins: 1, bestFinish: "2nd", winRate: "20%", cp: 58, game: "mobalegends", avatar: "🕶️", completedAt: new Date(Date.now() - 2 * 86400000), expiresAt: new Date(Date.now() + 8 * 86400000) },
+  { id: "p-9", matchId: "ev-4", matchTitle: "MOBA 5V5 DRAFT CUP", rank: 3, name: "Aniket Roy", handle: "@aniket_roy", dept: "Electrical Engineering", tier: "Bronze", matches: 5, wins: 1, bestFinish: "3rd", winRate: "20%", cp: 55, game: "mobalegends", avatar: "🦊", completedAt: new Date(Date.now() - 2 * 86400000), expiresAt: new Date(Date.now() + 8 * 86400000) },
+  { id: "p-10", matchId: "ev-4", matchTitle: "MOBA 5V5 DRAFT CUP", rank: 4, name: "Tanmay Sharma", handle: "@tanmay_s", dept: "Civil Engineering", tier: "Bronze", matches: 4, wins: 1, bestFinish: "1st", winRate: "25%", cp: 52, game: "mobalegends", avatar: "👑", completedAt: new Date(Date.now() - 2 * 86400000), expiresAt: new Date(Date.now() + 8 * 86400000) },
+  { id: "p-11", matchId: "ev-4", matchTitle: "MOBA 5V5 DRAFT CUP", rank: 5, name: "Kushagra Verma", handle: "@kush_v", dept: "Information Technology", tier: "Bronze", matches: 4, wins: 1, bestFinish: "2nd", winRate: "25%", cp: 48, game: "mobalegends", avatar: "🎯", completedAt: new Date(Date.now() - 2 * 86400000), expiresAt: new Date(Date.now() + 8 * 86400000) },
+  { id: "p-12", matchId: "ev-4", matchTitle: "MOBA 5V5 DRAFT CUP", rank: 6, name: "Priya Das", handle: "@priya_d", dept: "Biotechnology", tier: "Bronze", matches: 3, wins: 1, bestFinish: "1st", winRate: "33%", cp: 45, game: "mobalegends", avatar: "🌸", completedAt: new Date(Date.now() - 2 * 86400000), expiresAt: new Date(Date.now() + 8 * 86400000) }
 ];
 
 function loadLocalStore() {
@@ -813,9 +810,32 @@ export async function updateEvent(id, updateData) {
     ]
   };
 
+  // Status transitions: completed (10-day retention) or live (ongoing)
+  if (updateData.status === 'completed') {
+    if (!updateData.completedAt) updateData.completedAt = new Date();
+    if (!updateData.expiresAt) {
+      updateData.expiresAt = new Date(new Date(updateData.completedAt).getTime() + STANDINGS_RETENTION_MS);
+    }
+  } else if (updateData.status === 'live') {
+    updateData.completedAt = null;
+    updateData.expiresAt = null;
+  }
+
   if (isConnected && db) {
     try {
       await db.collection('events').updateMany(filter, { $set: updateData });
+
+      if (updateData.status === 'completed') {
+        await db.collection('standings').updateMany(
+          { $or: [{ matchId: cleanId }, { matchId: id }] },
+          { $set: { completedAt: updateData.completedAt, expiresAt: updateData.expiresAt } }
+        );
+      } else if (updateData.status === 'live') {
+        await db.collection('standings').updateMany(
+          { $or: [{ matchId: cleanId }, { matchId: id }] },
+          { $set: { completedAt: null, expiresAt: null } }
+        );
+      }
     } catch (e) {
       console.error('[MongoDB] Update event error:', e.message);
     }
@@ -826,6 +846,24 @@ export async function updateEvent(id, updateData) {
   );
   if (idx !== -1) {
     fallbackStore.events[idx] = { ...fallbackStore.events[idx], ...updateData };
+    const eventId = fallbackStore.events[idx].id;
+
+    if (updateData.status === 'completed') {
+      fallbackStore.standings.forEach(s => {
+        if (s.matchId === eventId || s.matchId === cleanId) {
+          s.completedAt = updateData.completedAt;
+          s.expiresAt = updateData.expiresAt;
+        }
+      });
+    } else if (updateData.status === 'live') {
+      fallbackStore.standings.forEach(s => {
+        if (s.matchId === eventId || s.matchId === cleanId) {
+          s.completedAt = null;
+          s.expiresAt = null;
+        }
+      });
+    }
+
     saveLocalStore();
     return fallbackStore.events[idx];
   }
@@ -853,6 +891,13 @@ export async function deleteEvent(id) {
   if (isConnected && db) {
     try {
       await db.collection('events').deleteMany(filter);
+      await db.collection('standings').deleteMany({
+        $or: [
+          { matchId: cleanId },
+          { matchId: id },
+          ...(objId ? [{ matchId: String(objId) }] : [])
+        ]
+      });
     } catch (e) {
       console.error('[MongoDB] Delete event error:', e.message);
     }
@@ -861,68 +906,215 @@ export async function deleteEvent(id) {
   fallbackStore.events = fallbackStore.events.filter(e =>
     e.id !== cleanId && e.id !== id && (!objId || String(e._id) !== String(objId))
   );
+  fallbackStore.standings = fallbackStore.standings.filter(s =>
+    s.matchId !== cleanId && s.matchId !== id
+  );
   saveLocalStore();
   return { success: true, id };
 }
 
 /* ================== COMPETITIVE STANDINGS / POINTS REPOSITORY ================== */
-export async function getCompetitiveStandings(gameFilter = null) {
+
+export async function purgeExpiredStandings() {
+  const now = new Date();
+
   if (isConnected && db) {
     try {
-      const query = gameFilter && gameFilter !== 'all' ? { game: gameFilter } : {};
-      const list = await db.collection('standings').find(query).sort({ cp: -1 }).toArray();
-      if (Array.isArray(list) && list.length > 0) {
-        return list.map((item, idx) => ({ ...item, rank: idx + 1 }));
-      }
-      if (Array.isArray(list) && !gameFilter) {
-        return [];
-      }
+      // Ensure TTL index exists on expiresAt
+      await db.collection('standings').createIndex(
+        { expiresAt: 1 },
+        { expireAfterSeconds: 0 }
+      ).catch(() => {});
+
+      // Delete standings where 10-day retention has expired
+      await db.collection('standings').deleteMany({
+        expiresAt: { $exists: true, $ne: null, $lte: now }
+      });
     } catch (e) {
-      console.error('[MongoDB] Query standings error:', e.message);
+      console.error('[MongoDB] Purge expired standings error:', e.message);
     }
   }
 
-  let list = [...fallbackStore.standings];
-  if (gameFilter && gameFilter !== 'all') {
-    list = list.filter(p => p.game === gameFilter);
-  }
-  list.sort((a, b) => (b.cp || 0) - (a.cp || 0));
-  return list.map((item, idx) => ({ ...item, rank: idx + 1 }));
+  // Also purge from fallbackStore
+  fallbackStore.standings = (fallbackStore.standings || []).filter(item => {
+    if (!item.expiresAt) return true;
+    const exp = new Date(item.expiresAt);
+    return exp.getTime() > now.getTime();
+  });
+  saveLocalStore();
 }
 
-export async function awardPlayerPoints(identifier, pointsDelta, details = {}) {
-  const cleanId = (identifier || '').trim().toLowerCase();
-  let player = null;
+export async function getStandingsMatches() {
+  await purgeExpiredStandings();
+  const allEvents = await getEvents();
+  const now = Date.now();
+
+  // Standings are available for Live (ongoing) matches or completed matches within 10 days
+  const matches = allEvents.filter(ev => {
+    if (ev.status === 'live') return true;
+    if (ev.status === 'completed') {
+      if (!ev.expiresAt && ev.completedAt) {
+        ev.expiresAt = new Date(new Date(ev.completedAt).getTime() + STANDINGS_RETENTION_MS);
+      }
+      if (ev.expiresAt) {
+        return new Date(ev.expiresAt).getTime() > now;
+      }
+      return true;
+    }
+    return false;
+  });
+
+  return matches.map(ev => {
+    const isLive = ev.status === 'live';
+    const isCompleted = ev.status === 'completed';
+    let daysRemaining = null;
+    if (isCompleted && ev.expiresAt) {
+      const msLeft = new Date(ev.expiresAt).getTime() - now;
+      daysRemaining = Math.max(1, Math.ceil(msLeft / (1000 * 60 * 60 * 24)));
+    }
+    return {
+      id: ev.id,
+      title: ev.title,
+      game: ev.game,
+      gameName: ev.gameName || ev.game,
+      status: ev.status,
+      prizePool: ev.prizePool,
+      date: ev.date,
+      isLive,
+      isCompleted,
+      daysRemaining,
+      expiresAt: ev.expiresAt || null,
+      completedAt: ev.completedAt || null
+    };
+  });
+}
+
+export async function getCompetitiveStandings(matchId = null, gameFilter = null) {
+  await purgeExpiredStandings();
+  const availableMatches = await getStandingsMatches();
+  let targetMatch = null;
+
+  if (matchId && matchId !== 'all') {
+    targetMatch = availableMatches.find(m => m.id === matchId);
+    if (!targetMatch) {
+      const allEvents = await getEvents();
+      targetMatch = allEvents.find(e => e.id === matchId) || null;
+    }
+  }
+
+  // If no matchId specified, prioritize live match, then latest completed match
+  if (!targetMatch && availableMatches.length > 0) {
+    targetMatch = availableMatches.find(m => m.isLive) || availableMatches[0];
+  }
+
+  if (!targetMatch) {
+    return {
+      match: null,
+      availableMatches,
+      standings: []
+    };
+  }
+
+  // If match is upcoming, standings are not active yet
+  if (targetMatch.status === 'upcoming') {
+    return {
+      match: targetMatch,
+      availableMatches,
+      standings: [],
+      notice: 'This match is upcoming. Standings will activate once the match goes Live!'
+    };
+  }
+
+  let standingsList = [];
 
   if (isConnected && db) {
     try {
-      player = await db.collection('standings').findOne({
+      const query = { matchId: targetMatch.id };
+      if (gameFilter && gameFilter !== 'all') query.game = gameFilter;
+      standingsList = await db.collection('standings').find(query).sort({ cp: -1 }).toArray();
+    } catch (e) {
+      console.error('[MongoDB] Query match standings error:', e.message);
+    }
+  }
+
+  if (!standingsList || standingsList.length === 0) {
+    standingsList = (fallbackStore.standings || []).filter(s => {
+      const matchesMatch = s.matchId === targetMatch.id;
+      const matchesGame = !gameFilter || gameFilter === 'all' || s.game === gameFilter;
+      return matchesMatch && matchesGame;
+    });
+  }
+
+  standingsList.sort((a, b) => (b.cp || 0) - (a.cp || 0));
+  const ranked = standingsList.map((item, idx) => ({ ...item, rank: idx + 1 }));
+
+  return {
+    match: targetMatch,
+    availableMatches,
+    standings: ranked
+  };
+}
+
+export async function awardPlayerPoints(matchId, identifier, pointsDelta, details = {}) {
+  if (!matchId) {
+    return {
+      success: false,
+      error: 'Match ID is required. Points can only be awarded for an ongoing match.'
+    };
+  }
+
+  const cleanId = (identifier || '').trim().toLowerCase();
+  const allEvents = await getEvents();
+  const event = allEvents.find(e => e.id === matchId || String(e._id) === String(matchId));
+
+  if (!event) {
+    return { success: false, error: 'Match not found.' };
+  }
+
+  // Strict constraint: Points can ONLY be increased for ongoing games!
+  if (event.status !== 'live') {
+    return {
+      success: false,
+      error: `Points can only be increased for ongoing games! Match "${event.title}" is currently ${event.status.toUpperCase()} and locked.`
+    };
+  }
+
+  let playerStanding = null;
+
+  if (isConnected && db) {
+    try {
+      playerStanding = await db.collection('standings').findOne({
+        matchId: event.id,
         $or: [
-          { id: identifier },
           { handle: cleanId },
           { handle: '@' + cleanId.replace(/^@/, '') },
           { name: new RegExp('^' + identifier + '$', 'i') }
         ]
       });
     } catch (e) {
-      console.error('[MongoDB] Find player error:', e.message);
+      console.error('[MongoDB] Find match player standing error:', e.message);
     }
   }
 
-  if (!player) {
-    player = fallbackStore.standings.find(p =>
-      p.id === identifier ||
-      p.handle.toLowerCase() === cleanId ||
-      p.handle.toLowerCase() === '@' + cleanId.replace(/^@/, '') ||
-      p.name.toLowerCase() === cleanId
+  if (!playerStanding) {
+    playerStanding = fallbackStore.standings.find(p =>
+      p.matchId === event.id && (
+        p.handle.toLowerCase() === cleanId ||
+        p.handle.toLowerCase() === '@' + cleanId.replace(/^@/, '') ||
+        p.name.toLowerCase() === cleanId
+      )
     );
   }
 
-  if (!player) {
-    // If player doesn't exist, create them in standings
-    const newPlayer = {
-      id: 'p-' + Date.now(),
-      rank: fallbackStore.standings.length + 1,
+  const delta = Number(pointsDelta) || 0;
+
+  if (!playerStanding) {
+    // Create new player standing for this ongoing match
+    const newStanding = {
+      id: 'st-' + Date.now() + '-' + Math.random().toString(36).substring(2, 6),
+      matchId: event.id,
+      matchTitle: event.title,
+      game: event.game,
       name: identifier.replace(/^@/, ''),
       handle: identifier.startsWith('@') ? identifier : '@' + identifier,
       dept: details.dept || 'Campus Arena',
@@ -931,66 +1123,70 @@ export async function awardPlayerPoints(identifier, pointsDelta, details = {}) {
       wins: details.wins || 0,
       bestFinish: details.bestFinish || '1st',
       winRate: details.winRate || '0%',
-      cp: Math.max(0, Number(pointsDelta) || 0),
-      game: details.game || 'freefire',
-      avatar: details.avatar || '🎮'
+      cp: Math.max(0, delta),
+      avatar: details.avatar || '🎮',
+      completedAt: null,
+      expiresAt: null,
+      createdAt: new Date()
     };
+
+    if (newStanding.cp >= 200) newStanding.tier = 'Radiant / Ace';
+    else if (newStanding.cp >= 120) newStanding.tier = 'Diamond';
+    else if (newStanding.cp >= 80) newStanding.tier = 'Gold';
+    else if (newStanding.cp >= 50) newStanding.tier = 'Silver';
+    else newStanding.tier = 'Bronze';
 
     if (isConnected && db) {
       try {
-        await db.collection('standings').insertOne(newPlayer);
+        await db.collection('standings').insertOne(newStanding);
       } catch (e) {
-        console.error('[MongoDB] Insert new standings player error:', e.message);
+        console.error('[MongoDB] Insert match standing error:', e.message);
       }
     }
-    fallbackStore.standings.push(newPlayer);
-    fallbackStore.standings.sort((a, b) => b.cp - a.cp);
+    fallbackStore.standings.push(newStanding);
     saveLocalStore();
-    return { success: true, player: newPlayer, pointsAwarded: Number(pointsDelta) || 0 };
+    return { success: true, match: event, player: newStanding, pointsAwarded: delta };
   }
 
-  // Update existing player
-  player.cp = Math.max(0, (player.cp || 0) + Number(pointsDelta));
-  if (details.matches) player.matches = (player.matches || 0) + Number(details.matches);
-  if (details.wins) player.wins = (player.wins || 0) + Number(details.wins);
-  if (details.tier) player.tier = details.tier;
-  if (details.bestFinish) player.bestFinish = details.bestFinish;
-  if (player.matches > 0) {
-    player.winRate = Math.round(((player.wins || 0) / player.matches) * 100) + '%';
+  // Update existing standing for this ongoing match
+  playerStanding.cp = Math.max(0, (playerStanding.cp || 0) + delta);
+  if (details.matches) playerStanding.matches = (playerStanding.matches || 0) + Number(details.matches);
+  if (details.wins) playerStanding.wins = (playerStanding.wins || 0) + Number(details.wins);
+  if (details.bestFinish) playerStanding.bestFinish = details.bestFinish;
+  if (playerStanding.matches > 0) {
+    playerStanding.winRate = Math.round(((playerStanding.wins || 0) / playerStanding.matches) * 100) + '%';
   }
 
-  // Auto tier update based on CP
-  if (player.cp >= 200) player.tier = 'Radiant / Ace';
-  else if (player.cp >= 120) player.tier = 'Diamond';
-  else if (player.cp >= 80) player.tier = 'Gold';
-  else if (player.cp >= 50) player.tier = 'Silver';
-  else player.tier = 'Bronze';
+  if (playerStanding.cp >= 200) playerStanding.tier = 'Radiant / Ace';
+  else if (playerStanding.cp >= 120) playerStanding.tier = 'Diamond';
+  else if (playerStanding.cp >= 80) playerStanding.tier = 'Gold';
+  else if (playerStanding.cp >= 50) playerStanding.tier = 'Silver';
+  else playerStanding.tier = 'Bronze';
 
   if (isConnected && db) {
     try {
       await db.collection('standings').updateOne(
-        { id: player.id },
+        { id: playerStanding.id },
         { $set: {
-          cp: player.cp,
-          matches: player.matches,
-          wins: player.wins,
-          tier: player.tier,
-          winRate: player.winRate,
-          bestFinish: player.bestFinish
+          cp: playerStanding.cp,
+          matches: playerStanding.matches,
+          wins: playerStanding.wins,
+          tier: playerStanding.tier,
+          winRate: playerStanding.winRate,
+          bestFinish: playerStanding.bestFinish
         }}
       );
     } catch (e) {
-      console.error('[MongoDB] Update standings player error:', e.message);
+      console.error('[MongoDB] Update match standing error:', e.message);
     }
   }
 
-  const idx = fallbackStore.standings.findIndex(p => p.id === player.id);
+  const idx = fallbackStore.standings.findIndex(p => p.id === playerStanding.id);
   if (idx !== -1) {
-    fallbackStore.standings[idx] = player;
+    fallbackStore.standings[idx] = playerStanding;
   }
-  fallbackStore.standings.sort((a, b) => b.cp - a.cp);
   saveLocalStore();
 
-  return { success: true, player, pointsAwarded: Number(pointsDelta) || 0 };
+  return { success: true, match: event, player: playerStanding, pointsAwarded: delta };
 }
 
