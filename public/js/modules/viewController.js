@@ -74,7 +74,7 @@ export function initViewController() {
   // Handle hash changes for direct linking (e.g. #squads, #events, #leaderboard, #admin)
   window.addEventListener('hashchange', () => {
     const hash = window.location.hash.replace('#', '').toLowerCase();
-    if (VIEWS.includes(hash)) {
+    if (VIEWS.includes(hash) && currentView !== hash) {
       switchView(hash, false);
     }
   });
@@ -96,7 +96,7 @@ export function initViewController() {
   }
 }
 
-export function switchView(viewName, updateHash = true) {
+export function switchView(viewName, updateHash = true, extra = null) {
   if (!VIEWS.includes(viewName)) return;
 
   currentView = viewName;
@@ -137,18 +137,30 @@ export function switchView(viewName, updateHash = true) {
   toggleMobileMenu(false);
 
   // 4. Update hash in browser URL bar
-  if (updateHash) {
+  if (updateHash && window.location.hash !== '#' + viewName) {
     window.location.hash = viewName;
   }
 
-  // Scroll to top of main view container smoothly
-  const mainStage = document.getElementById('korg-main-stage') || window;
-  if (mainStage.scrollTo) {
-    mainStage.scrollTo({ top: 0, behavior: 'smooth' });
+  // Universal scroll to top
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (document.documentElement) document.documentElement.scrollTop = 0;
+  if (document.body) document.body.scrollTop = 0;
+  const mainArea = document.getElementById('korg-main-area');
+  if (mainArea) mainArea.scrollTop = 0;
+  const targetViewEl = document.getElementById(`view-${viewName}`);
+  if (targetViewEl) {
+    try {
+      targetViewEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } catch (e) {}
   }
 
-  // Dispatch view change event so modules can reload or refresh their data
-  window.dispatchEvent(new CustomEvent('korg:viewChanged', { detail: { view: viewName } }));
+  // Dispatch view change event with optional extra details
+  window.dispatchEvent(new CustomEvent('korg:viewChanged', { detail: { view: viewName, ...(extra || {}) } }));
+}
+
+// Ensure switchView is globally available
+if (typeof window !== 'undefined') {
+  window.switchView = switchView;
 }
 
 export function getCurrentView() {

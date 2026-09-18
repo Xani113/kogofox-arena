@@ -17,9 +17,53 @@ export function initEventsManager() {
 
   window.addEventListener('korg:viewChanged', (e) => {
     if (e.detail && e.detail.view === 'events') {
-      fetchEvents();
+      const targetGame = e.detail.game || activeGameFilter;
+      if (e.detail.game) {
+        filterEventsByGame(e.detail.game);
+      }
+      fetchEvents(targetGame);
     }
   });
+}
+
+export function filterEventsByGame(gameId) {
+  if (!gameId) return;
+  activeGameFilter = gameId;
+
+  // Auto-switch status tab if no events exist in the current tab for this game
+  if (gameId !== 'all' && allEvents && allEvents.length > 0) {
+    const hasInCurrentTab = allEvents.some(ev => ev.game === gameId && (!activeStatusTab || ev.status === activeStatusTab));
+    if (!hasInCurrentTab) {
+      const matching = allEvents.filter(ev => ev.game === gameId);
+      if (matching.length > 0) {
+        const preferred = matching.find(e => e.status === 'upcoming')?.status ||
+                          matching.find(e => e.status === 'live')?.status ||
+                          matching[0].status;
+        if (preferred) {
+          activeStatusTab = preferred;
+        }
+      }
+    }
+  }
+
+  // Update status tabs UI
+  const container = document.getElementById('view-events');
+  if (container) {
+    container.querySelectorAll('[data-event-tab]').forEach(tab => {
+      tab.classList.toggle('active', tab.getAttribute('data-event-tab') === activeStatusTab);
+    });
+
+    // Update filter pills UI
+    container.querySelectorAll('#events-filter-bar .korg-filter-pill').forEach(btn => {
+      btn.classList.toggle('active', btn.getAttribute('data-game') === gameId);
+    });
+  }
+
+  renderEventCards(filterEvents());
+}
+
+if (typeof window !== 'undefined') {
+  window.filterEventsByGame = filterEventsByGame;
 }
 
 function renderEventsScaffold(container) {
@@ -121,10 +165,8 @@ function renderEventsScaffold(container) {
   // Filter pills
   container.querySelectorAll('#events-filter-bar .korg-filter-pill').forEach(btn => {
     btn.addEventListener('click', () => {
-      container.querySelectorAll('#events-filter-bar .korg-filter-pill').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      activeGameFilter = btn.getAttribute('data-game');
-      renderEventCards(filterEvents());
+      const selectedGame = btn.getAttribute('data-game');
+      filterEventsByGame(selectedGame);
     });
   });
 
@@ -182,13 +224,17 @@ function renderEventsScaffold(container) {
   }
 }
 
-export async function fetchEvents() {
+export async function fetchEvents(targetGame = null) {
   try {
     const res = await fetch('/api/events');
     const result = await res.json();
     if (result.success && Array.isArray(result.data)) {
       allEvents = result.data;
-      renderEventCards(filterEvents());
+      if (targetGame && targetGame !== 'all') {
+        filterEventsByGame(targetGame);
+      } else {
+        renderEventCards(filterEvents());
+      }
       window.dispatchEvent(new CustomEvent('korg:eventsUpdated', { detail: { events: allEvents } }));
     }
   } catch (e) {
@@ -209,12 +255,18 @@ function renderEventCards(events) {
   if (!container) return;
 
   if (!events || events.length === 0) {
+    const gameLabel = activeGameFilter === 'all' ? 'All Games' : activeGameFilter.toUpperCase();
     container.innerHTML = `
-      <div style="color: #94a3b8; padding: 3rem; text-align: center; grid-column: 1 / -1; background: rgba(13,17,23,0.5); border-radius: 12px;">
-        <h3>No events in "${activeStatusTab.toUpperCase()}" right now.</h3>
-        <p>Check the "Upcoming" tab or explore another game category.</p>
+      <div style="color: #94a3b8; padding: 3rem 1.5rem; text-align: center; grid-column: 1 / -1; background: rgba(13,17,23,0.5); border-radius: 14px; border: 1px dashed rgba(255,255,255,0.12);">
+        <div style="font-size: 2.2rem; margin-bottom: 0.6rem;">⚔️</div>
+        <h3 style="color: #ffffff; margin-bottom: 0.4rem; font-size: 1.25rem;">No events in "${activeStatusTab.toUpperCase()}" for ${gameLabel} right now.</h3>
+        <p style="color: #94a3b8; font-size: 0.88rem; max-width: 480px; margin: 0 auto 1.4rem;">Check the other status tabs (Upcoming, Live Now, or Completed) or browse all collegiate tournaments.</p>
+        <button class="korg-btn-primary" id="btn-events-show-all" style="margin: 0 auto;">Show All Tournaments</button>
       </div>
     `;
+    document.getElementById('btn-events-show-all')?.addEventListener('click', () => {
+      filterEventsByGame('all');
+    });
     return;
   }
 

@@ -50,6 +50,7 @@ export class CoverflowGallery {
               <div class="arena-card cz-vertical-card ${isSelected ? 'active-card' : ''}" 
                    data-index="${idx}" 
                    data-game="${g.id}"
+                   data-view-target="events"
                    id="arena-card-${g.id}">
                 <div class="arena-card-inner">
                   <img src="${g.banner || 'assets/banners/' + g.id + '.jpg'}" 
@@ -68,7 +69,7 @@ export class CoverflowGallery {
                         <h3 class="arena-game-title">${g.name.toUpperCase()}</h3>
                         <p class="arena-game-category">${g.category || g.tagline}</p>
                       </div>
-                      <button class="arena-enter-btn" data-game="${g.id}" title="Enter ${g.name} Arena">
+                      <button type="button" class="arena-enter-btn" data-game="${g.id}" data-view-target="events" title="Enter ${g.name} Arena">
                         <span>ENTER ARENA</span> ➔
                       </button>
                     </div>
@@ -116,28 +117,60 @@ export class CoverflowGallery {
   }
 
   attachEvents() {
-    // Card interactions
+    // Card interactions - Click anywhere on Combat Zone card or ENTER ARENA button
     const cards = this.container.querySelectorAll('.arena-card');
     cards.forEach(card => {
-      card.addEventListener('click', (e) => {
-        const idx = parseInt(card.dataset.index, 10);
-        const gameId = card.dataset.game;
+      const gameId = card.dataset.game;
+      const idx = parseInt(card.dataset.index, 10);
+      const enterBtn = card.querySelector('.arena-enter-btn');
+
+      const handleNavigateToEvents = (e) => {
+        if (e) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
 
         this.selectGame(idx);
-        sound.playClick();
+        try {
+          sound.playClick();
+        } catch (err) {}
 
-        // Direct user directly to Events & Scrims
-        switchView('events');
+        // 1. Direct navigation to Events & Scrims view
+        const switcher = window.switchView || switchView;
+        switcher('events', true, { game: gameId });
 
-        // Automatically filter events by the selected game
-        setTimeout(() => {
-          const filterBtn = document.querySelector(`#events-filter-bar .korg-filter-pill[data-game="${gameId}"]`);
-          if (filterBtn) {
-            filterBtn.click();
-          }
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }, 60);
-      });
+        // 2. Direct filter call
+        if (typeof window.filterEventsByGame === 'function') {
+          window.filterEventsByGame(gameId);
+        }
+
+        // 3. Trigger filter button in events filter bar
+        const filterBtn = document.querySelector(`#events-filter-bar .korg-filter-pill[data-game="${gameId}"]`);
+        if (filterBtn) {
+          filterBtn.click();
+        }
+
+        // 4. Smoothly scroll to the top of the scrims and tournaments catalog
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        if (document.documentElement) document.documentElement.scrollTop = 0;
+        if (document.body) document.body.scrollTop = 0;
+        const mainArea = document.getElementById('korg-main-area');
+        if (mainArea) mainArea.scrollTop = 0;
+        const eventsView = document.getElementById('view-events');
+        if (eventsView) {
+          try {
+            eventsView.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          } catch (err) {}
+        }
+      };
+
+      // Card click directs immediately to Events & Scrims
+      card.addEventListener('click', handleNavigateToEvents);
+
+      // Enter button click directs immediately to Events & Scrims
+      if (enterBtn) {
+        enterBtn.addEventListener('click', handleNavigateToEvents);
+      }
     });
   }
 }

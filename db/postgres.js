@@ -259,6 +259,40 @@ export const INITIAL_EVENTS = [
     expiresAt: new Date(Date.now() + 8 * 86400000),
     description: "Ranked 5v5 draft tournament with verified collegiate rosters.",
     icon: "assets/logos/mobalegends.png"
+  },
+  {
+    id: "ev-5",
+    title: "VALORANT RADIANT INVITATIONAL",
+    badge: "TOURNAMENT",
+    tag: "CAMPUS EXCLUSIVE",
+    game: "valorant",
+    gameName: "Valorant",
+    date: "Saturday, 26 Sep 2026, 7:00 PM IST",
+    prizePool: "₹2,500",
+    maxSquads: 16,
+    registeredSquads: 10,
+    status: "upcoming",
+    completedAt: null,
+    expiresAt: null,
+    description: "Premier 5v5 collegiate tournament across Lotus, Haven, and Ascent.",
+    icon: "assets/logos/valorant.png"
+  },
+  {
+    id: "ev-6",
+    title: "MOBA LEGENDS COLLEGIATE BRAWL",
+    badge: "SCRIMS",
+    tag: "OPEN FOR ALL",
+    game: "mobalegends",
+    gameName: "Mobile Legends",
+    date: "Sunday, 27 Sep 2026, 5:00 PM IST",
+    prizePool: "₹1,500",
+    maxSquads: 16,
+    registeredSquads: 6,
+    status: "upcoming",
+    completedAt: null,
+    expiresAt: null,
+    description: "Weekly campus 5v5 draft scrims with real-time stats verification.",
+    icon: "assets/logos/mobalegends.png"
   }
 ];
 

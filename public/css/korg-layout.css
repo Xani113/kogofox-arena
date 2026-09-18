@@ -2299,9 +2299,11 @@ body.mobile-menu-locked {
   .cyberpunk-title {
     font-size: 1.8rem;
   }
-  .arena-card {
-    max-width: 280px;
-    height: 165px;
+  .arena-card,
+  .cz-vertical-card {
+    width: 100%;
+    max-width: 100%;
+    height: 210px;
   }
 }
 
