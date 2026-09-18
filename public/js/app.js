@@ -53,8 +53,12 @@ class KugofoxApp {
     this.authModal.init();
 
     // Init core submodules
-    this.streamHud.init('stream-hud-container');
-    this.tournaments.init('tournaments-hub-container');
+    if (document.getElementById('stream-hud-container')) {
+      this.streamHud.init('stream-hud-container');
+    }
+    if (document.getElementById('tournaments-hub-container')) {
+      this.tournaments.init('tournaments-hub-container');
+    }
     this.leaderboard.init('leaderboard-container');
 
     // Init tactical simulators (4 Titles)
@@ -242,15 +246,10 @@ class KugofoxApp {
       case 'games':
         el = document.getElementById('section-gallery');
         break;
-      case 'community':
-        el = document.getElementById('section-broadcast');
-        break;
       case 'squads':
       case 'findteam':
-        el = document.getElementById('section-minigames');
-        break;
       case 'events':
-        el = document.getElementById('section-tournaments') || document.getElementById('section-gallery');
+        el = document.getElementById('section-minigames');
         break;
       case 'leaderboard':
         el = document.getElementById('section-leaderboard');
