@@ -7,6 +7,27 @@
 const VIEWS = ['home', 'games', 'squads', 'events', 'leaderboard', 'admin'];
 let currentView = 'home';
 
+export function toggleMobileMenu(force = null) {
+  const sidebar = document.getElementById('korg-sidebar');
+  const backdrop = document.getElementById('mobile-menu-backdrop');
+  const btn = document.getElementById('mobile-menu-btn');
+  if (!sidebar || !backdrop) return;
+
+  const shouldOpen = force !== null ? force : !sidebar.classList.contains('mobile-open');
+
+  if (shouldOpen) {
+    sidebar.classList.add('mobile-open');
+    backdrop.classList.add('active');
+    btn?.classList.add('open');
+    document.body.classList.add('mobile-menu-locked');
+  } else {
+    sidebar.classList.remove('mobile-open');
+    backdrop.classList.remove('active');
+    btn?.classList.remove('open');
+    document.body.classList.remove('mobile-menu-locked');
+  }
+}
+
 export function initViewController() {
   // Bind all navigation links and pills
   document.querySelectorAll('[data-view-target]').forEach(el => {
@@ -15,6 +36,39 @@ export function initViewController() {
       const target = el.getAttribute('data-view-target');
       if (target) switchView(target);
     });
+  });
+
+  // Mobile drawer toggle and close buttons
+  const mobileBtn = document.getElementById('mobile-menu-btn');
+  if (mobileBtn) {
+    mobileBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      toggleMobileMenu();
+    });
+  }
+
+  const closeBtn = document.getElementById('sidebar-close-btn');
+  if (closeBtn) {
+    closeBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      toggleMobileMenu(false);
+    });
+  }
+
+  const backdrop = document.getElementById('mobile-menu-backdrop');
+  if (backdrop) {
+    backdrop.addEventListener('click', () => {
+      toggleMobileMenu(false);
+    });
+  }
+
+  // Close drawer on ESC key
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      toggleMobileMenu(false);
+    }
   });
 
   // Handle hash changes for direct linking (e.g. #squads, #events, #leaderboard, #admin)
@@ -78,6 +132,9 @@ export function switchView(viewName, updateHash = true) {
       el.classList.remove('active');
     }
   });
+
+  // Automatically close mobile menu when navigating
+  toggleMobileMenu(false);
 
   // 4. Update hash in browser URL bar
   if (updateHash) {

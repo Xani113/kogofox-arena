@@ -15,7 +15,7 @@ import { CyberHeadphoneController } from './modules/cyberHeadphone.js?v=2.4.0';
 import { AuthModal } from './modules/authModal.js?v=2.4.0';
 import { PixelStarsEngine } from './modules/pixelStars.js?v=2.5.0';
 import { TournamentSystem } from './modules/tournamentSystem.js?v=2.4.0';
-import { initViewController, switchView } from './modules/viewController.js?v=2.5.0';
+import { initViewController, switchView, toggleMobileMenu } from './modules/viewController.js?v=2.5.0';
 import { initSquadsManager } from './modules/squadsManager.js?v=2.5.0';
 import { initEventsManager } from './modules/eventsManager.js?v=2.5.0';
 import { initLeaderboard } from './modules/leaderboard.js?v=2.5.0';
@@ -313,6 +313,7 @@ class KugofoxApp {
         sound.playClick();
         const gameId = row.dataset.game;
         this.setGameFilter(gameId, true);
+        toggleMobileMenu(false);
         
         // Scroll to Coverflow gallery
         const gallerySec = document.getElementById('section-gallery');
@@ -322,6 +323,7 @@ class KugofoxApp {
 
     document.getElementById('sb-view-all-btn')?.addEventListener('click', () => {
       this.setGameFilter('all', false);
+      toggleMobileMenu(false);
       document.getElementById('section-gallery')?.scrollIntoView({ behavior: 'smooth' });
     });
   }
