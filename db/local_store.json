@@ -1,0 +1,1365 @@
+{
+  "tournaments": [
+    {
+      "id": "tourney-val-01",
+      "gameId": "valorant",
+      "title": "Kugofox VCT Radiant Invitational",
+      "status": "LIVE",
+      "prizePool": "$25,000",
+      "date": "TODAY • GRAND FINALS",
+      "timeRemaining": "01h 42m",
+      "teamsCount": 16,
+      "format": "5v5 Single Elimination",
+      "tier": "S-Tier Major",
+      "description": "The premier Valorant showdown featuring top tier radiant teams fighting through Lotus, Haven, and Ascent.",
+      "bracket": {
+        "quarterFinals": [
+          {
+            "matchId": "v-q1",
+            "team1": {
+              "name": "Sentinels X",
+              "score": 2,
+              "odds": "1.45"
+            },
+            "team2": {
+              "name": "Paper Rex Prime",
+              "score": 1,
+              "odds": "2.60"
+            },
+            "winner": "Sentinels X",
+            "status": "COMPLETED"
+          },
+          {
+            "matchId": "v-q2",
+            "team1": {
+              "name": "FNATIC Apex",
+              "score": 2,
+              "odds": "1.80"
+            },
+            "team2": {
+              "name": "DRX Cyber",
+              "score": 0,
+              "odds": "2.05"
+            },
+            "winner": "FNATIC Apex",
+            "status": "COMPLETED"
+          },
+          {
+            "matchId": "v-q3",
+            "team1": {
+              "name": "LOUD Fury",
+              "score": 2,
+              "odds": "1.50"
+            },
+            "team2": {
+              "name": "Team Liquid Neo",
+              "score": 1,
+              "odds": "2.50"
+            },
+            "winner": "LOUD Fury",
+            "status": "COMPLETED"
+          },
+          {
+            "matchId": "v-q4",
+            "team1": {
+              "name": "Gen.G Shadow",
+              "score": 2,
+              "odds": "1.90"
+            },
+            "team2": {
+              "name": "Kugofox Elite",
+              "score": 0,
+              "odds": "1.90"
+            },
+            "winner": "Gen.G Shadow",
+            "status": "COMPLETED"
+          }
+        ],
+        "semiFinals": [
+          {
+            "matchId": "v-s1",
+            "team1": {
+              "name": "Sentinels X",
+              "score": 2,
+              "odds": "1.75"
+            },
+            "team2": {
+              "name": "FNATIC Apex",
+              "score": 1,
+              "odds": "2.10"
+            },
+            "winner": "Sentinels X",
+            "status": "COMPLETED"
+          },
+          {
+            "matchId": "v-s2",
+            "team1": {
+              "name": "LOUD Fury",
+              "score": 2,
+              "odds": "1.65"
+            },
+            "team2": {
+              "name": "Gen.G Shadow",
+              "score": 1,
+              "odds": "2.20"
+            },
+            "winner": "LOUD Fury",
+            "status": "COMPLETED"
+          }
+        ],
+        "grandFinal": {
+          "matchId": "v-f1",
+          "team1": {
+            "name": "Sentinels X",
+            "score": 1,
+            "odds": "1.85",
+            "logo": "🛡️"
+          },
+          "team2": {
+            "name": "LOUD Fury",
+            "score": 1,
+            "odds": "1.95",
+            "logo": "⚡"
+          },
+          "currentMap": "Decider: Haven (Overtime 13-13)",
+          "status": "LIVE NOW"
+        }
+      },
+      "_id": "6aacede9c11ce581ef46c466"
+    },
+    {
+      "id": "tourney-moba-01",
+      "gameId": "mobalegends",
+      "title": "Kugofox Mythic Glory Invitational",
+      "status": "LIVE",
+      "prizePool": "$22,000",
+      "date": "TODAY • SEMI FINALS",
+      "timeRemaining": "03h 15m",
+      "teamsCount": 16,
+      "format": "5v5 Best of 5",
+      "tier": "Mythic Championship",
+      "description": "Battle for the Mythic Trophy. 5v5 high-octane drafting, Lord steals, and base sieges.",
+      "bracket": {
+        "quarterFinals": [
+          {
+            "matchId": "m-q1",
+            "team1": {
+              "name": "Blacklist Vanguard",
+              "score": 3,
+              "odds": "1.40"
+            },
+            "team2": {
+              "name": "Echo Blitz",
+              "score": 1,
+              "odds": "2.80"
+            },
+            "winner": "Blacklist Vanguard",
+            "status": "COMPLETED"
+          },
+          {
+            "matchId": "m-q2",
+            "team1": {
+              "name": "ONIC Esports Nova",
+              "score": 3,
+              "odds": "1.55"
+            },
+            "team2": {
+              "name": "RRQ Hoshi Neo",
+              "score": 2,
+              "odds": "2.40"
+            },
+            "winner": "ONIC Esports Nova",
+            "status": "COMPLETED"
+          },
+          {
+            "matchId": "m-q3",
+            "team1": {
+              "name": "Bren Cyber",
+              "score": 3,
+              "odds": "1.70"
+            },
+            "team2": {
+              "name": "Todak Storm",
+              "score": 0,
+              "odds": "2.10"
+            },
+            "winner": "Bren Cyber",
+            "status": "COMPLETED"
+          },
+          {
+            "matchId": "m-q4",
+            "team1": {
+              "name": "Kugofox Mystic",
+              "score": 3,
+              "odds": "1.85"
+            },
+            "team2": {
+              "name": "EVOS Legends",
+              "score": 2,
+              "odds": "1.95"
+            },
+            "winner": "Kugofox Mystic",
+            "status": "COMPLETED"
+          }
+        ],
+        "semiFinals": [
+          {
+            "matchId": "m-s1",
+            "team1": {
+              "name": "Blacklist Vanguard",
+              "score": 1,
+              "odds": "1.80"
+            },
+            "team2": {
+              "name": "ONIC Esports Nova",
+              "score": 2,
+              "odds": "2.00"
+            },
+            "status": "LIVE NOW",
+            "currentMap": "Game 4 (ONIC leads 2-1)"
+          },
+          {
+            "matchId": "m-s2",
+            "team1": {
+              "name": "Bren Cyber",
+              "score": 0,
+              "odds": "1.90"
+            },
+            "team2": {
+              "name": "Kugofox Mystic",
+              "score": 0,
+              "odds": "1.90"
+            },
+            "status": "UPCOMING",
+            "currentMap": "Starts after SF1"
+          }
+        ],
+        "grandFinal": {
+          "matchId": "m-f1",
+          "team1": {
+            "name": "TBD",
+            "score": 0,
+            "odds": "2.00",
+            "logo": "⚔️"
+          },
+          "team2": {
+            "name": "TBD",
+            "score": 0,
+            "odds": "2.00",
+            "logo": "👑"
+          },
+          "currentMap": "Bo5 Grand Finals",
+          "status": "SCHEDULED"
+        }
+      },
+      "_id": "6aacede9c11ce581ef46c467"
+    },
+    {
+      "id": "tourney-pubg-01",
+      "gameId": "pubg",
+      "title": "Erangel Chicken Dinner Royale",
+      "status": "UPCOMING",
+      "prizePool": "$20,000",
+      "date": "TOMORROW • 19:00 UTC",
+      "timeRemaining": "18h 30m",
+      "teamsCount": 25,
+      "format": "Squads 4-Man • 6 Matches (Erangel / Miramar)",
+      "tier": "Survival Masters",
+      "description": "100 players, 25 top professional squads. Points calculated via kill count and survival placement.",
+      "bracket": {
+        "quarterFinals": [],
+        "semiFinals": [],
+        "grandFinal": {
+          "matchId": "p-f1",
+          "team1": {
+            "name": "Natus Vincere PUBG",
+            "score": 84,
+            "odds": "1.70",
+            "logo": "🍗"
+          },
+          "team2": {
+            "name": "FaZe Clan Survival",
+            "score": 79,
+            "odds": "1.80",
+            "logo": "🎯"
+          },
+          "currentMap": "Erangel Military Circle Stage 5",
+          "status": "STARTS SOON"
+        }
+      },
+      "_id": "6aacede9c11ce581ef46c468"
+    },
+    {
+      "id": "tourney-ff-01",
+      "gameId": "freefire",
+      "title": "Booyah Clash Squad Championship",
+      "status": "LIVE",
+      "prizePool": "$15,000",
+      "date": "TODAY • CLASH SQUAD FINALS",
+      "timeRemaining": "00h 55m",
+      "teamsCount": 16,
+      "format": "4v4 Clash Squad Bo7",
+      "tier": "Clash Squad Premier",
+      "description": "Insane rush gameplay, split-second gloo wall clutches, and high-stakes 4v4 duels.",
+      "bracket": {
+        "quarterFinals": [
+          {
+            "matchId": "ff-q1",
+            "team1": {
+              "name": "LOUD FreeFire",
+              "score": 4,
+              "odds": "1.50"
+            },
+            "team2": {
+              "name": "Fluxo Pro",
+              "score": 2,
+              "odds": "2.50"
+            },
+            "winner": "LOUD FreeFire",
+            "status": "COMPLETED"
+          },
+          {
+            "matchId": "ff-q2",
+            "team1": {
+              "name": "Total Gaming eSports",
+              "score": 4,
+              "odds": "1.60"
+            },
+            "team2": {
+              "name": "Keyd Stars",
+              "score": 3,
+              "odds": "2.30"
+            },
+            "winner": "Total Gaming eSports",
+            "status": "COMPLETED"
+          },
+          {
+            "matchId": "ff-q3",
+            "team1": {
+              "name": "Miners GG",
+              "score": 4,
+              "odds": "1.75"
+            },
+            "team2": {
+              "name": "EVOS Phoenix",
+              "score": 1,
+              "odds": "2.10"
+            },
+            "winner": "Miners GG",
+            "status": "COMPLETED"
+          },
+          {
+            "matchId": "ff-q4",
+            "team1": {
+              "name": "Kugofox Rushers",
+              "score": 4,
+              "odds": "1.65"
+            },
+            "team2": {
+              "name": "Corinthians FF",
+              "score": 2,
+              "odds": "2.20"
+            },
+            "winner": "Kugofox Rushers",
+            "status": "COMPLETED"
+          }
+        ],
+        "semiFinals": [
+          {
+            "matchId": "ff-s1",
+            "team1": {
+              "name": "LOUD FreeFire",
+              "score": 4,
+              "odds": "1.80"
+            },
+            "team2": {
+              "name": "Total Gaming eSports",
+              "score": 3,
+              "odds": "2.00"
+            },
+            "winner": "LOUD FreeFire",
+            "status": "COMPLETED"
+          },
+          {
+            "matchId": "ff-s2",
+            "team1": {
+              "name": "Miners GG",
+              "score": 2,
+              "odds": "2.10"
+            },
+            "team2": {
+              "name": "Kugofox Rushers",
+              "score": 4,
+              "odds": "1.75"
+            },
+            "winner": "Kugofox Rushers",
+            "status": "COMPLETED"
+          }
+        ],
+        "grandFinal": {
+          "matchId": "ff-f1",
+          "team1": {
+            "name": "LOUD FreeFire",
+            "score": 3,
+            "odds": "1.90",
+            "logo": "🔥"
+          },
+          "team2": {
+            "name": "Kugofox Rushers",
+            "score": 3,
+            "odds": "1.90",
+            "logo": "🦊"
+          },
+          "currentMap": "Match Point: Round 7 Factory",
+          "status": "LIVE NOW"
+        }
+      },
+      "_id": "6aacede9c11ce581ef46c469"
+    },
+    {
+      "id": "tourney-bgmi-01",
+      "gameId": "bgmi",
+      "title": "BGMI Masters Series (BMPS) Grand Finals",
+      "status": "LIVE",
+      "prizePool": "$25,000",
+      "date": "TODAY • ERANGEL FINALS",
+      "timeRemaining": "01h 45m",
+      "teamsCount": 16,
+      "format": "16-Squad 100-Man Battle Royale",
+      "tier": "Tier 1 National Grand Prix",
+      "description": "India's premier tactical battle royale championship. Top squads clash in Erangel and Miramar for the Chicken Dinner and championship title.",
+      "bracket": {
+        "quarterFinals": [
+          {
+            "matchId": "bgmi-q1",
+            "team1": {
+              "name": "Team Soul",
+              "score": 2,
+              "odds": "1.45"
+            },
+            "team2": {
+              "name": "Reckoning GG",
+              "score": 0,
+              "odds": "2.80"
+            },
+            "winner": "Team Soul",
+            "status": "COMPLETED"
+          },
+          {
+            "matchId": "bgmi-q2",
+            "team1": {
+              "name": "GodLike Esports",
+              "score": 2,
+              "odds": "1.60"
+            },
+            "team2": {
+              "name": "Blind Esports",
+              "score": 1,
+              "odds": "2.30"
+            },
+            "winner": "GodLike Esports",
+            "status": "COMPLETED"
+          },
+          {
+            "matchId": "bgmi-q3",
+            "team1": {
+              "name": "Entity Gaming",
+              "score": 2,
+              "odds": "1.75"
+            },
+            "team2": {
+              "name": "Team XSpark",
+              "score": 1,
+              "odds": "2.10"
+            },
+            "winner": "Entity Gaming",
+            "status": "COMPLETED"
+          },
+          {
+            "matchId": "bgmi-q4",
+            "team1": {
+              "name": "Kugofox Strikers",
+              "score": 2,
+              "odds": "1.65"
+            },
+            "team2": {
+              "name": "Global Esports",
+              "score": 0,
+              "odds": "2.25"
+            },
+            "winner": "Kugofox Strikers",
+            "status": "COMPLETED"
+          }
+        ],
+        "semiFinals": [
+          {
+            "matchId": "bgmi-s1",
+            "team1": {
+              "name": "Team Soul",
+              "score": 1,
+              "odds": "1.70"
+            },
+            "team2": {
+              "name": "GodLike Esports",
+              "score": 1,
+              "odds": "1.85"
+            },
+            "status": "LIVE NOW",
+            "currentMap": "Match 5: Miramar (Zone 6 Decider)"
+          },
+          {
+            "matchId": "bgmi-s2",
+            "team1": {
+              "name": "Entity Gaming",
+              "score": 0,
+              "odds": "1.90"
+            },
+            "team2": {
+              "name": "Kugofox Strikers",
+              "score": 0,
+              "odds": "1.80"
+            },
+            "status": "UPCOMING",
+            "currentMap": "Match 6: Erangel Pochinki Final"
+          }
+        ],
+        "grandFinal": {
+          "matchId": "bgmi-f1",
+          "team1": {
+            "name": "TBD",
+            "score": 0,
+            "odds": "1.90",
+            "logo": "🪂"
+          },
+          "team2": {
+            "name": "TBD",
+            "score": 0,
+            "odds": "1.90",
+            "logo": "🦊"
+          },
+          "currentMap": "BMPS Grand Finals (Erangel Match 7)",
+          "status": "SCHEDULED"
+        }
+      },
+      "_id": "6aacede9c11ce581ef46c46a"
+    }
+  ],
+  "registrations": [],
+  "votes": {},
+  "chat": [
+    {
+      "user": "RadiantDemon",
+      "badge": "VIP",
+      "text": "THAT FLICK ON C-SITE WAS DISGUSTING!! 🔥",
+      "time": "19:10"
+    },
+    {
+      "user": "ErangelSniper",
+      "badge": "PRO",
+      "text": "AWM collateral incoming in the final circle!",
+      "time": "19:11"
+    },
+    {
+      "user": "FoxFanatic",
+      "badge": "FAN",
+      "text": "KUGOFOX RUNNING THE BRACKET TODAY 🦊🦊🦊",
+      "time": "19:12"
+    }
+  ],
+  "leaderboard": {
+    "global": [
+      {
+        "rank": 1,
+        "name": "KogoPhantom",
+        "tag": "#FOX1",
+        "game": "Valorant",
+        "tier": "Radiant #1",
+        "rating": 2840,
+        "winRate": "78.4%",
+        "earnings": "$42,500",
+        "team": "Kugofox Prime",
+        "country": "🇺🇸",
+        "avatar": "🦊"
+      },
+      {
+        "rank": 2,
+        "name": "ViperStrike",
+        "tag": "#LOUD",
+        "game": "Valorant",
+        "tier": "Radiant #4",
+        "rating": 2790,
+        "winRate": "75.2%",
+        "earnings": "$38,000",
+        "team": "LOUD Fury",
+        "country": "🇧🇷",
+        "avatar": "🐍"
+      },
+      {
+        "rank": 3,
+        "name": "LordSlayer",
+        "tag": "#ONIC",
+        "game": "MOBA Legends",
+        "tier": "Mythic Immortal",
+        "rating": 2740,
+        "winRate": "81.0%",
+        "earnings": "$35,500",
+        "team": "ONIC Nova",
+        "country": "🇮🇩",
+        "avatar": "⚡"
+      },
+      {
+        "rank": 4,
+        "name": "JonathanGod",
+        "tag": "#GODL",
+        "game": "BGMI",
+        "tier": "Conqueror #1",
+        "rating": 2710,
+        "winRate": "76.4%",
+        "earnings": "$34,000",
+        "team": "GodLike Esports",
+        "country": "🇮🇳",
+        "avatar": "👑"
+      },
+      {
+        "rank": 5,
+        "name": "BooyahGod",
+        "tag": "#RUSH",
+        "game": "Free Fire",
+        "tier": "Grandmaster IV",
+        "rating": 2630,
+        "winRate": "74.8%",
+        "earnings": "$27,000",
+        "team": "Kugofox Rushers",
+        "country": "🇮🇳",
+        "avatar": "🔥"
+      },
+      {
+        "rank": 6,
+        "name": "MortalSoul",
+        "tag": "#SOUL",
+        "game": "BGMI",
+        "tier": "Conqueror #8",
+        "rating": 2600,
+        "winRate": "73.1%",
+        "earnings": "$26,500",
+        "team": "Team Soul",
+        "country": "🇮🇳",
+        "avatar": "🎯"
+      },
+      {
+        "rank": 7,
+        "name": "ShadowAce",
+        "tag": "#FNC",
+        "game": "Valorant",
+        "tier": "Radiant #12",
+        "rating": 2550,
+        "winRate": "71.6%",
+        "earnings": "$22,000",
+        "team": "FNATIC Apex",
+        "country": "🇬🇧",
+        "avatar": "🗡️"
+      },
+      {
+        "rank": 8,
+        "name": "MysticFanny",
+        "tag": "#KOG",
+        "game": "MOBA Legends",
+        "tier": "Mythical Glory",
+        "rating": 2510,
+        "winRate": "76.4%",
+        "earnings": "$19,500",
+        "team": "Kugofox Mystic",
+        "country": "🇵🇭",
+        "avatar": "🦅"
+      }
+    ],
+    "valorant": [
+      {
+        "rank": 1,
+        "name": "KogoPhantom",
+        "tag": "#FOX1",
+        "tier": "Radiant #1",
+        "rating": 2840,
+        "winRate": "78.4%",
+        "kda": "1.68",
+        "main": "Jett / Omen",
+        "team": "Kugofox Prime",
+        "country": "🇺🇸",
+        "headshotRate": "38.2%"
+      },
+      {
+        "rank": 2,
+        "name": "ViperStrike",
+        "tag": "#LOUD",
+        "tier": "Radiant #4",
+        "rating": 2790,
+        "winRate": "75.2%",
+        "kda": "1.54",
+        "main": "Viper / Fade",
+        "team": "LOUD Fury",
+        "country": "🇧🇷",
+        "headshotRate": "34.7%"
+      },
+      {
+        "rank": 3,
+        "name": "ShadowAce",
+        "tag": "#FNC",
+        "tier": "Radiant #12",
+        "rating": 2550,
+        "winRate": "71.6%",
+        "kda": "1.49",
+        "main": "Reyna / Chamber",
+        "team": "FNATIC Apex",
+        "country": "🇬🇧",
+        "headshotRate": "36.0%"
+      },
+      {
+        "rank": 4,
+        "name": "ChronosVal",
+        "tag": "#SEN",
+        "tier": "Radiant #18",
+        "rating": 2490,
+        "winRate": "69.8%",
+        "kda": "1.42",
+        "main": "Sova / Killjoy",
+        "team": "Sentinels X",
+        "country": "🇨🇦",
+        "headshotRate": "31.5%"
+      }
+    ],
+    "bgmi": [
+      {
+        "rank": 1,
+        "name": "JonathanGod",
+        "tag": "#GODL",
+        "tier": "Conqueror #1",
+        "rating": 2710,
+        "winRate": "76.4%",
+        "avgKills": "9.2",
+        "mainWeapon": "M416 / Beryl",
+        "team": "GodLike Esports",
+        "country": "🇮🇳",
+        "dinners": 410
+      },
+      {
+        "rank": 2,
+        "name": "MortalSoul",
+        "tag": "#SOUL",
+        "tier": "Conqueror #8",
+        "rating": 2600,
+        "winRate": "73.1%",
+        "avgKills": "8.1",
+        "mainWeapon": "M416 / AWM",
+        "team": "Team Soul",
+        "country": "🇮🇳",
+        "dinners": 362
+      },
+      {
+        "rank": 3,
+        "name": "ScoutOP",
+        "tag": "#TX",
+        "tier": "Conqueror #15",
+        "rating": 2540,
+        "winRate": "70.5%",
+        "avgKills": "7.8",
+        "mainWeapon": "M416 / DP-28",
+        "team": "Team XSpark",
+        "country": "🇮🇳",
+        "dinners": 320
+      }
+    ],
+    "freefire": [
+      {
+        "rank": 1,
+        "name": "BooyahGod",
+        "tag": "#RUSH",
+        "tier": "Grandmaster IV",
+        "rating": 2630,
+        "winRate": "74.8%",
+        "headshots": "72%",
+        "mainChar": "Alok / Hayato",
+        "team": "Kugofox Rushers",
+        "country": "🇮🇳",
+        "booyahs": 512
+      },
+      {
+        "rank": 2,
+        "name": "GlooWallSpeed",
+        "tag": "#LOUD",
+        "tier": "Grandmaster III",
+        "rating": 2580,
+        "winRate": "71.4%",
+        "headshots": "68%",
+        "mainChar": "Chrono / Kelly",
+        "team": "LOUD FreeFire",
+        "country": "🇧🇷",
+        "booyahs": 480
+      },
+      {
+        "rank": 3,
+        "name": "TotalRuler",
+        "tag": "#TG",
+        "tier": "Grandmaster I",
+        "rating": 2490,
+        "winRate": "67.9%",
+        "headshots": "65%",
+        "mainChar": "Dimitri / Homer",
+        "team": "Total Gaming",
+        "country": "🇮🇳",
+        "booyahs": 441
+      }
+    ],
+    "mobalegends": [
+      {
+        "rank": 1,
+        "name": "LordSlayer",
+        "tag": "#ONIC",
+        "tier": "Mythic Immortal 180★",
+        "rating": 2740,
+        "winRate": "81.0%",
+        "kda": "8.6",
+        "mainHero": "Fanny / Ling",
+        "team": "ONIC Nova",
+        "country": "🇮🇩",
+        "mvpCount": 620
+      },
+      {
+        "rank": 2,
+        "name": "MysticFanny",
+        "tag": "#KOG",
+        "tier": "Mythical Glory 120★",
+        "rating": 2510,
+        "winRate": "76.4%",
+        "kda": "7.9",
+        "mainHero": "Chou / Beatrix",
+        "team": "Kugofox Mystic",
+        "country": "🇵🇭",
+        "mvpCount": 540
+      },
+      {
+        "rank": 3,
+        "name": "CodeBlack",
+        "tag": "#BLCK",
+        "tier": "Mythical Glory 95★",
+        "rating": 2460,
+        "winRate": "73.2%",
+        "kda": "7.1",
+        "mainHero": "Estes / Tigreal",
+        "team": "Blacklist Vanguard",
+        "country": "🇵🇭",
+        "mvpCount": 490
+      }
+    ]
+  },
+  "users": [],
+  "squads": [
+    {
+      "id": "sq-1",
+      "name": "FREEFIRE squad",
+      "game": "freefire",
+      "gameName": "Free Fire",
+      "type": "SQUAD",
+      "status": "OPEN",
+      "micRequired": true,
+      "totalSlots": 4,
+      "filledSlots": 4,
+      "leader": "Karan",
+      "color": "#00b4d8",
+      "letter": "W",
+      "roster": [
+        {
+          "name": "Karan",
+          "role": "Leader / IGL",
+          "avatar": "👑"
+        },
+        {
+          "name": "Aryan",
+          "role": "Rusher",
+          "avatar": "🔥"
+        },
+        {
+          "name": "Rohit",
+          "role": "Sniper",
+          "avatar": "🎯"
+        },
+        {
+          "name": "Dev",
+          "role": "Support",
+          "avatar": "🛡️"
+        }
+      ]
+    },
+    {
+      "id": "sq-2",
+      "name": "NS esports",
+      "game": "freefire",
+      "gameName": "Free Fire",
+      "type": "SQUAD",
+      "status": "OPEN",
+      "micRequired": true,
+      "totalSlots": 6,
+      "filledSlots": 6,
+      "leader": "Nitin",
+      "avatarImg": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=60&auto=format&fit=crop&q=80",
+      "roster": [
+        {
+          "name": "Nitin",
+          "role": "Captain",
+          "avatar": "⚡"
+        },
+        {
+          "name": "Sameer",
+          "role": "Assaulter",
+          "avatar": "🗡️"
+        },
+        {
+          "name": "Vikas",
+          "role": "Flanker",
+          "avatar": "🦅"
+        },
+        {
+          "name": "Ashish",
+          "role": "Sniper",
+          "avatar": "🎯"
+        },
+        {
+          "name": "Rahul",
+          "role": "Sub",
+          "avatar": "🎮"
+        },
+        {
+          "name": "Pooja",
+          "role": "Strategist",
+          "avatar": "🧠"
+        }
+      ]
+    },
+    {
+      "id": "sq-3",
+      "name": "Andha rush",
+      "game": "bgmi",
+      "gameName": "BGMI",
+      "type": "SQUAD",
+      "status": "OPEN",
+      "micRequired": true,
+      "totalSlots": 4,
+      "filledSlots": 2,
+      "leader": "CyberBot",
+      "avatarIcon": "🤖",
+      "roster": [
+        {
+          "name": "CyberBot",
+          "role": "Rusher / IGL",
+          "avatar": "🤖"
+        },
+        {
+          "name": "Hunter99",
+          "role": "Fragger",
+          "avatar": "🏹"
+        }
+      ]
+    },
+    {
+      "id": "sq-4",
+      "name": "Seducers",
+      "game": "freefire",
+      "gameName": "Free Fire",
+      "type": "SQUAD",
+      "status": "OPEN",
+      "micRequired": true,
+      "totalSlots": 4,
+      "filledSlots": 4,
+      "leader": "Newton",
+      "avatarIcon": "⚛️",
+      "roster": [
+        {
+          "name": "Newton",
+          "role": "IGL",
+          "avatar": "⚛️"
+        },
+        {
+          "name": "Pulse",
+          "role": "Rusher",
+          "avatar": "⚡"
+        },
+        {
+          "name": "Zero",
+          "role": "Cover",
+          "avatar": "🎯"
+        },
+        {
+          "name": "Blaze",
+          "role": "Entry",
+          "avatar": "🔥"
+        }
+      ]
+    },
+    {
+      "id": "sq-5",
+      "name": "Bihari's Legend",
+      "game": "freefire",
+      "gameName": "Free Fire",
+      "type": "SQUAD",
+      "status": "OPEN",
+      "micRequired": true,
+      "totalSlots": 4,
+      "filledSlots": 2,
+      "leader": "Abhinav",
+      "color": "#7b2cbf",
+      "letter": "A",
+      "roster": [
+        {
+          "name": "Abhinav",
+          "role": "Captain",
+          "avatar": "👑"
+        },
+        {
+          "name": "Satyam",
+          "role": "Support",
+          "avatar": "🛡️"
+        }
+      ]
+    },
+    {
+      "id": "sq-6",
+      "name": "Assam Gladiators",
+      "game": "freefire",
+      "gameName": "Free Fire",
+      "type": "SQUAD",
+      "status": "OPEN",
+      "micRequired": true,
+      "totalSlots": 4,
+      "filledSlots": 2,
+      "leader": "Mayank",
+      "avatarIcon": "🦁",
+      "roster": [
+        {
+          "name": "Mayank",
+          "role": "IGL",
+          "avatar": "🦁"
+        },
+        {
+          "name": "Dipto",
+          "role": "Rusher",
+          "avatar": "⚡"
+        }
+      ]
+    },
+    {
+      "id": "sq-7",
+      "name": "Blaze Esports",
+      "game": "freefire",
+      "gameName": "Free Fire",
+      "type": "SQUAD",
+      "status": "OPEN",
+      "micRequired": true,
+      "totalSlots": 4,
+      "filledSlots": 2,
+      "leader": "Rishi",
+      "color": "#00b4d8",
+      "letter": "R",
+      "roster": [
+        {
+          "name": "Rishi",
+          "role": "Sniper",
+          "avatar": "🎯"
+        },
+        {
+          "name": "Anand",
+          "role": "Assaulter",
+          "avatar": "🔥"
+        }
+      ]
+    },
+    {
+      "id": "sq-8",
+      "name": "Bounty Hunters",
+      "game": "freefire",
+      "gameName": "Free Fire",
+      "type": "SQUAD",
+      "status": "OPEN",
+      "micRequired": true,
+      "totalSlots": 4,
+      "filledSlots": 1,
+      "leader": "Manish",
+      "color": "#8d99ae",
+      "letter": "M",
+      "roster": [
+        {
+          "name": "Manish",
+          "role": "Leader",
+          "avatar": "🎯"
+        }
+      ]
+    },
+    {
+      "id": "sq-9",
+      "name": "falana demaka",
+      "game": "bgmi",
+      "gameName": "BGMI",
+      "type": "SQUAD",
+      "status": "OPEN",
+      "micRequired": true,
+      "totalSlots": 4,
+      "filledSlots": 1,
+      "leader": "Phantom",
+      "avatarIcon": "👻",
+      "roster": [
+        {
+          "name": "Phantom",
+          "role": "Scout / IGL",
+          "avatar": "👻"
+        }
+      ]
+    }
+  ],
+  "events": [
+    {
+      "id": "ev-1",
+      "title": "FREEFIRE CHAMPIONSHIP",
+      "badge": "TOURNAMENT",
+      "tag": "OPEN FOR ALL",
+      "game": "freefire",
+      "gameName": "Free Fire",
+      "date": "Thursday, 24 Sep 2026, 6:30 PM IST",
+      "prizePool": "₹400",
+      "maxSquads": 24,
+      "registeredSquads": 0,
+      "status": "upcoming",
+      "description": "Official collegiate squad championship. 24 teams battle across Bermuda & Purgatory for the prize pool.",
+      "icon": "assets/logos/freefire.png",
+      "winner": "",
+      "createdAt": "2026-09-18T07:55:01.119Z",
+      "_id": "6aacee5596863c76645e74ac"
+    },
+    {
+      "id": "ev-2",
+      "title": "BGMI BATTLEGROUND CLASH",
+      "badge": "SCRIMS",
+      "tag": "OPEN FOR ALL",
+      "game": "bgmi",
+      "gameName": "BGMI",
+      "date": "Friday, 25 Sep 2026, 8:00 PM IST",
+      "prizePool": "₹1,200",
+      "maxSquads": 25,
+      "registeredSquads": 14,
+      "status": "upcoming",
+      "description": "High-octane Erangel squad custom rooms with point multipliers.",
+      "icon": "assets/logos/bgmi.png"
+    },
+    {
+      "id": "ev-3",
+      "title": "CAMPUS VALORANT SHOWDOWN",
+      "badge": "TOURNAMENT",
+      "tag": "CAMPUS EXCLUSIVE",
+      "game": "valorant",
+      "gameName": "Valorant",
+      "date": "Completed on 10 Sep 2026",
+      "prizePool": "₹2,500",
+      "maxSquads": 16,
+      "registeredSquads": 16,
+      "status": "completed",
+      "winner": "Sentinels X",
+      "description": "Collegiate single-elimination tournament across Haven & Ascent.",
+      "icon": "assets/logos/valorant.png"
+    },
+    {
+      "id": "ev-4",
+      "title": "MOBA 5V5 DRAFT CUP",
+      "badge": "CUSTOM",
+      "tag": "VERIFIED TEAMS",
+      "game": "mobalegends",
+      "gameName": "Mobile Legends",
+      "date": "Completed on 15 Sep 2026",
+      "prizePool": "₹1,000",
+      "maxSquads": 8,
+      "registeredSquads": 8,
+      "status": "completed",
+      "winner": "Kugofox Mystic",
+      "description": "Ranked 5v5 draft tournament with verified collegiate rosters.",
+      "icon": "assets/logos/mobalegends.png"
+    }
+  ],
+  "standings": [
+    {
+      "id": "p-1",
+      "rank": 1,
+      "name": "Prince Nanda",
+      "handle": "@skie",
+      "dept": "Statistics",
+      "tier": "Bronze",
+      "matches": 7,
+      "wins": 2,
+      "bestFinish": "7th",
+      "winRate": "29%",
+      "cp": 81,
+      "game": "freefire",
+      "avatar": "🧑‍💻"
+    },
+    {
+      "id": "p-2",
+      "rank": 2,
+      "name": "Gautam Yadav",
+      "handle": "@gautam_486",
+      "dept": "Computer Science & Engineering",
+      "tier": "Bronze",
+      "matches": 7,
+      "wins": 2,
+      "bestFinish": "7th",
+      "winRate": "29%",
+      "cp": 75,
+      "game": "bgmi",
+      "avatar": "👨‍🎓"
+    },
+    {
+      "id": "p-3",
+      "rank": 3,
+      "name": "Bicky Sarkar",
+      "handle": "@bicky_798",
+      "dept": "Computer Science & Engineering",
+      "tier": "Bronze",
+      "matches": 7,
+      "wins": 1,
+      "bestFinish": "1st",
+      "winRate": "14%",
+      "cp": 69,
+      "game": "freefire",
+      "avatar": "🦸"
+    },
+    {
+      "id": "p-4",
+      "rank": 4,
+      "name": "Sarthak Gupta",
+      "handle": "@sarthak",
+      "dept": "Computer Science & Engineering",
+      "tier": "Bronze",
+      "matches": 6,
+      "wins": 2,
+      "bestFinish": "1st",
+      "winRate": "33%",
+      "cp": 67,
+      "game": "valorant",
+      "avatar": "🧑"
+    },
+    {
+      "id": "p-5",
+      "rank": 5,
+      "name": "Suman Nandi",
+      "handle": "@suman_590",
+      "dept": "Computer Science & Engineering",
+      "tier": "Bronze",
+      "matches": 5,
+      "wins": 2,
+      "bestFinish": "1st",
+      "winRate": "40%",
+      "cp": 64,
+      "game": "bgmi",
+      "avatar": "⚡"
+    },
+    {
+      "id": "p-6",
+      "rank": 6,
+      "name": "JOD OP",
+      "handle": "@jod_581",
+      "dept": "Computer Science & Engineering",
+      "tier": "Bronze",
+      "matches": 5,
+      "wins": 2,
+      "bestFinish": "1st",
+      "winRate": "40%",
+      "cp": 62,
+      "game": "freefire",
+      "avatar": "🔥"
+    },
+    {
+      "id": "p-7",
+      "rank": 7,
+      "name": "Spondon Nath",
+      "handle": "@spondon_07",
+      "dept": "Computer Science & Engineering",
+      "tier": "Bronze",
+      "matches": 6,
+      "wins": 2,
+      "bestFinish": "1st",
+      "winRate": "33%",
+      "cp": 61,
+      "game": "freefire",
+      "avatar": "🎯"
+    },
+    {
+      "id": "p-8",
+      "rank": 8,
+      "name": "Gurram yutish govind",
+      "handle": "@yutish",
+      "dept": "Mechanical Engineering",
+      "tier": "Bronze",
+      "matches": 5,
+      "wins": 1,
+      "bestFinish": "2nd",
+      "winRate": "20%",
+      "cp": 58,
+      "game": "bgmi",
+      "avatar": "🕶️"
+    },
+    {
+      "id": "p-9",
+      "rank": 9,
+      "name": "Aniket Roy",
+      "handle": "@aniket_roy",
+      "dept": "Electrical Engineering",
+      "tier": "Bronze",
+      "matches": 5,
+      "wins": 1,
+      "bestFinish": "3rd",
+      "winRate": "20%",
+      "cp": 55,
+      "game": "valorant",
+      "avatar": "🦊"
+    },
+    {
+      "id": "p-10",
+      "rank": 10,
+      "name": "Tanmay Sharma",
+      "handle": "@tanmay_s",
+      "dept": "Civil Engineering",
+      "tier": "Bronze",
+      "matches": 4,
+      "wins": 1,
+      "bestFinish": "1st",
+      "winRate": "25%",
+      "cp": 52,
+      "game": "mobalegends",
+      "avatar": "👑"
+    },
+    {
+      "id": "p-11",
+      "rank": 11,
+      "name": "Kushagra Verma",
+      "handle": "@kush_v",
+      "dept": "Information Technology",
+      "tier": "Bronze",
+      "matches": 4,
+      "wins": 1,
+      "bestFinish": "2nd",
+      "winRate": "25%",
+      "cp": 48,
+      "game": "bgmi",
+      "avatar": "🎯"
+    },
+    {
+      "id": "p-12",
+      "rank": 12,
+      "name": "Priya Das",
+      "handle": "@priya_d",
+      "dept": "Biotechnology",
+      "tier": "Bronze",
+      "matches": 3,
+      "wins": 1,
+      "bestFinish": "1st",
+      "winRate": "33%",
+      "cp": 45,
+      "game": "freefire",
+      "avatar": "🌸"
+    }
+  ]
+}

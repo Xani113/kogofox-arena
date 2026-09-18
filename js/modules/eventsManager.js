@@ -223,7 +223,7 @@ function renderEventCards(events) {
     const percentage = Math.min(100, Math.round((regCount / maxCount) * 100));
 
     return `
-      <div class="korg-event-card" data-event-id="${ev.id}">
+      <div class="korg-event-card" data-event-id="${ev.id || ev._id}">
         <div class="korg-event-top">
           <div class="korg-event-header-left">
             <div class="korg-event-badge-row">

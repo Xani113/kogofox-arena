@@ -496,8 +496,10 @@ function renderAdminEventsTable(events, tbody) {
     return;
   }
 
-  tbody.innerHTML = events.map(ev => `
-    <tr data-admin-ev-id="${ev.id}">
+  tbody.innerHTML = events.map(ev => {
+    const evId = ev.id || ev._id;
+    return `
+    <tr data-admin-ev-id="${evId}">
       <td>
         <strong style="color: #fff;">${ev.title}</strong>
       </td>
@@ -506,26 +508,27 @@ function renderAdminEventsTable(events, tbody) {
       <td>
         <div style="display: flex; align-items: center; gap: 0.4rem;">
           <input type="text" class="korg-admin-input adm-prize-input" value="${ev.prizePool || '₹400'}" style="width: 90px; margin-bottom: 0; padding: 0.35rem 0.5rem; font-size: 0.85rem;" />
-          <button class="korg-btn-outline adm-update-prize-btn" data-ev-id="${ev.id}" style="padding: 0.35rem 0.6rem; font-size: 0.75rem;">
+          <button class="korg-btn-outline adm-update-prize-btn" data-ev-id="${evId}" style="padding: 0.35rem 0.6rem; font-size: 0.75rem;">
             Save
           </button>
         </div>
       </td>
       <td style="font-size: 0.85rem; color: #cbd5e1;">${ev.registeredSquads || 0} / ${ev.maxSquads || 24}</td>
       <td>
-        <select class="korg-admin-input adm-status-select" data-ev-id="${ev.id}" style="width: 110px; margin-bottom: 0; padding: 0.3rem; font-size: 0.8rem; background: #0f172a;">
+        <select class="korg-admin-input adm-status-select" data-ev-id="${evId}" style="width: 110px; margin-bottom: 0; padding: 0.3rem; font-size: 0.8rem; background: #0f172a;">
           <option value="upcoming" ${ev.status === 'upcoming' ? 'selected' : ''}>Upcoming</option>
           <option value="live" ${ev.status === 'live' ? 'selected' : ''}>Live</option>
           <option value="completed" ${ev.status === 'completed' ? 'selected' : ''}>Completed</option>
         </select>
       </td>
       <td style="text-align: right;">
-        <button class="korg-btn-outline adm-delete-ev-btn" data-ev-id="${ev.id}" style="color: #ef4444; border-color: rgba(239,68,68,0.3); padding: 0.3rem 0.6rem; font-size: 0.75rem;">
+        <button class="korg-btn-outline adm-delete-ev-btn" data-ev-id="${evId}" style="color: #ef4444; border-color: rgba(239,68,68,0.3); padding: 0.3rem 0.6rem; font-size: 0.75rem;">
           Delete
         </button>
       </td>
     </tr>
-  `).join('');
+  `;
+  }).join('');
 
   // Attach Save Prize button
   tbody.querySelectorAll('.adm-update-prize-btn').forEach(btn => {

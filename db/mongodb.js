@@ -3,13 +3,27 @@
  * Connects to MongoDB (Local or MongoDB Atlas) with resilient auto-seeding & fallback
  */
 
-import { MongoClient } from 'mongodb';
+import { MongoClient, ObjectId } from 'mongodb';
 import dotenv from 'dotenv';
 import dns from 'dns';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { TOURNAMENTS_DATA } from '../js/data/tournamentsData.js';
 import { LEADERBOARD_DATA } from '../js/data/leaderboardData.js';
 
 dotenv.config();
+
+// Ensure Google & Cloudflare DNS for Node.js SRV queries on Windows
+try {
+  dns.setServers(['8.8.8.8', '1.1.1.1', '8.8.4.4']);
+} catch (dnsErr) {
+  console.warn('[MongoDB] DNS server set notice:', dnsErr.message);
+}
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const LOCAL_STORE_FILE = path.join(__dirname, 'local_store.json');
 
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/kugofox_arena';
 const DB_NAME = process.env.DB_NAME || 'kugofox_arena';
@@ -268,22 +282,42 @@ export const INITIAL_STANDINGS = [
   { id: "p-12", rank: 12, name: "Priya Das", handle: "@priya_d", dept: "Biotechnology", tier: "Bronze", matches: 3, wins: 1, bestFinish: "1st", winRate: "33%", cp: 45, game: "freefire", avatar: "🌸" }
 ];
 
-// Local fallback in-memory store if MongoDB instance is not currently active
+function loadLocalStore() {
+  try {
+    if (fs.existsSync(LOCAL_STORE_FILE)) {
+      const raw = fs.readFileSync(LOCAL_STORE_FILE, 'utf-8');
+      if (raw) return JSON.parse(raw);
+    }
+  } catch (e) {
+    console.warn('[Store] Could not load local_store.json:', e.message);
+  }
+  return null;
+}
+
+const persisted = loadLocalStore();
 const fallbackStore = {
-  tournaments: [...TOURNAMENTS_DATA],
-  registrations: [],
-  votes: {},
-  chat: [
+  tournaments: persisted?.tournaments || [...TOURNAMENTS_DATA],
+  registrations: persisted?.registrations || [],
+  votes: persisted?.votes || {},
+  chat: persisted?.chat || [
     { user: 'RadiantDemon', badge: 'VIP', text: 'THAT FLICK ON C-SITE WAS DISGUSTING!! 🔥', time: '19:10' },
     { user: 'ErangelSniper', badge: 'PRO', text: 'AWM collateral incoming in the final circle!', time: '19:11' },
     { user: 'FoxFanatic', badge: 'FAN', text: 'KUGOFOX RUNNING THE BRACKET TODAY 🦊🦊🦊', time: '19:12' }
   ],
-  leaderboard: { ...LEADERBOARD_DATA },
-  users: [],
-  squads: JSON.parse(JSON.stringify(INITIAL_SQUADS)),
-  events: JSON.parse(JSON.stringify(INITIAL_EVENTS)),
-  standings: JSON.parse(JSON.stringify(INITIAL_STANDINGS))
+  leaderboard: persisted?.leaderboard || { ...LEADERBOARD_DATA },
+  users: persisted?.users || [],
+  squads: persisted?.squads || JSON.parse(JSON.stringify(INITIAL_SQUADS)),
+  events: persisted?.events || JSON.parse(JSON.stringify(INITIAL_EVENTS)),
+  standings: persisted?.standings || JSON.parse(JSON.stringify(INITIAL_STANDINGS))
 };
+
+export function saveLocalStore() {
+  try {
+    fs.writeFileSync(LOCAL_STORE_FILE, JSON.stringify(fallbackStore, null, 2), 'utf-8');
+  } catch (e) {
+    console.warn('[Store] Could not write local_store.json:', e.message);
+  }
+}
 
 export async function connectDB() {
   if (isConnected && db) return db;
@@ -299,8 +333,8 @@ export async function connectDB() {
     try {
       console.log(`[MongoDB] Connecting to ${MONGODB_URI.replace(/:[^:]*@/, ':****@')}...`);
       client = new MongoClient(MONGODB_URI, {
-        serverSelectionTimeoutMS: 2000,
-        connectTimeoutMS: 2000
+        serverSelectionTimeoutMS: 5000,
+        connectTimeoutMS: 5000
       });
       await client.connect();
       db = client.db(DB_NAME);
@@ -308,7 +342,7 @@ export async function connectDB() {
       connectionError = null;
       console.log(`[MongoDB] Successfully connected to database: ${DB_NAME}`);
 
-      // Seed initial data if empty
+      // Seed initial data once if brand new database
       await seedInitialData();
       return db;
     } catch (err) {
@@ -328,41 +362,35 @@ export async function connectDB() {
 async function seedInitialData() {
   if (!isConnected || !db) return;
   try {
-    const tourneyCount = await db.collection('tournaments').countDocuments();
-    if (tourneyCount === 0) {
-      console.log('[MongoDB] Seeding initial tournaments collection...');
-      await db.collection('tournaments').insertMany(TOURNAMENTS_DATA);
+    const meta = await db.collection('_metadata').findOne({ key: 'seeded_v1' });
+    if (meta) {
+      // Database has already been initialized previously. Never overwrite or re-seed deleted items.
+      return;
     }
 
-    const lbCount = await db.collection('leaderboard').countDocuments();
-    if (lbCount === 0) {
-      console.log('[MongoDB] Seeding initial leaderboard collection...');
-      await db.collection('leaderboard').insertOne({ id: 'current', data: LEADERBOARD_DATA });
+    console.log('[MongoDB] Performing one-time initial seed for new database...');
+    if (Array.isArray(TOURNAMENTS_DATA) && TOURNAMENTS_DATA.length > 0) {
+      await db.collection('tournaments').insertMany(TOURNAMENTS_DATA).catch(() => {});
     }
-
-    const userCount = await db.collection('users').countDocuments();
-    if (userCount === 0) {
-      console.log('[MongoDB] Seeding initial users collection...');
-      await db.collection('users').insertMany(fallbackStore.users);
+    await db.collection('leaderboard').updateOne(
+      { id: 'current' },
+      { $set: { id: 'current', data: LEADERBOARD_DATA } },
+      { upsert: true }
+    ).catch(() => {});
+    if (Array.isArray(fallbackStore.users) && fallbackStore.users.length > 0) {
+      await db.collection('users').insertMany(fallbackStore.users).catch(() => {});
     }
-
-    const squadsCount = await db.collection('squads').countDocuments();
-    if (squadsCount === 0) {
-      console.log('[MongoDB] Seeding initial squads collection...');
-      await db.collection('squads').insertMany(INITIAL_SQUADS);
+    if (Array.isArray(INITIAL_SQUADS) && INITIAL_SQUADS.length > 0) {
+      await db.collection('squads').insertMany(INITIAL_SQUADS).catch(() => {});
     }
-
-    const eventsCount = await db.collection('events').countDocuments();
-    if (eventsCount === 0) {
-      console.log('[MongoDB] Seeding initial events collection...');
-      await db.collection('events').insertMany(INITIAL_EVENTS);
+    if (Array.isArray(INITIAL_EVENTS) && INITIAL_EVENTS.length > 0) {
+      await db.collection('events').insertMany(INITIAL_EVENTS).catch(() => {});
     }
-
-    const standingsCount = await db.collection('standings').countDocuments();
-    if (standingsCount === 0) {
-      console.log('[MongoDB] Seeding initial standings collection...');
-      await db.collection('standings').insertMany(INITIAL_STANDINGS);
+    if (Array.isArray(INITIAL_STANDINGS) && INITIAL_STANDINGS.length > 0) {
+      await db.collection('standings').insertMany(INITIAL_STANDINGS).catch(() => {});
     }
+    await db.collection('_metadata').insertOne({ key: 'seeded_v1', seededAt: new Date() });
+    console.log('[MongoDB] Initial database seed completed.');
   } catch (e) {
     console.error('[MongoDB] Error during seeding:', e.message);
   }
@@ -408,6 +436,7 @@ export async function saveRegistration(registration) {
   }
 
   fallbackStore.registrations.unshift(record);
+  saveLocalStore();
   return record;
 }
 
@@ -517,6 +546,7 @@ export async function createUser(userData) {
   }
 
   fallbackStore.users.push(newUser);
+  saveLocalStore();
   return sanitizeUser(newUser);
 }
 
@@ -616,7 +646,7 @@ export async function getSquads(gameFilter = null) {
     try {
       const query = gameFilter && gameFilter !== 'all' ? { game: gameFilter } : {};
       const list = await db.collection('squads').find(query).toArray();
-      if (list && list.length > 0) return list;
+      if (Array.isArray(list)) return list;
     } catch (e) {
       console.error('[MongoDB] Query squads error:', e.message);
     }
@@ -657,6 +687,7 @@ export async function createSquad(squadData) {
   }
 
   fallbackStore.squads.unshift(newSquad);
+  saveLocalStore();
   return newSquad;
 }
 
@@ -710,6 +741,7 @@ export async function joinSquad(squadId, applicantData) {
   if (fbIdx !== -1) {
     fallbackStore.squads[fbIdx] = squad;
   }
+  saveLocalStore();
 
   return { success: true, squad, member: applicant };
 }
@@ -720,7 +752,7 @@ export async function getEvents(statusFilter = null) {
     try {
       const query = statusFilter && statusFilter !== 'all' ? { status: statusFilter } : {};
       const list = await db.collection('events').find(query).toArray();
-      if (list && list.length > 0) return list;
+      if (Array.isArray(list)) return list;
     } catch (e) {
       console.error('[MongoDB] Query events error:', e.message);
     }
@@ -760,35 +792,76 @@ export async function saveEvent(eventData) {
   }
 
   fallbackStore.events.unshift(newEvent);
+  saveLocalStore();
   return newEvent;
 }
 
 export async function updateEvent(id, updateData) {
+  const cleanId = String(id || '').trim();
+  let objId = null;
+  try {
+    if (ObjectId.isValid(cleanId)) {
+      objId = new ObjectId(cleanId);
+    }
+  } catch (_) {}
+
+  const filter = {
+    $or: [
+      { id: cleanId },
+      { id: id },
+      ...(objId ? [{ _id: objId }] : [])
+    ]
+  };
+
   if (isConnected && db) {
     try {
-      await db.collection('events').updateOne({ id }, { $set: updateData });
+      await db.collection('events').updateMany(filter, { $set: updateData });
     } catch (e) {
       console.error('[MongoDB] Update event error:', e.message);
     }
   }
 
-  const idx = fallbackStore.events.findIndex(e => e.id === id);
+  const idx = fallbackStore.events.findIndex(e =>
+    e.id === cleanId || e.id === id || (objId && String(e._id) === String(objId))
+  );
   if (idx !== -1) {
     fallbackStore.events[idx] = { ...fallbackStore.events[idx], ...updateData };
+    saveLocalStore();
     return fallbackStore.events[idx];
   }
-  return null;
+  saveLocalStore();
+  return { id, ...updateData };
 }
 
 export async function deleteEvent(id) {
+  const cleanId = String(id || '').trim();
+  let objId = null;
+  try {
+    if (ObjectId.isValid(cleanId)) {
+      objId = new ObjectId(cleanId);
+    }
+  } catch (_) {}
+
+  const filter = {
+    $or: [
+      { id: cleanId },
+      { id: id },
+      ...(objId ? [{ _id: objId }] : [])
+    ]
+  };
+
   if (isConnected && db) {
     try {
-      await db.collection('events').deleteOne({ id });
+      await db.collection('events').deleteMany(filter);
     } catch (e) {
       console.error('[MongoDB] Delete event error:', e.message);
     }
   }
-  fallbackStore.events = fallbackStore.events.filter(e => e.id !== id);
+
+  fallbackStore.events = fallbackStore.events.filter(e =>
+    e.id !== cleanId && e.id !== id && (!objId || String(e._id) !== String(objId))
+  );
+  saveLocalStore();
   return { success: true, id };
 }
 
@@ -798,8 +871,11 @@ export async function getCompetitiveStandings(gameFilter = null) {
     try {
       const query = gameFilter && gameFilter !== 'all' ? { game: gameFilter } : {};
       const list = await db.collection('standings').find(query).sort({ cp: -1 }).toArray();
-      if (list && list.length > 0) {
+      if (Array.isArray(list) && list.length > 0) {
         return list.map((item, idx) => ({ ...item, rank: idx + 1 }));
+      }
+      if (Array.isArray(list) && !gameFilter) {
+        return [];
       }
     } catch (e) {
       console.error('[MongoDB] Query standings error:', e.message);
@@ -869,6 +945,7 @@ export async function awardPlayerPoints(identifier, pointsDelta, details = {}) {
     }
     fallbackStore.standings.push(newPlayer);
     fallbackStore.standings.sort((a, b) => b.cp - a.cp);
+    saveLocalStore();
     return { success: true, player: newPlayer, pointsAwarded: Number(pointsDelta) || 0 };
   }
 
@@ -912,6 +989,7 @@ export async function awardPlayerPoints(identifier, pointsDelta, details = {}) {
     fallbackStore.standings[idx] = player;
   }
   fallbackStore.standings.sort((a, b) => b.cp - a.cp);
+  saveLocalStore();
 
   return { success: true, player, pointsAwarded: Number(pointsDelta) || 0 };
 }
