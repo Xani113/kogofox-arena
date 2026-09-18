@@ -3,22 +3,58 @@
    Squads LFG, Games Directory, Events Scrims, CP Standings, Admin Panel
    ========================================================== */
 
-/* 1. TOP ANNOUNCEMENT TICKER (Photo 5) */
+/* 1. TOP ANNOUNCEMENT TICKER OVERLAY (Non-displacing, CLS-safe) */
+.korg-announcement-wrapper {
+  position: fixed;
+  top: 68px;
+  left: 0;
+  right: 0;
+  z-index: 95;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+  padding: 0 1rem;
+}
+
+@media (max-width: 640px) {
+  .korg-announcement-wrapper {
+    top: 62px;
+    padding: 0 0.5rem;
+  }
+}
+
 .korg-announcement-ticker {
-  background: linear-gradient(90deg, rgba(147, 51, 234, 0.22) 0%, rgba(59, 130, 246, 0.18) 50%, rgba(236, 72, 153, 0.22) 100%);
-  border-bottom: 1px solid rgba(168, 85, 247, 0.35);
+  background: rgba(13, 17, 23, 0.94);
+  background-image: linear-gradient(90deg, rgba(147, 51, 234, 0.28) 0%, rgba(59, 130, 246, 0.2) 50%, rgba(236, 72, 153, 0.28) 100%);
+  border: 1px solid rgba(168, 85, 247, 0.45);
+  border-radius: 9999px;
   color: #f1f5f9;
   font-size: 0.84rem;
   font-weight: 600;
   letter-spacing: 0.02em;
-  padding: 0.45rem 1.5rem;
+  padding: 0.42rem 1.25rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  position: relative;
-  z-index: 100;
-  backdrop-filter: blur(12px);
-  box-shadow: 0 4px 20px rgba(147, 51, 234, 0.15);
+  gap: 0.85rem;
+  max-width: 960px;
+  width: 100%;
+  box-sizing: border-box;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.65), 0 0 20px rgba(168, 85, 247, 0.2);
+  pointer-events: auto;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.korg-announcement-ticker.visible {
+  opacity: 1;
+}
+
+.korg-announcement-ticker.dismissed {
+  opacity: 0;
+  pointer-events: none;
 }
 
 .korg-ticker-content {
@@ -113,11 +149,9 @@
 @keyframes fadeInView {
   from {
     opacity: 0;
-    transform: translateY(6px);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
   }
 }
 

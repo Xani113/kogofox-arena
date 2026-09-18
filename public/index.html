@@ -15,10 +15,10 @@
     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Orbitron:wght@500;700;900&family=JetBrains+Mono:wght@400;600;700&display=swap"
     rel="stylesheet">
   <link rel="stylesheet" href="css/game-themes.css?v=2.4.0">
-  <link rel="stylesheet" href="css/style.css?v=2.4.0">
-  <link rel="stylesheet" href="css/korg-layout.css?v=2.6.2">
-  <link rel="stylesheet" href="css/auth-modal.css?v=2.4.0">
-  <link rel="stylesheet" href="css/korg-views.css?v=2.6.2">
+  <link rel="stylesheet" href="css/style.css?v=2.6.3">
+  <link rel="stylesheet" href="css/korg-layout.css?v=2.6.3">
+  <link rel="stylesheet" href="css/auth-modal.css?v=2.6.3">
+  <link rel="stylesheet" href="css/korg-views.css?v=2.6.3">
   <!-- Official Google Identity Services SDK -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
@@ -28,17 +28,19 @@
   <canvas id="bg-cyber-canvas"></canvas>
 
   <div class="app-layout-root">
-    <!-- TOP ANNOUNCEMENT TICKER (Dynamic: only appears when an event is upcoming/live) -->
-    <div class="korg-announcement-ticker" id="korg-announcement-ticker" style="display: none;">
-      <div class="korg-ticker-content" id="korg-ticker-content">
-        <span class="korg-ticker-dot"></span>
-        <span id="korg-ticker-text"></span>
-      </div>
-      <div class="korg-ticker-actions">
-        <button class="korg-ticker-cta" id="ticker-cta-btn" data-view-target="events">
-          Register Now ➔
-        </button>
-        <button class="korg-ticker-close" id="ticker-close-btn" aria-label="Dismiss Announcement" title="Dismiss announcement">×</button>
+    <!-- TOP ANNOUNCEMENT TICKER (Non-displacing overlay so it does not shift header or content below) -->
+    <div class="korg-announcement-wrapper" id="korg-announcement-wrapper">
+      <div class="korg-announcement-ticker" id="korg-announcement-ticker" style="display: none;">
+        <div class="korg-ticker-content" id="korg-ticker-content">
+          <span class="korg-ticker-dot"></span>
+          <span id="korg-ticker-text"></span>
+        </div>
+        <div class="korg-ticker-actions">
+          <button class="korg-ticker-cta" id="ticker-cta-btn" data-view-target="events">
+            Register Now ➔
+          </button>
+          <button class="korg-ticker-close" id="ticker-close-btn" aria-label="Dismiss Announcement" title="Dismiss announcement">×</button>
+        </div>
       </div>
     </div>
 
@@ -393,9 +395,9 @@
                   <span class="hp-btn-icon">🔊</span>
                   <span>BASS DROP</span>
                 </button>
-                <button class="hp-interactive-btn active" id="hp-btn-spatial" title="Toggle 360 Spatial Audio Radar">
-                  <span class="btn-dot active"></span>
-                  <span>360° SPATIAL: ON</span>
+                <button class="hp-interactive-btn" id="hp-btn-spatial" title="Toggle 360 Spatial Audio Radar">
+                  <span class="btn-dot"></span>
+                  <span>360° SPATIAL: OFF</span>
                 </button>
               </div>
 
@@ -471,7 +473,7 @@
   <div id="toast-container"></div>
 
   <!-- Main Application Script -->
-  <script type="module" src="js/app.js?v=2.6.2"></script>
+  <script type="module" src="js/app.js?v=2.6.3"></script>
 </body>
 
 </html>

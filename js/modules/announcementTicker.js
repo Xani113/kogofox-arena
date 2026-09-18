@@ -197,15 +197,25 @@ export async function updateAnnouncementTicker(providedEvents = null) {
         e.stopPropagation();
         try { sound.playClick?.(); } catch (err) {}
         sessionStorage.setItem(dismissKey, 'true');
-        tickerEl.style.display = 'none';
+        tickerEl.classList.remove('visible');
+        tickerEl.classList.add('dismissed');
+        setTimeout(() => {
+          tickerEl.style.display = 'none';
+        }, 250);
       };
     }
 
-    // Display ticker
+    // Display ticker with clean fade in
     tickerEl.style.display = 'flex';
+    requestAnimationFrame(() => {
+      tickerEl.classList.remove('dismissed');
+      tickerEl.classList.add('visible');
+    });
 
   } catch (err) {
     console.warn('[Ticker] Announcement update warning:', err.message);
+    tickerEl.classList.remove('visible');
+    tickerEl.classList.add('dismissed');
     tickerEl.style.display = 'none';
   }
 }
