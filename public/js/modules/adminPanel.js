@@ -33,44 +33,69 @@ export function initAdminPanel() {
 
 function renderAdminView(container) {
   if (!isAdminAuthenticated) {
-    // Show passkey login box
+    // Try to auto-populate email from currentUser if stored
+    let prefillEmail = '';
+    try {
+      const storedUser = localStorage.getItem('korg_user');
+      if (storedUser) {
+        const u = JSON.parse(storedUser);
+        if (u && u.email) prefillEmail = u.email;
+      }
+    } catch (e) {}
+
+    // Show email & password admin login box
     container.innerHTML = `
       <div class="korg-admin-auth-wrapper">
         <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🛡️</div>
         <h3>Admin Command Center</h3>
-        <p>Enter your administrator security passkey to manage upcoming events, prize pools, and player Combat Points.</p>
+        <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 1.5rem; line-height: 1.5;">
+          Restricted access. Only authorized administrator logins (<strong style="color: #00f0ff;">rpmohit9@gmail.com</strong>, <strong style="color: #00f0ff;">mkgsani9@gmail.com</strong>) can unlock the command center.
+        </p>
 
-        <form id="admin-login-form">
-          <input type="password" id="admin-passkey-input" class="korg-admin-input" placeholder="Enter passkey (e.g. korg2026)" required autocomplete="current-password" />
-          <button type="submit" class="korg-btn-primary" style="width: 100%; justify-content: center;">
+        <form id="admin-login-form" style="display: flex; flex-direction: column; gap: 1rem; text-align: left;">
+          <div>
+            <label class="korg-admin-label">Admin Email</label>
+            <input type="email" id="admin-email-input" class="korg-admin-input" placeholder="e.g. rpmohit9@gmail.com" value="${prefillEmail}" required autocomplete="username" />
+          </div>
+
+          <div>
+            <label class="korg-admin-label">Admin Password</label>
+            <input type="password" id="admin-password-input" class="korg-admin-input" placeholder="Enter admin password" required autocomplete="current-password" />
+          </div>
+
+          <button type="submit" class="korg-btn-primary" style="width: 100%; justify-content: center; margin-top: 0.5rem;">
             Unlock Admin Panel
           </button>
         </form>
-        <p id="admin-auth-error" style="color: #ef4444; font-size: 0.8rem; margin-top: 1rem; display: none;"></p>
+        <p id="admin-auth-error" style="color: #ef4444; font-size: 0.82rem; margin-top: 1rem; display: none;"></p>
       </div>
     `;
 
     const form = document.getElementById('admin-login-form');
-    const input = document.getElementById('admin-passkey-input');
+    const emailInput = document.getElementById('admin-email-input');
+    const passInput = document.getElementById('admin-password-input');
     const err = document.getElementById('admin-auth-error');
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const passkey = input.value.trim();
+      const email = emailInput.value.trim();
+      const password = passInput.value.trim();
       try {
         const res = await fetch('/api/admin/verify', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ passkey })
+          body: JSON.stringify({ email, password })
         });
         const data = await res.json();
         if (data.success && data.token) {
           sessionStorage.setItem('korg_admin_token', data.token);
+          sessionStorage.setItem('korg_admin_email', data.adminEmail || email);
           isAdminAuthenticated = true;
           renderAdminView(container);
           loadAdminData();
+          window.dispatchEvent(new CustomEvent('korg:adminLoggedIn', { detail: { email: data.adminEmail || email } }));
         } else {
-          err.textContent = data.error || 'Access denied. Invalid passkey.';
+          err.textContent = data.error || 'Access denied. Invalid email or password.';
           err.style.display = 'block';
         }
       } catch (ex) {

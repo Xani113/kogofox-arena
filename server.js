@@ -432,18 +432,47 @@ export async function handleRequest(req, res) {
       }
 
       // 10. Admin API endpoints
+      if (reqPath === '/api/admin/check-access' && req.method === 'GET') {
+        const email = (parsedUrl.searchParams.get('email') || '').toLowerCase().trim();
+        const allowedEmails = (process.env.ADMIN_EMAILS || 'rpmohit9@gmail.com,mkgsani9@gmail.com')
+          .toLowerCase()
+          .split(',')
+          .map(e => e.trim());
+        const isAdmin = email ? allowedEmails.includes(email) : false;
+        return sendJSON(res, 200, { success: true, isAdmin, email });
+      }
+
       if (reqPath === '/api/admin/verify' && req.method === 'POST') {
         const payload = await parseRequestBody(req);
-        const passkey = payload.passkey || '';
-        const adminKey = process.env.ADMIN_PASSKEY || 'korg2026';
-        if (passkey === adminKey) {
-          return sendJSON(res, 200, {
-            success: true,
-            message: 'Admin authorization granted',
-            token: 'korg_admin_' + Buffer.from('admin:' + Date.now()).toString('base64')
+        const email = (payload.email || '').toLowerCase().trim();
+        const password = payload.password || payload.passkey || '';
+
+        const allowedEmails = (process.env.ADMIN_EMAILS || 'rpmohit9@gmail.com,mkgsani9@gmail.com')
+          .toLowerCase()
+          .split(',')
+          .map(e => e.trim());
+        const adminPassword = process.env.ADMIN_PASSWORD || 'kugofox13';
+
+        if (!allowedEmails.includes(email)) {
+          return sendJSON(res, 403, {
+            success: false,
+            error: 'Access denied: This email is not authorized for the Admin Panel.'
           });
         }
-        return sendJSON(res, 401, { success: false, error: 'Invalid admin passkey. Access denied.' });
+
+        if (password !== adminPassword) {
+          return sendJSON(res, 401, {
+            success: false,
+            error: 'Invalid admin password. Access denied.'
+          });
+        }
+
+        return sendJSON(res, 200, {
+          success: true,
+          message: `Admin authorization granted for ${email}`,
+          token: 'korg_admin_' + Buffer.from(email + ':' + Date.now()).toString('base64'),
+          adminEmail: email
+        });
       }
 
       if (reqPath === '/api/admin/events' && req.method === 'POST') {

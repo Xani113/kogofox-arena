@@ -74,6 +74,17 @@ class KugofoxApp {
     initLeaderboard('view-leaderboard');
     initAdminPanel();
 
+    // Sync Admin navigation buttons (restricted to rpmohit9@gmail.com, mkgsani9@gmail.com)
+    this.syncAdminAccess();
+
+    window.addEventListener('korg:adminLoggedIn', (e) => {
+      this.syncAdminAccess({ email: e.detail?.email });
+    });
+
+    window.addEventListener('korg:adminLoggedOut', () => {
+      this.syncAdminAccess(this.currentUser);
+    });
+
     // Init tactical simulators (4 Titles)
     this.minigames.initReflexTrainer('valorant-reflex-container');
     this.minigames.initBgmiDropLab('bgmi-drop-container');
@@ -158,11 +169,43 @@ class KugofoxApp {
   onUserLogin(user) {
     this.currentUser = user;
     this.renderHeaderUserChip(user);
+    this.syncAdminAccess(user);
   }
 
   onUserLogout() {
     this.currentUser = null;
     this.renderHeaderSignInButton();
+    this.syncAdminAccess(null);
+  }
+
+  syncAdminAccess(user = this.currentUser) {
+    const allowedEmails = ['rpmohit9@gmail.com', 'mkgsani9@gmail.com'];
+    let userEmail = '';
+    if (user && user.email) {
+      userEmail = user.email.toLowerCase().trim();
+    } else {
+      try {
+        const stored = localStorage.getItem('korg_user');
+        if (stored) {
+          const u = JSON.parse(stored);
+          if (u && u.email) userEmail = u.email.toLowerCase().trim();
+        }
+      } catch (e) {}
+    }
+    const adminSessionEmail = (sessionStorage.getItem('korg_admin_email') || '').toLowerCase().trim();
+    const hasAdminToken = !!sessionStorage.getItem('korg_admin_token');
+
+    const isAdmin = allowedEmails.includes(userEmail) || allowedEmails.includes(adminSessionEmail) || hasAdminToken;
+
+    const topAdmin = document.getElementById('top-nav-admin');
+    const sbAdmin = document.getElementById('sb-nav-admin');
+
+    if (topAdmin) {
+      topAdmin.style.display = isAdmin ? 'inline-flex' : 'none';
+    }
+    if (sbAdmin) {
+      sbAdmin.style.display = isAdmin ? 'flex' : 'none';
+    }
   }
 
   renderHeaderUserChip(user) {
