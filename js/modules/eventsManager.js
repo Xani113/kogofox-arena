@@ -189,6 +189,7 @@ export async function fetchEvents() {
     if (result.success && Array.isArray(result.data)) {
       allEvents = result.data;
       renderEventCards(filterEvents());
+      window.dispatchEvent(new CustomEvent('korg:eventsUpdated', { detail: { events: allEvents } }));
     }
   } catch (e) {
     console.error('Error fetching events:', e);

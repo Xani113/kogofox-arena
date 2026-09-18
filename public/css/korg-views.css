@@ -60,6 +60,38 @@
   box-shadow: 0 0 15px rgba(168, 85, 247, 0.5);
 }
 
+.korg-ticker-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.korg-ticker-close {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #cbd5e1;
+  font-size: 1.15rem;
+  line-height: 1;
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  opacity: 0.75;
+  padding: 0;
+}
+
+.korg-ticker-close:hover {
+  opacity: 1;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.35);
+  transform: scale(1.08);
+}
+
 /* 2. VIEW CONTAINERS & TRANSITIONS */
 .korg-view {
   display: none;

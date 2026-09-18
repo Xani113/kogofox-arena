@@ -28,15 +28,18 @@
   <canvas id="bg-cyber-canvas"></canvas>
 
   <div class="app-layout-root">
-    <!-- TOP ANNOUNCEMENT TICKER (Screenshot 5) -->
-    <div class="korg-announcement-ticker" id="korg-announcement-ticker">
-      <div class="korg-ticker-content">
+    <!-- TOP ANNOUNCEMENT TICKER (Dynamic: only appears when an event is upcoming/live) -->
+    <div class="korg-announcement-ticker" id="korg-announcement-ticker" style="display: none;">
+      <div class="korg-ticker-content" id="korg-ticker-content">
         <span class="korg-ticker-dot"></span>
-        <span>🟣 FF week-1 registration opened till 6pm 12thsep</span>
+        <span id="korg-ticker-text"></span>
       </div>
-      <button class="korg-ticker-cta" id="ticker-cta-btn" data-view-target="events">
-        Register Now ➔
-      </button>
+      <div class="korg-ticker-actions">
+        <button class="korg-ticker-cta" id="ticker-cta-btn" data-view-target="events">
+          Register Now ➔
+        </button>
+        <button class="korg-ticker-close" id="ticker-close-btn" aria-label="Dismiss Announcement" title="Dismiss announcement">×</button>
+      </div>
     </div>
 
     <!-- TOP NAVIGATION BAR (Exact korg.buzz replica) -->

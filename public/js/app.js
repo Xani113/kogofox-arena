@@ -21,6 +21,7 @@ import { initEventsManager } from './modules/eventsManager.js?v=2.5.0';
 import { initLeaderboard } from './modules/leaderboard.js?v=2.5.0';
 import { initAdminPanel } from './modules/adminPanel.js?v=2.5.0';
 import { initGamesManager } from './modules/gamesManager.js?v=2.5.0';
+import { initAnnouncementTicker } from './modules/announcementTicker.js?v=2.5.0';
 
 class KugofoxApp {
   constructor() {
@@ -71,6 +72,7 @@ class KugofoxApp {
     initGamesManager();
     initSquadsManager();
     initEventsManager();
+    initAnnouncementTicker();
     initLeaderboard('view-leaderboard');
     initAdminPanel();
 
