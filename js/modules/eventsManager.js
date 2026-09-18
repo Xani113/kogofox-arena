@@ -90,7 +90,7 @@ function renderEventsScaffold(container) {
       </div>
 
       <!-- Navigation Status Tabs -->
-      <div style="display: flex; align-items: center; gap: 0.8rem; margin-top: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 0.8rem;">
+      <div class="korg-events-status-tabs">
         <button class="korg-admin-tab-btn active" data-event-tab="upcoming">Upcoming</button>
         <button class="korg-admin-tab-btn" data-event-tab="live">Live Now</button>
         <button class="korg-admin-tab-btn" data-event-tab="completed">Completed</button>
