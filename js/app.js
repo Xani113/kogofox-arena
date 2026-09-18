@@ -15,6 +15,12 @@ import { CyberHeadphoneController } from './modules/cyberHeadphone.js?v=2.4.0';
 import { AuthModal } from './modules/authModal.js?v=2.4.0';
 import { PixelStarsEngine } from './modules/pixelStars.js?v=2.5.0';
 import { TournamentSystem } from './modules/tournamentSystem.js?v=2.4.0';
+import { initViewController, switchView } from './modules/viewController.js?v=2.5.0';
+import { initSquadsManager } from './modules/squadsManager.js?v=2.5.0';
+import { initEventsManager } from './modules/eventsManager.js?v=2.5.0';
+import { initLeaderboard } from './modules/leaderboard.js?v=2.5.0';
+import { initAdminPanel } from './modules/adminPanel.js?v=2.5.0';
+import { initGamesManager } from './modules/gamesManager.js?v=2.5.0';
 
 class KugofoxApp {
   constructor() {
@@ -59,7 +65,14 @@ class KugofoxApp {
     if (document.getElementById('tournaments-hub-container')) {
       this.tournaments.init('tournaments-hub-container');
     }
-    this.leaderboard.init('leaderboard-container');
+
+    // Init Dedicated View Modules (Screenshots 1-5 & Admin Panel)
+    initViewController();
+    initGamesManager();
+    initSquadsManager();
+    initEventsManager();
+    initLeaderboard('view-leaderboard');
+    initAdminPanel();
 
     // Init tactical simulators (4 Titles)
     this.minigames.initReflexTrainer('valorant-reflex-container');
@@ -98,39 +111,37 @@ class KugofoxApp {
     // Top Nav Pills
     const topPills = document.querySelectorAll('.korg-nav-pill');
     topPills.forEach(pill => {
-      pill.addEventListener('click', () => {
+      pill.addEventListener('click', (e) => {
+        e.preventDefault();
         sound.playTabSwitch();
-        topPills.forEach(p => p.classList.remove('active'));
-        pill.classList.add('active');
-
-        const navType = pill.dataset.nav;
-        this.scrollToTarget(navType);
+        const target = pill.getAttribute('data-view-target') || pill.dataset.nav;
+        if (target) switchView(target);
       });
     });
 
     // Sidebar Menu Items
     const sidebarItems = document.querySelectorAll('.sidebar-menu-item');
     sidebarItems.forEach(item => {
-      item.addEventListener('click', () => {
+      item.addEventListener('click', (e) => {
+        e.preventDefault();
         sound.playTabSwitch();
-        sidebarItems.forEach(i => i.classList.remove('active'));
-        item.classList.add('active');
-
-        const target = item.dataset.target;
-        this.scrollToTarget(target);
+        const target = item.getAttribute('data-view-target') || item.dataset.target;
+        if (target) switchView(target);
       });
     });
 
     // Brand logo home click
     const brandBtn = document.getElementById('brand-home-btn');
-    brandBtn?.addEventListener('click', () => {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+    brandBtn?.addEventListener('click', (e) => {
+      e.preventDefault();
+      switchView('home');
     });
 
     // Header Action Buttons
-    document.getElementById('find-team-btn')?.addEventListener('click', () => {
+    document.getElementById('find-team-btn')?.addEventListener('click', (e) => {
+      e.preventDefault();
       sound.playClick();
-      this.regModal.open(this.activeGame);
+      switchView('squads');
     });
 
     document.getElementById('notification-btn')?.addEventListener('click', () => {
@@ -238,26 +249,15 @@ class KugofoxApp {
   }
 
   scrollToTarget(target) {
-    let el = null;
-    switch (target) {
-      case 'home':
-        el = document.getElementById('section-hero');
-        break;
-      case 'games':
-        el = document.getElementById('section-gallery');
-        break;
-      case 'squads':
-      case 'findteam':
-      case 'events':
-        el = document.getElementById('section-minigames');
-        break;
-      case 'leaderboard':
-        el = document.getElementById('section-leaderboard');
-        break;
-      default:
-        el = document.getElementById(`section-${target}`);
+    if (['home', 'games', 'squads', 'events', 'leaderboard', 'admin'].includes(target)) {
+      switchView(target);
+      return;
     }
-
+    if (target === 'findteam') {
+      switchView('squads');
+      return;
+    }
+    const el = document.getElementById(`section-${target}`) || document.getElementById(target);
     if (el) {
       el.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
@@ -289,12 +289,12 @@ class KugofoxApp {
 
     enterBtn?.addEventListener('click', () => {
       sound.playClick();
-      document.getElementById('section-gallery')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      switchView('events');
     });
 
     exploreBtn?.addEventListener('click', () => {
       sound.playClick();
-      this.regModal.open(this.activeGame);
+      switchView('events');
     });
   }
 

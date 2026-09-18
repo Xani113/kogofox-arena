@@ -1,0 +1,1015 @@
+/* ==========================================================
+   KUGOFOX ARENA - DEDICATED VIEWS & CONTROLLER STYLES
+   Squads LFG, Games Directory, Events Scrims, CP Standings, Admin Panel
+   ========================================================== */
+
+/* 1. TOP ANNOUNCEMENT TICKER (Photo 5) */
+.korg-announcement-ticker {
+  background: linear-gradient(90deg, rgba(147, 51, 234, 0.22) 0%, rgba(59, 130, 246, 0.18) 50%, rgba(236, 72, 153, 0.22) 100%);
+  border-bottom: 1px solid rgba(168, 85, 247, 0.35);
+  color: #f1f5f9;
+  font-size: 0.84rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  padding: 0.45rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  z-index: 100;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 4px 20px rgba(147, 51, 234, 0.15);
+}
+
+.korg-ticker-content {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.korg-ticker-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #a855f7;
+  box-shadow: 0 0 10px #a855f7, 0 0 20px #c084fc;
+  animation: tickerPulse 1.8s infinite ease-in-out;
+}
+
+@keyframes tickerPulse {
+  0%, 100% { transform: scale(0.9); opacity: 0.8; }
+  50% { transform: scale(1.3); opacity: 1; }
+}
+
+.korg-ticker-cta {
+  background: rgba(168, 85, 247, 0.25);
+  border: 1px solid rgba(168, 85, 247, 0.5);
+  color: #e9d5ff;
+  padding: 0.25rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+}
+
+.korg-ticker-cta:hover {
+  background: #a855f7;
+  color: #fff;
+  box-shadow: 0 0 15px rgba(168, 85, 247, 0.5);
+}
+
+/* 2. VIEW CONTAINERS & TRANSITIONS */
+.korg-view {
+  display: none;
+  opacity: 0;
+  transition: opacity 0.25s ease-in-out;
+  padding: 2rem 2.5rem 5rem;
+  max-width: 1440px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.korg-view.active {
+  display: block;
+  opacity: 1;
+  animation: fadeInView 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes fadeInView {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 3. COMMON VIEW HEADERS & FILTER PILLS */
+.korg-view-header {
+  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.korg-view-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.korg-view-title {
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #ffffff;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-transform: uppercase;
+}
+
+.korg-view-subtitle {
+  color: var(--korg-text-muted, #94a3b8);
+  font-size: 0.95rem;
+  margin: 0;
+  max-width: 800px;
+  line-height: 1.5;
+}
+
+.korg-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 1.5rem 0 2rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+  scrollbar-width: thin;
+}
+
+.korg-filter-pill {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #94a3b8;
+  padding: 0.5rem 1.1rem;
+  border-radius: 9999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.korg-filter-pill:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.korg-filter-pill.active {
+  background: rgba(0, 240, 255, 0.15);
+  border-color: #00f0ff;
+  color: #00f0ff;
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.25);
+}
+
+/* ACTION BUTTONS */
+.korg-btn-primary {
+  background: linear-gradient(135deg, #00f0ff 0%, #00a8ff 100%);
+  color: #030508;
+  border: none;
+  padding: 0.65rem 1.4rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
+  transition: all 0.2s ease;
+}
+
+.korg-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 25px rgba(0, 240, 255, 0.5);
+}
+
+.korg-btn-outline {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #e2e8f0;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.korg-btn-outline:hover {
+  border-color: #00f0ff;
+  color: #00f0ff;
+  background: rgba(0, 240, 255, 0.05);
+}
+
+/* 4. SQUADS LFG VIEW (Photo 1) */
+.korg-squads-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 1.5rem;
+}
+
+.korg-squad-card {
+  background: rgba(13, 17, 23, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 1.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  transition: all 0.25s ease;
+  backdrop-filter: blur(16px);
+  position: relative;
+  overflow: hidden;
+}
+
+.korg-squad-card:hover {
+  border-color: rgba(0, 240, 255, 0.3);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+.korg-squad-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.korg-squad-identity {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.korg-squad-avatar {
+  width: 46px;
+  height: 46px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #fff;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.korg-squad-names {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.korg-squad-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+}
+
+.korg-squad-game {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.korg-squad-badges {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.korg-pill-tag {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+.korg-pill-type {
+  background: rgba(255, 255, 255, 0.06);
+  color: #cbd5e1;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.korg-pill-open {
+  background: rgba(34, 197, 94, 0.12);
+  color: #4ade80;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.korg-pill-full {
+  background: rgba(239, 68, 68, 0.12);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.korg-pill-mic {
+  background: rgba(0, 240, 255, 0.1);
+  color: #38bdf8;
+  border: 1px solid rgba(0, 240, 255, 0.25);
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.korg-squad-mid {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.korg-slots-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.korg-slots-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #94a3b8;
+  letter-spacing: 0.04em;
+}
+
+.korg-slot-dots {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.korg-slot-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.korg-slot-dot.filled {
+  background: #22c55e;
+  box-shadow: 0 0 8px rgba(34, 197, 94, 0.6);
+}
+
+.korg-slot-dot.empty {
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  background: transparent;
+}
+
+.korg-squad-leader {
+  font-size: 0.8rem;
+  color: #cbd5e1;
+  font-weight: 500;
+}
+
+.korg-squad-leader strong {
+  color: #fff;
+}
+
+.korg-squad-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.korg-roster-btn {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0;
+  transition: color 0.2s ease;
+}
+
+.korg-roster-btn:hover {
+  color: #00f0ff;
+}
+
+.korg-join-squad-btn {
+  background: rgba(0, 240, 255, 0.12);
+  border: 1px solid rgba(0, 240, 255, 0.4);
+  color: #00f0ff;
+  padding: 0.45rem 1rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.korg-join-squad-btn:hover:not(:disabled) {
+  background: #00f0ff;
+  color: #030508;
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
+}
+
+.korg-join-squad-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #64748b;
+  background: transparent;
+}
+
+/* ROSTER DRAWER */
+.korg-roster-drawer {
+  display: none;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding-top: 0.75rem;
+  border-top: 1px dashed rgba(255, 255, 255, 0.08);
+  animation: fadeInView 0.2s ease;
+}
+
+.korg-roster-drawer.open {
+  display: flex;
+}
+
+.korg-roster-member {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.35rem 0.6rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 6px;
+  font-size: 0.82rem;
+}
+
+.korg-roster-member-left {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #e2e8f0;
+  font-weight: 600;
+}
+
+.korg-roster-member-role {
+  font-size: 0.72rem;
+  color: #94a3b8;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+}
+
+/* 5. COMPETITIVE STANDINGS LEADERBOARD VIEW (Photo 2) */
+.korg-standings-card {
+  background: rgba(13, 17, 23, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  overflow: hidden;
+  backdrop-filter: blur(16px);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+.korg-standings-table-wrapper {
+  overflow-x: auto;
+  width: 100%;
+}
+
+.korg-standings-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.korg-standings-table th {
+  background: rgba(255, 255, 255, 0.03);
+  color: #94a3b8;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 1rem 1.2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  text-transform: uppercase;
+}
+
+.korg-standings-table td {
+  padding: 1.1rem 1.2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  font-size: 0.88rem;
+  color: #cbd5e1;
+  vertical-align: middle;
+}
+
+.korg-standings-table tr:hover td {
+  background: rgba(0, 240, 255, 0.03);
+}
+
+.korg-rank-cell {
+  font-weight: 800;
+  font-size: 1rem;
+  color: #ffffff;
+  width: 50px;
+}
+
+.korg-rank-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  font-size: 0.85rem;
+  font-weight: 800;
+}
+
+.korg-rank-1 {
+  background: linear-gradient(135deg, #fbbf24, #d97706);
+  color: #030508;
+  box-shadow: 0 0 12px rgba(251, 191, 36, 0.5);
+}
+
+.korg-rank-2 {
+  background: linear-gradient(135deg, #e2e8f0, #94a3b8);
+  color: #030508;
+  box-shadow: 0 0 10px rgba(226, 232, 240, 0.4);
+}
+
+.korg-rank-3 {
+  background: linear-gradient(135deg, #f97316, #b45309);
+  color: #030508;
+  box-shadow: 0 0 10px rgba(249, 115, 22, 0.4);
+}
+
+.korg-player-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.korg-player-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.korg-player-meta {
+  display: flex;
+  flex-direction: column;
+}
+
+.korg-player-name {
+  font-weight: 700;
+  color: #ffffff;
+  font-size: 0.95rem;
+}
+
+.korg-player-sub {
+  font-size: 0.75rem;
+  color: #94a3b8;
+}
+
+.korg-tier-badge {
+  background: rgba(205, 127, 50, 0.15);
+  border: 1px solid rgba(205, 127, 50, 0.4);
+  color: #f59e0b;
+  padding: 0.25rem 0.65rem;
+  border-radius: 6px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.korg-cp-pill {
+  background: rgba(0, 240, 255, 0.12);
+  border: 1px solid rgba(0, 240, 255, 0.4);
+  color: #00f0ff;
+  padding: 0.35rem 0.8rem;
+  border-radius: 6px;
+  font-weight: 800;
+  font-size: 0.92rem;
+  display: inline-block;
+  letter-spacing: 0.02em;
+}
+
+/* 6. GAMES DIRECTORY VIEW (Photo 3) */
+.korg-search-box {
+  background: rgba(13, 17, 23, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 0.75rem 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+  max-width: 600px;
+}
+
+.korg-search-box input {
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  font-size: 0.92rem;
+  width: 100%;
+  outline: none;
+}
+
+.korg-search-box input::placeholder {
+  color: #64748b;
+}
+
+.korg-games-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.korg-game-item-card {
+  background: rgba(13, 17, 23, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.25s ease;
+  backdrop-filter: blur(16px);
+  display: flex;
+  flex-direction: column;
+}
+
+.korg-game-item-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(0, 240, 255, 0.35);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+}
+
+.korg-game-item-banner {
+  height: 140px;
+  width: 100%;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+
+.korg-game-item-banner::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, rgba(13, 17, 23, 1) 0%, rgba(13, 17, 23, 0.2) 100%);
+}
+
+.korg-game-item-body {
+  padding: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  flex: 1;
+}
+
+.korg-game-item-title {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0;
+}
+
+.korg-game-item-desc {
+  font-size: 0.82rem;
+  color: #94a3b8;
+  line-height: 1.4;
+  margin: 0;
+  flex: 1;
+}
+
+.korg-game-item-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  color: #cbd5e1;
+  padding-top: 0.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.korg-game-open-btn {
+  background: rgba(0, 240, 255, 0.1);
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  color: #00f0ff;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+}
+
+.korg-game-open-btn:hover {
+  background: #00f0ff;
+  color: #030508;
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
+}
+
+/* 7. CAMPUS SCRIMS & TOURNAMENTS EVENTS VIEW (Photo 4) */
+.korg-events-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 1.5rem;
+}
+
+.korg-event-card {
+  background: rgba(13, 17, 23, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  backdrop-filter: blur(16px);
+  position: relative;
+  transition: all 0.25s ease;
+}
+
+.korg-event-card:hover {
+  border-color: rgba(168, 85, 247, 0.4);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+}
+
+.korg-event-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.korg-event-header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.korg-event-badge-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.korg-event-badge {
+  background: rgba(168, 85, 247, 0.2);
+  border: 1px solid rgba(168, 85, 247, 0.4);
+  color: #d8b4fe;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  letter-spacing: 0.04em;
+}
+
+.korg-event-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.korg-event-date {
+  font-size: 0.84rem;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.korg-prize-pool-pill {
+  background: linear-gradient(135deg, rgba(234, 179, 8, 0.15) 0%, rgba(202, 138, 4, 0.25) 100%);
+  border: 1px solid rgba(234, 179, 8, 0.5);
+  color: #fde047;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  box-shadow: 0 0 15px rgba(234, 179, 8, 0.15);
+}
+
+.korg-capacity-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.korg-capacity-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  color: #94a3b8;
+  font-weight: 600;
+}
+
+.korg-capacity-track {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.korg-capacity-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #00f0ff, #3b82f6);
+  border-radius: 9999px;
+  transition: width 0.3s ease;
+}
+
+.korg-event-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: auto;
+}
+
+/* 8. ADMIN CONTROL PANEL VIEW */
+.korg-admin-auth-wrapper {
+  max-width: 440px;
+  margin: 3rem auto;
+  background: rgba(13, 17, 23, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 2rem;
+  text-align: center;
+  backdrop-filter: blur(16px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+}
+
+.korg-admin-auth-wrapper h3 {
+  color: #fff;
+  margin: 0 0 0.5rem;
+  font-size: 1.4rem;
+}
+
+.korg-admin-auth-wrapper p {
+  color: #94a3b8;
+  font-size: 0.88rem;
+  margin: 0 0 1.5rem;
+}
+
+.korg-admin-input {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  color: #fff;
+  font-size: 0.95rem;
+  outline: none;
+  box-sizing: border-box;
+  margin-bottom: 1.2rem;
+}
+
+.korg-admin-input:focus {
+  border-color: #00f0ff;
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
+}
+
+.korg-admin-dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.korg-admin-tabs {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 1rem;
+}
+
+.korg-admin-tab-btn {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.korg-admin-tab-btn.active {
+  background: rgba(0, 240, 255, 0.12);
+  color: #00f0ff;
+}
+
+.korg-admin-section {
+  display: none;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.korg-admin-section.active {
+  display: flex;
+}
+
+.korg-admin-form-card {
+  background: rgba(13, 17, 23, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.korg-admin-form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.korg-admin-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #94a3b8;
+  text-transform: uppercase;
+  margin-bottom: 0.35rem;
+  display: block;
+}
+
+/* 9. MODALS (CREATE SQUAD / JOIN / REGISTRATION) */
+.korg-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.korg-modal-overlay.open {
+  display: flex;
+}
+
+.korg-modal-box {
+  background: #090d14;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  width: 100%;
+  max-width: 520px;
+  padding: 1.8rem;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+  position: relative;
+  box-sizing: border-box;
+  animation: modalPop 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modalPop {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.korg-modal-close {
+  position: absolute;
+  top: 1.2rem;
+  right: 1.2rem;
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-size: 1.4rem;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.korg-modal-close:hover {
+  color: #fff;
+}
+
+@media (max-width: 768px) {
+  .korg-view {
+    padding: 1.2rem 1rem 4rem;
+  }
+  .korg-squads-grid,
+  .korg-events-grid,
+  .korg-games-grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -17,7 +17,16 @@ import {
   findUserByEmail,
   findUserByUsername,
   authenticateUser,
-  findUserById
+  findUserById,
+  getSquads,
+  createSquad,
+  joinSquad,
+  getEvents,
+  saveEvent,
+  updateEvent,
+  deleteEvent,
+  getCompetitiveStandings,
+  awardPlayerPoints
 } from './db/mongodb.js';
 import { verifyPlayerGameID } from './services/playerVerification.js';
 
@@ -377,6 +386,107 @@ export async function handleRequest(req, res) {
       if (reqPath === '/api/leaderboard' && req.method === 'GET') {
         const lb = await getLeaderboard();
         return sendJSON(res, 200, { success: true, data: lb });
+      }
+
+      // 7. Squads LFG (Player Finder)
+      if (reqPath === '/api/squads' && req.method === 'GET') {
+        const game = parsedUrl.searchParams.get('game');
+        const squads = await getSquads(game);
+        return sendJSON(res, 200, { success: true, count: squads.length, data: squads });
+      }
+
+      if (reqPath === '/api/squads' && req.method === 'POST') {
+        const payload = await parseRequestBody(req);
+        if (!payload.name) {
+          return sendJSON(res, 400, { error: 'Squad name is required' });
+        }
+        const created = await createSquad(payload);
+        return sendJSON(res, 201, { success: true, message: 'Squad created successfully!', data: created });
+      }
+
+      if ((reqPath === '/api/squads/join' || reqPath.startsWith('/api/squads/join/')) && req.method === 'POST') {
+        const payload = await parseRequestBody(req);
+        const squadId = payload.squadId || reqPath.replace('/api/squads/join/', '');
+        if (!squadId) {
+          return sendJSON(res, 400, { error: 'Squad ID is required' });
+        }
+        const result = await joinSquad(squadId, payload);
+        if (!result.success) {
+          return sendJSON(res, 400, result);
+        }
+        return sendJSON(res, 200, { success: true, message: 'Joined squad successfully!', data: result.squad });
+      }
+
+      // 8. Campus Scrims & Tournaments Events
+      if (reqPath === '/api/events' && req.method === 'GET') {
+        const status = parsedUrl.searchParams.get('status');
+        const events = await getEvents(status);
+        return sendJSON(res, 200, { success: true, count: events.length, data: events });
+      }
+
+      // 9. Competitive Standings (Combat Points)
+      if (reqPath === '/api/standings' && req.method === 'GET') {
+        const game = parsedUrl.searchParams.get('game');
+        const standings = await getCompetitiveStandings(game);
+        return sendJSON(res, 200, { success: true, count: standings.length, data: standings });
+      }
+
+      // 10. Admin API endpoints
+      if (reqPath === '/api/admin/verify' && req.method === 'POST') {
+        const payload = await parseRequestBody(req);
+        const passkey = payload.passkey || '';
+        const adminKey = process.env.ADMIN_PASSKEY || 'korg2026';
+        if (passkey === adminKey) {
+          return sendJSON(res, 200, {
+            success: true,
+            message: 'Admin authorization granted',
+            token: 'korg_admin_' + Buffer.from('admin:' + Date.now()).toString('base64')
+          });
+        }
+        return sendJSON(res, 401, { success: false, error: 'Invalid admin passkey. Access denied.' });
+      }
+
+      if (reqPath === '/api/admin/events' && req.method === 'POST') {
+        const payload = await parseRequestBody(req);
+        if (!payload.title) {
+          return sendJSON(res, 400, { error: 'Tournament title is required' });
+        }
+        const event = await saveEvent(payload);
+        return sendJSON(res, 201, { success: true, message: 'Event saved successfully!', data: event });
+      }
+
+      if ((reqPath === '/api/admin/events/update' || (reqPath.startsWith('/api/admin/events/') && req.method === 'PUT')) && (req.method === 'POST' || req.method === 'PUT')) {
+        const payload = await parseRequestBody(req);
+        const id = payload.id || reqPath.replace('/api/admin/events/', '');
+        if (!id) {
+          return sendJSON(res, 400, { error: 'Event ID is required' });
+        }
+        const updated = await updateEvent(id, payload);
+        return sendJSON(res, 200, { success: true, message: 'Event updated successfully!', data: updated });
+      }
+
+      if ((reqPath === '/api/admin/events/delete' || (reqPath.startsWith('/api/admin/events/') && req.method === 'DELETE')) && (req.method === 'POST' || req.method === 'DELETE')) {
+        const payload = await parseRequestBody(req);
+        const id = payload.id || reqPath.replace('/api/admin/events/', '');
+        if (!id) {
+          return sendJSON(res, 400, { error: 'Event ID is required' });
+        }
+        const result = await deleteEvent(id);
+        return sendJSON(res, 200, { success: true, message: 'Event deleted successfully!', data: result });
+      }
+
+      if (reqPath === '/api/admin/players/points' && req.method === 'POST') {
+        const payload = await parseRequestBody(req);
+        const { identifier, pointsDelta, details } = payload;
+        if (!identifier || pointsDelta === undefined) {
+          return sendJSON(res, 400, { error: 'Player identifier and pointsDelta are required' });
+        }
+        const result = await awardPlayerPoints(identifier, Number(pointsDelta), details || {});
+        return sendJSON(res, 200, {
+          success: true,
+          message: `Successfully awarded ${pointsDelta >= 0 ? '+' : ''}${pointsDelta} CP to ${result.player.name}!`,
+          data: result.player
+        });
       }
 
       return sendJSON(res, 404, { error: 'API endpoint not found' });

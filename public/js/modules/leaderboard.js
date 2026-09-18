@@ -1,190 +1,164 @@
 /**
- * Kugofox Gaming Arena - Leaderboard Module
+ * leaderboard.js
+ * Competitive Standings & Combat Points (CP) Leaderboard
+ * Matches Screenshot 2: Rank, Player, Tier, Matches, Wins, Best, Win Rate, Combat Points (CP)
  */
 
-import { sound } from './soundEngine.js';
-import { LEADERBOARD_DATA } from '../data/leaderboardData.js';
+let standingsData = [];
+let activeGameFilter = 'all';
+let searchQuery = '';
 
+export function initLeaderboard(containerId = 'view-leaderboard') {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  renderLeaderboardScaffold(container);
+  fetchStandings();
+
+  window.addEventListener('korg:viewChanged', (e) => {
+    if (e.detail && (e.detail.view === 'leaderboard' || e.detail.view === 'standings')) {
+      fetchStandings();
+    }
+  });
+}
+
+function renderLeaderboardScaffold(container) {
+  container.innerHTML = `
+    <div class="korg-view-header">
+      <div class="korg-view-title-row">
+        <div>
+          <h1 class="korg-view-title">
+            <span>COMPETITIVE STANDINGS</span>
+          </h1>
+          <p class="korg-view-subtitle">
+            Official campus collegiate rankings based on tournament results, previous match scrim performance, and Combat Points (CP).
+          </p>
+        </div>
+      </div>
+
+      <!-- Filter pills -->
+      <div class="korg-filter-bar" id="standings-filter-bar">
+        <button class="korg-filter-pill active" data-game="all">All Games</button>
+        <button class="korg-filter-pill" data-game="freefire">Free Fire</button>
+        <button class="korg-filter-pill" data-game="bgmi">BGMI</button>
+        <button class="korg-filter-pill" data-game="valorant">Valorant</button>
+        <button class="korg-filter-pill" data-game="mobalegends">Mobile Legends</button>
+      </div>
+    </div>
+
+    <!-- Standings Table Card -->
+    <div class="korg-standings-card">
+      <div class="korg-standings-table-wrapper">
+        <table class="korg-standings-table">
+          <thead>
+            <tr>
+              <th style="width: 50px;">#</th>
+              <th>Player</th>
+              <th>Tier</th>
+              <th style="text-align: center;">Matches</th>
+              <th style="text-align: center;">Wins</th>
+              <th style="text-align: center;">Best</th>
+              <th style="text-align: center;">Win Rate</th>
+              <th style="text-align: right;">Combat Points (CP)</th>
+            </tr>
+          </thead>
+          <tbody id="standings-table-body">
+            <tr>
+              <td colspan="8" style="text-align: center; color: #94a3b8; padding: 2.5rem;">
+                Loading collegiate standings...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+
+  // Bind filter buttons
+  container.querySelectorAll('#standings-filter-bar .korg-filter-pill').forEach(btn => {
+    btn.addEventListener('click', () => {
+      container.querySelectorAll('#standings-filter-bar .korg-filter-pill').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeGameFilter = btn.getAttribute('data-game');
+      fetchStandings();
+    });
+  });
+}
+
+export async function fetchStandings() {
+  const tbody = document.getElementById('standings-table-body');
+  if (!tbody) return;
+
+  try {
+    const url = activeGameFilter && activeGameFilter !== 'all'
+      ? `/api/standings?game=${activeGameFilter}`
+      : '/api/standings';
+
+    const res = await fetch(url);
+    const result = await res.json();
+
+    if (result.success && Array.isArray(result.data)) {
+      standingsData = result.data;
+      renderTableRows(standingsData, tbody);
+    } else {
+      tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: #ef4444; padding: 2rem;">Failed to load standings.</td></tr>`;
+    }
+  } catch (e) {
+    console.error('Error fetching standings:', e);
+  }
+}
+
+function renderTableRows(players, tbody) {
+  if (!players || players.length === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="8" style="text-align: center; color: #94a3b8; padding: 2.5rem;">
+          No competitor standings found for this game category.
+        </td>
+      </tr>
+    `;
+    return;
+  }
+
+  tbody.innerHTML = players.map(p => {
+    let rankBadge = `#${p.rank}`;
+    if (p.rank === 1) rankBadge = `<span class="korg-rank-badge korg-rank-1">1</span>`;
+    else if (p.rank === 2) rankBadge = `<span class="korg-rank-badge korg-rank-2">2</span>`;
+    else if (p.rank === 3) rankBadge = `<span class="korg-rank-badge korg-rank-3">3</span>`;
+
+    return `
+      <tr>
+        <td class="korg-rank-cell">${rankBadge}</td>
+        <td>
+          <div class="korg-player-cell">
+            <div class="korg-player-avatar">${p.avatar || '🎮'}</div>
+            <div class="korg-player-meta">
+              <span class="korg-player-name">${p.name}</span>
+              <span class="korg-player-sub">${p.handle || ''} • ${p.dept || 'Campus Arena'}</span>
+            </div>
+          </div>
+        </td>
+        <td>
+          <span class="korg-tier-badge">${p.tier || 'Bronze'}</span>
+        </td>
+        <td style="text-align: center; font-weight: 600;">${p.matches || 0}</td>
+        <td style="text-align: center; font-weight: 600;">${p.wins || 0}</td>
+        <td style="text-align: center; color: #94a3b8;">${p.bestFinish || '1st'}</td>
+        <td style="text-align: center; color: #38bdf8; font-weight: 700;">${p.winRate || '0%'}</td>
+        <td style="text-align: right;">
+          <span class="korg-cp-pill">${p.cp || 0} CP</span>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+// Backward compatibility class for old invocation if needed
 export class LeaderboardManager {
   constructor(app) {
     this.app = app;
-    this.activeFilter = 'global';
-    this.searchTerm = '';
   }
-
   init(containerId) {
-    this.container = document.getElementById(containerId);
-    if (!this.container) return;
-    this.render();
-  }
-
-  setFilter(filterId) {
-    this.activeFilter = filterId;
-    this.render();
-  }
-
-  render() {
-    const rawList = LEADERBOARD_DATA[this.activeFilter] || LEADERBOARD_DATA.global;
-    const filteredList = rawList.filter(player => 
-      player.name.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-      (player.team && player.team.toLowerCase().includes(this.searchTerm.toLowerCase()))
-    );
-
-    this.container.innerHTML = `
-      <div class="leaderboard-hub">
-        <div class="lb-header">
-          <div>
-            <h3 class="title-glow">🏆 Elite Competitor Leaderboard</h3>
-            <p class="subtitle">Global & title rankings updated in real-time after verified tournament matches.</p>
-          </div>
-
-          <div class="lb-controls">
-            <div class="lb-search-box">
-              <input type="text" id="lb-search-input" placeholder="Search player or team..." value="${this.searchTerm}">
-            </div>
-          </div>
-        </div>
-
-        <div class="lb-filter-tabs">
-          <button class="lb-tab-btn ${this.activeFilter === 'global' ? 'active' : ''}" data-filter="global">🌐 Global All-Stars</button>
-          <button class="lb-tab-btn ${this.activeFilter === 'freefire' ? 'active' : ''}" data-filter="freefire"><img src="assets/logos/freefire.png" class="chip-game-logo" alt="Free Fire"> Free Fire</button>
-          <button class="lb-tab-btn ${this.activeFilter === 'bgmi' ? 'active' : ''}" data-filter="bgmi"><img src="assets/logos/bgmi.png" class="chip-game-logo" alt="BGMI"> BGMI</button>
-          <button class="lb-tab-btn ${this.activeFilter === 'valorant' ? 'active' : ''}" data-filter="valorant"><img src="assets/logos/valorant.png" class="chip-game-logo" alt="Valorant"> Valorant</button>
-          <button class="lb-tab-btn ${this.activeFilter === 'mobalegends' ? 'active' : ''}" data-filter="mobalegends"><img src="assets/logos/mobalegends.png" class="chip-game-logo" alt="MOBA Legends"> MOBA Legends</button>
-        </div>
-
-        <div class="lb-table-wrapper">
-          <table class="lb-table">
-            <thead>
-              <tr>
-                <th class="th-rank">Rank</th>
-                <th class="th-player">Competitor</th>
-                <th class="th-tier">Competitive Tier</th>
-                <th class="th-winrate">Win Rate</th>
-                <th class="th-stat">Primary Specialization</th>
-                <th class="th-team">Team Org</th>
-                <th class="th-action">Dossier</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${filteredList.map(p => `
-                <tr class="lb-row ${p.rank <= 3 ? 'top-podium rank-' + p.rank : ''}">
-                  <td class="td-rank">
-                    ${p.rank === 1 ? '<span class="crown-icon gold">🥇 #1</span>' :
-                      p.rank === 2 ? '<span class="crown-icon silver">🥈 #2</span>' :
-                      p.rank === 3 ? '<span class="crown-icon bronze">🥉 #3</span>' :
-                      `#${p.rank}`}
-                  </td>
-                  <td class="td-player">
-                    <div class="player-cell">
-                      <span class="p-flag">${p.country || '🌐'}</span>
-                      <div class="p-names">
-                        <strong class="p-ign">${p.name}</strong>
-                        <span class="p-tag text-muted">${p.tag || ''}</span>
-                      </div>
-                    </div>
-                  </td>
-                  <td class="td-tier">
-                    <span class="tier-pill">${p.tier}</span>
-                  </td>
-                  <td class="td-winrate">
-                    <span class="winrate-val text-neon">${p.winRate}</span>
-                  </td>
-                  <td class="td-stat">
-                    ${p.main || p.mainWeapon || p.mainChar || p.mainHero || p.favoriteCard || p.game || '--'}
-                  </td>
-                  <td class="td-team">
-                    <span class="team-badge">${p.team || 'Free Agent'}</span>
-                  </td>
-                  <td class="td-action">
-                    <button class="inspect-player-btn" data-player="${p.name}">Inspect</button>
-                  </td>
-                </tr>
-              `).join('')}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    `;
-
-    // Event listeners
-    this.container.querySelectorAll('.lb-tab-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        sound.playTabSwitch();
-        this.setFilter(btn.dataset.filter);
-      });
-    });
-
-    const searchInput = this.container.querySelector('#lb-search-input');
-    searchInput.addEventListener('input', (e) => {
-      this.searchTerm = e.target.value;
-      this.render();
-    });
-
-    this.container.querySelectorAll('.inspect-player-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        sound.playClick();
-        const pName = btn.dataset.player;
-        const player = rawList.find(p => p.name === pName);
-        if (player) this.openPlayerDossier(player);
-      });
-    });
-  }
-
-  openPlayerDossier(player) {
-    const modalOverlay = document.getElementById('modal-overlay');
-    const modalContent = document.getElementById('modal-content');
-    if (!modalOverlay || !modalContent) return;
-
-    modalContent.innerHTML = `
-      <div class="player-dossier-card">
-        <div class="modal-header">
-          <h3 class="title-glow">🎖️ Verified Competitor Dossier</h3>
-          <button id="close-modal-btn" class="close-btn">×</button>
-        </div>
-
-        <div class="dossier-hero">
-          <div class="dossier-avatar">${typeof player.avatar === 'string' && (player.avatar.startsWith('http') || player.avatar.startsWith('data:')) ? `<img src="${player.avatar}" alt="" style="width:48px;height:48px;border-radius:50%;object-fit:cover;" referrerpolicy="no-referrer">` : (player.avatar || '🦊')}</div>
-          <div>
-            <h2 class="dossier-name">${player.name} <span class="text-neon">${player.tag || ''}</span> ${player.country || ''}</h2>
-            <p class="dossier-team">Team: <strong>${player.team || 'Independent Pro'}</strong> • Rank: <strong>${player.tier}</strong></p>
-          </div>
-        </div>
-
-        <div class="dossier-grid">
-          <div class="dossier-stat-box">
-            <span class="dsb-lbl">Rating Elo</span>
-            <strong class="dsb-val text-neon">${player.rating || '2750'}</strong>
-          </div>
-          <div class="dossier-stat-box">
-            <span class="dsb-lbl">Win Ratio</span>
-            <strong class="dsb-val text-warning">${player.winRate}</strong>
-          </div>
-          <div class="dossier-stat-box">
-            <span class="dsb-lbl">Main Specialization</span>
-            <strong class="dsb-val text-cyan">${player.main || player.mainWeapon || player.mainChar || player.mainHero || player.favoriteCard || player.game}</strong>
-          </div>
-          <div class="dossier-stat-box">
-            <span class="dsb-lbl">Career Arena Earnings</span>
-            <strong class="dsb-val text-success">${player.earnings || '$25,000+'}</strong>
-          </div>
-        </div>
-
-        <div class="dossier-achievements">
-          <h4>🏅 Verified Arena Honors</h4>
-          <div class="achieve-tags">
-            <span class="a-tag">⭐ MVP Award Stage 1</span>
-            <span class="a-tag">🎯 First Blood Specialist</span>
-            <span class="a-tag">🛡️ Grand Finalist 2026</span>
-            <span class="a-tag">👑 Kugofox Hall of Fame</span>
-          </div>
-        </div>
-      </div>
-    `;
-
-    modalOverlay.style.display = 'flex';
-    document.getElementById('close-modal-btn').addEventListener('click', () => {
-      modalOverlay.style.display = 'none';
-    });
+    initLeaderboard(containerId || 'view-leaderboard');
   }
 }

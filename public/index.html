@@ -18,6 +18,7 @@
   <link rel="stylesheet" href="css/style.css?v=2.4.0">
   <link rel="stylesheet" href="css/korg-layout.css?v=2.4.0">
   <link rel="stylesheet" href="css/auth-modal.css?v=2.4.0">
+  <link rel="stylesheet" href="css/korg-views.css?v=2.5.0">
   <!-- Official Google Identity Services SDK -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
@@ -27,26 +28,38 @@
   <canvas id="bg-cyber-canvas"></canvas>
 
   <div class="app-layout-root">
+    <!-- TOP ANNOUNCEMENT TICKER (Screenshot 5) -->
+    <div class="korg-announcement-ticker" id="korg-announcement-ticker">
+      <div class="korg-ticker-content">
+        <span class="korg-ticker-dot"></span>
+        <span>🟣 FF week-1 registration opened till 6pm 12thsep</span>
+      </div>
+      <button class="korg-ticker-cta" id="ticker-cta-btn" data-view-target="events">
+        Register Now ➔
+      </button>
+    </div>
+
     <!-- TOP NAVIGATION BAR (Exact korg.buzz replica) -->
     <header class="korg-topbar" id="korg-topbar">
       <!-- Brand Logo Left -->
-      <div class="korg-brand-box" id="brand-home-btn">
+      <div class="korg-brand-box" id="brand-home-btn" data-view-target="home" style="cursor: pointer;">
         <img src="assets/kugofox_logo.png" alt="KUGOFOX" class="korg-brand-icon">
         <span class="korg-brand-name">KUGOFOX</span>
       </div>
 
       <!-- Center Nav Pills -->
       <nav class="korg-center-nav" aria-label="Main Navigation">
-        <button class="korg-nav-pill active" data-nav="home" id="top-nav-home">HOME</button>
-        <button class="korg-nav-pill" data-nav="games" id="top-nav-games">Games</button>
-        <button class="korg-nav-pill" data-nav="squads" id="top-nav-squads">Squads</button>
-        <button class="korg-nav-pill" data-nav="events" id="top-nav-events">Events & Scrims</button>
-        <button class="korg-nav-pill" data-nav="leaderboard" id="top-nav-leaderboard">Leaderboard</button>
+        <button class="korg-nav-pill active" data-view-target="home" id="top-nav-home">HOME</button>
+        <button class="korg-nav-pill" data-view-target="games" id="top-nav-games">Games</button>
+        <button class="korg-nav-pill" data-view-target="squads" id="top-nav-squads">Squads</button>
+        <button class="korg-nav-pill" data-view-target="events" id="top-nav-events">Events & Scrims</button>
+        <button class="korg-nav-pill" data-view-target="leaderboard" id="top-nav-leaderboard">Standings</button>
+        <button class="korg-nav-pill" data-view-target="admin" id="top-nav-admin" style="border-color: rgba(0, 240, 255, 0.35); color: #00f0ff;">⚙️ Admin</button>
       </nav>
 
       <!-- Right Header Actions -->
       <div class="korg-right-actions">
-        <button class="btn-find-team" id="find-team-btn">
+        <button class="btn-find-team" id="find-team-btn" data-view-target="squads">
           <span class="icon-user">👥</span>
           <span>FIND TEAM</span>
           <span class="badge-new-pill">NEW</span>
@@ -75,7 +88,15 @@
 
         <!-- Sidebar Navigation Menu -->
         <div class="sidebar-menu-list">
-          <button class="sidebar-menu-item active" data-target="games" id="sb-nav-games">
+          <button class="sidebar-menu-item active" data-view-target="home" id="sb-nav-home">
+            <div class="sb-item-left">
+              <span class="sb-icon">⚡</span>
+              <span class="sb-label">Arena Home</span>
+            </div>
+            <span class="sb-count">00</span>
+          </button>
+
+          <button class="sidebar-menu-item" data-view-target="games" id="sb-nav-games">
             <div class="sb-item-left">
               <span class="sb-icon">🎮</span>
               <span class="sb-label">Games</span>
@@ -83,7 +104,7 @@
             <span class="sb-count">01</span>
           </button>
 
-          <button class="sidebar-menu-item" data-target="squads" id="sb-nav-squads">
+          <button class="sidebar-menu-item" data-view-target="squads" id="sb-nav-squads">
             <div class="sb-item-left">
               <span class="sb-icon">👥</span>
               <span class="sb-label">Squads</span>
@@ -91,7 +112,7 @@
             <span class="sb-count">02</span>
           </button>
 
-          <button class="sidebar-menu-item" data-target="findteam" id="sb-nav-findteam">
+          <button class="sidebar-menu-item" data-view-target="squads" id="sb-nav-findteam">
             <div class="sb-item-left">
               <span class="sb-icon">👤</span>
               <span class="sb-label">Find Team</span>
@@ -99,7 +120,7 @@
             <span class="sb-badge-new">NEW</span>
           </button>
 
-          <button class="sidebar-menu-item" data-target="events" id="sb-nav-events">
+          <button class="sidebar-menu-item" data-view-target="events" id="sb-nav-events">
             <div class="sb-item-left">
               <span class="sb-icon">📅</span>
               <span class="sb-label">Events & Scrims</span>
@@ -107,12 +128,20 @@
             <span class="sb-count">03</span>
           </button>
 
-          <button class="sidebar-menu-item" data-target="leaderboard" id="sb-nav-lb">
+          <button class="sidebar-menu-item" data-view-target="leaderboard" id="sb-nav-lb">
             <div class="sb-item-left">
               <span class="sb-icon">🏆</span>
-              <span class="sb-label">Leaderboard</span>
+              <span class="sb-label">Standings</span>
             </div>
             <span class="sb-count">04</span>
+          </button>
+
+          <button class="sidebar-menu-item" data-view-target="admin" id="sb-nav-admin">
+            <div class="sb-item-left">
+              <span class="sb-icon">⚙️</span>
+              <span class="sb-label">Admin Hub</span>
+            </div>
+            <span class="sb-badge-new" style="background: rgba(0, 240, 255, 0.15); color: #00f0ff; border-color: rgba(0, 240, 255, 0.3);">MOD</span>
           </button>
         </div>
 
@@ -123,7 +152,7 @@
         <div class="sidebar-featured-games">
           <div class="sb-featured-header">
             <span class="sb-f-title">FEATURED GAMES</span>
-            <button class="sb-f-link" id="sb-view-all-btn">View All ➔</button>
+            <button class="sb-f-link" id="sb-view-all-btn" data-view-target="games">View All ➔</button>
           </div>
 
           <div class="sb-games-list" id="sb-games-list">
@@ -157,8 +186,11 @@
       <!-- MAIN CONTENT STAGE -->
       <main class="korg-main-area" id="korg-main-area">
 
-        <!-- HERO SECTION (Cyberpunk Enter The Fox Arena with Interactive Headphone) -->
-        <section class="korg-hero-section cyberpunk-hero-section" id="section-hero">
+        <!-- VIEW 1: HOME (ARENA STAGE) -->
+        <div id="view-home" class="korg-view active">
+
+          <!-- HERO SECTION (Cyberpunk Enter The Fox Arena with Interactive Headphone) -->
+          <section class="korg-hero-section cyberpunk-hero-section" id="section-hero">
           <!-- LEFT COLUMN: Cyberpunk Title & CTA -->
           <div class="hero-left-col">
             <!-- Cyber Protocol Badge -->
@@ -391,21 +423,22 @@
             </div>
           </div>
         </section>
+        </div> <!-- /view-home -->
 
-        <!-- COMPETITOR STANDINGS & DOSSIERS -->
-        <section class="korg-section" id="section-leaderboard">
-          <div class="korg-section-header">
-            <div class="sh-left">
-              <span class="sh-icon">🎖️</span>
-              <h2 class="sh-title">Competitor Standings & Dossiers</h2>
-            </div>
-            <p class="sh-desc">Official verified ladder rankings and career statistics across all 4 competitive titles.</p>
-          </div>
+        <!-- VIEW 2: CAMPUS GAMES DIRECTORY (Screenshot 3) -->
+        <div id="view-games" class="korg-view"></div>
 
-          <div id="leaderboard-container">
-            <!-- Populated by leaderboard.js -->
-          </div>
-        </section>
+        <!-- VIEW 3: PLAYER FINDER / SQUADS LFG (Screenshot 1) -->
+        <div id="view-squads" class="korg-view"></div>
+
+        <!-- VIEW 4: CAMPUS SCRIMS & TOURNAMENTS (Screenshot 4) -->
+        <div id="view-events" class="korg-view"></div>
+
+        <!-- VIEW 5: COMPETITIVE STANDINGS / CP LEADERBOARD (Screenshot 2) -->
+        <div id="view-leaderboard" class="korg-view"></div>
+
+        <!-- VIEW 6: ARENA ADMIN CONTROL PANEL (Events, Prize Pool, CP) -->
+        <div id="view-admin" class="korg-view"></div>
 
         <!-- FOOTER -->
         <footer class="korg-footer">
