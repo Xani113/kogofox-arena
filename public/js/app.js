@@ -4,7 +4,7 @@
  * Replicating Photo 1 (Home Stage) & Photo 2 (3D Coverflow Gallery)
  */
 
-import { sound } from './modules/soundEngine.js?v=2.4.0';
+import { sound } from './modules/soundEngine.js?v=2.4.1';
 import { GAMES_DATA } from './data/gamesData.js?v=2.4.0';
 import { CoverflowGallery } from './modules/coverflow.js?v=2.4.0';
 import { RegistrationModal } from './modules/registrationModal.js?v=2.4.0';
@@ -12,7 +12,7 @@ import { StreamHud } from './modules/streamHud.js?v=2.4.0';
 import { MiniGameManager } from './modules/minigames.js?v=2.4.0';
 import { LeaderboardManager } from './modules/leaderboard.js?v=2.4.0';
 import { CyberHeadphoneController } from './modules/cyberHeadphone.js?v=2.4.0';
-import { AuthModal } from './modules/authModal.js?v=2.4.0';
+import { AuthModal } from './modules/authModal.js?v=2.4.1';
 import { PixelStarsEngine } from './modules/pixelStars.js?v=2.5.0';
 import { TournamentSystem } from './modules/tournamentSystem.js?v=2.4.0';
 import { initViewController, switchView, toggleMobileMenu } from './modules/viewController.js?v=2.5.0';

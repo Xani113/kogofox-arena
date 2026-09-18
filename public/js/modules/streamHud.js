@@ -1,6 +1,6 @@
 /**
  * Kugofox Gaming Arena - Live Spectator Broadcast Feed
- * Connected to MongoDB live chat collection
+ * Connected to PostgreSQL live chat
  */
 
 import { sound } from './soundEngine.js';
@@ -71,7 +71,7 @@ export class StreamHud {
     this.container = document.getElementById(containerId);
     if (!this.container) return;
     
-    // Fetch live messages from MongoDB
+    // Fetch live messages from API
     try {
       const res = await fetch('/api/chat');
       if (res.ok) {
@@ -143,7 +143,7 @@ export class StreamHud {
         <div class="stream-chat-box">
           <div class="chat-header">
             <span>💬 Live Arena Spectator Chat</span>
-            <span class="chat-speed">MONGODB SYNC</span>
+            <span class="chat-speed">DB SYNC</span>
           </div>
 
           <div class="chat-messages-container" id="stream-chat-msgs">
@@ -190,7 +190,7 @@ export class StreamHud {
       this.addChatMessage(msgObj);
       input.value = '';
 
-      // Save to MongoDB
+      // Save to Database
       try {
         await fetch('/api/chat', {
           method: 'POST',
@@ -198,7 +198,7 @@ export class StreamHud {
           body: JSON.stringify(msgObj)
         });
       } catch (err) {
-        console.warn('[MongoDB Chat]:', err.message);
+        console.warn('[DB Chat]:', err.message);
       }
     });
   }

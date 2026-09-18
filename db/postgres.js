@@ -1,11 +1,12 @@
 /**
- * Kugofox Gaming Arena - MongoDB Database Layer
- * Connects to MongoDB (Local or MongoDB Atlas) with resilient auto-seeding & fallback
+ * Kugofox Gaming Arena - PostgreSQL Database Layer
+ * Connects to PostgreSQL (Local or Cloud: Neon, Supabase, Render, AWS RDS)
+ * Provides resilient connection pooling, auto-schema migration, and fallback storage
  */
 
-import { MongoClient, ObjectId } from 'mongodb';
+import pkg from 'pg';
+const { Pool } = pkg;
 import dotenv from 'dotenv';
-import dns from 'dns';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -14,28 +15,25 @@ import { LEADERBOARD_DATA } from '../js/data/leaderboardData.js';
 
 dotenv.config();
 
-// Ensure Google & Cloudflare DNS for Node.js SRV queries on Windows
-try {
-  dns.setServers(['8.8.8.8', '1.1.1.1', '8.8.4.4']);
-} catch (dnsErr) {
-  console.warn('[MongoDB] DNS server set notice:', dnsErr.message);
-}
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const LOCAL_STORE_FILE = path.join(__dirname, 'local_store.json');
 export const STANDINGS_RETENTION_MS = 10 * 24 * 60 * 60 * 1000; // 10 days retention for completed match standings
 
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/kugofox_arena';
-const DB_NAME = process.env.DB_NAME || 'kugofox_arena';
+// Database configuration
+const DATABASE_URL = process.env.DATABASE_URL || '';
+const PGHOST = process.env.PGHOST || 'localhost';
+const PGPORT = parseInt(process.env.PGPORT || '5432', 10);
+const PGUSER = process.env.PGUSER || 'postgres';
+const PGPASSWORD = process.env.PGPASSWORD || '';
+const PGDATABASE = process.env.PGDATABASE || 'kugofox_arena';
 
-let client = null;
-let db = null;
+let pool = null;
 let isConnected = false;
 let connectionError = null;
 let connectingPromise = null;
 let lastAttemptTime = 0;
-const RETRY_COOLDOWN_MS = 30000; // Only retry connection every 30s to avoid blocking requests
+const RETRY_COOLDOWN_MS = 30000;
 
 export const INITIAL_SQUADS = [
   {
@@ -239,8 +237,8 @@ export const INITIAL_EVENTS = [
     registeredSquads: 16,
     status: "completed",
     winner: "Sentinels X",
-    completedAt: new Date(Date.now() - 7 * 86400000), // completed 7 days ago
-    expiresAt: new Date(Date.now() + 3 * 86400000),   // 3 days remaining of 10-day retention
+    completedAt: new Date(Date.now() - 7 * 86400000),
+    expiresAt: new Date(Date.now() + 3 * 86400000),
     description: "Collegiate single-elimination tournament across Haven & Ascent.",
     icon: "assets/logos/valorant.png"
   },
@@ -257,8 +255,8 @@ export const INITIAL_EVENTS = [
     registeredSquads: 8,
     status: "completed",
     winner: "Kugofox Mystic",
-    completedAt: new Date(Date.now() - 2 * 86400000), // completed 2 days ago
-    expiresAt: new Date(Date.now() + 8 * 86400000),   // 8 days remaining of 10-day retention
+    completedAt: new Date(Date.now() - 2 * 86400000),
+    expiresAt: new Date(Date.now() + 8 * 86400000),
     description: "Ranked 5v5 draft tournament with verified collegiate rosters.",
     icon: "assets/logos/mobalegends.png"
   }
@@ -316,11 +314,13 @@ export function saveLocalStore() {
   }
 }
 
+/**
+ * Configure & connect PostgreSQL pool
+ */
 export async function connectDB() {
-  if (isConnected && db) return db;
+  if (isConnected && pool) return pool;
   if (connectingPromise) return connectingPromise;
 
-  // If a connection attempt recently failed, skip waiting and immediately use resilient storage mode
   if (Date.now() - lastAttemptTime < RETRY_COOLDOWN_MS) {
     return null;
   }
@@ -328,25 +328,55 @@ export async function connectDB() {
   lastAttemptTime = Date.now();
   connectingPromise = (async () => {
     try {
-      console.log(`[MongoDB] Connecting to ${MONGODB_URI.replace(/:[^:]*@/, ':****@')}...`);
-      client = new MongoClient(MONGODB_URI, {
-        serverSelectionTimeoutMS: 5000,
-        connectTimeoutMS: 5000
-      });
-      await client.connect();
-      db = client.db(DB_NAME);
+      let poolConfig = {};
+
+      if (DATABASE_URL) {
+        const isSslNeeded = DATABASE_URL.includes('sslmode=require') ||
+          process.env.PGSSL === 'true' ||
+          (!DATABASE_URL.includes('localhost') && !DATABASE_URL.includes('127.0.0.1'));
+
+        poolConfig = {
+          connectionString: DATABASE_URL,
+          ssl: isSslNeeded ? { rejectUnauthorized: false } : false,
+          connectionTimeoutMillis: 5000,
+          idleTimeoutMillis: 30000,
+          max: 10
+        };
+      } else {
+        const isLocal = PGHOST === 'localhost' || PGHOST === '127.0.0.1';
+        poolConfig = {
+          host: PGHOST,
+          port: PGPORT,
+          user: PGUSER,
+          password: PGPASSWORD,
+          database: PGDATABASE,
+          ssl: isLocal ? false : { rejectUnauthorized: false },
+          connectionTimeoutMillis: 5000,
+          idleTimeoutMillis: 30000,
+          max: 10
+        };
+      }
+
+      console.log(`[PostgreSQL] Connecting to ${poolConfig.connectionString ? poolConfig.connectionString.replace(/:[^:@]*@/, ':****@') : `${poolConfig.host}:${poolConfig.port}/${poolConfig.database}`}...`);
+
+      pool = new Pool(poolConfig);
+
+      // Verify connection with test query
+      const client = await pool.connect();
+      client.release();
+
       isConnected = true;
       connectionError = null;
-      console.log(`[MongoDB] Successfully connected to database: ${DB_NAME}`);
+      console.log(`[PostgreSQL] Successfully connected to database: ${DATABASE_URL ? (DATABASE_URL.split('/').pop() || 'database').split('?')[0] : PGDATABASE}`);
 
-      // Seed initial data once if brand new database
-      await seedInitialData();
-      return db;
+      // Auto-migrate tables and seed initial data
+      await initializeSchema();
+      return pool;
     } catch (err) {
       isConnected = false;
       connectionError = err.message;
-      console.warn(`[MongoDB] Notice: Could not connect (${err.message.split('\n')[0]}).`);
-      console.warn(`[MongoDB] Running in Resilient Storage Mode.`);
+      console.warn(`[PostgreSQL] Notice: Could not connect (${err.message.split('\n')[0]}).`);
+      console.warn(`[PostgreSQL] Running in Resilient Local Storage Mode.`);
       return null;
     } finally {
       connectingPromise = null;
@@ -356,61 +386,235 @@ export async function connectDB() {
   return connectingPromise;
 }
 
-async function seedInitialData() {
-  if (!isConnected || !db) return;
+/**
+ * Auto-create PostgreSQL tables and seed if empty
+ */
+async function initializeSchema() {
+  if (!isConnected || !pool) return;
   try {
-    const meta = await db.collection('_metadata').findOne({ key: 'seeded_v1' });
-    if (meta) {
-      // Database has already been initialized previously. Never overwrite or re-seed deleted items.
+    // 1. Create tables
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS users (
+        id VARCHAR(120) PRIMARY KEY,
+        full_name TEXT,
+        username VARCHAR(100) UNIQUE,
+        email VARCHAR(255) UNIQUE,
+        password TEXT,
+        division VARCHAR(50),
+        department TEXT,
+        avatar TEXT,
+        stats JSONB DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ DEFAULT NOW()
+      );
+
+      CREATE TABLE IF NOT EXISTS tournaments (
+        id VARCHAR(120) PRIMARY KEY,
+        data JSONB,
+        created_at TIMESTAMPTZ DEFAULT NOW()
+      );
+
+      CREATE TABLE IF NOT EXISTS registrations (
+        id VARCHAR(120) PRIMARY KEY,
+        data JSONB,
+        created_at TIMESTAMPTZ DEFAULT NOW()
+      );
+
+      CREATE TABLE IF NOT EXISTS votes (
+        id VARCHAR(120) PRIMARY KEY,
+        match_id VARCHAR(120),
+        team_name TEXT,
+        voted_at TIMESTAMPTZ DEFAULT NOW()
+      );
+
+      CREATE TABLE IF NOT EXISTS chat_messages (
+        id SERIAL PRIMARY KEY,
+        user_name TEXT,
+        badge TEXT,
+        text TEXT,
+        time TEXT,
+        created_at TIMESTAMPTZ DEFAULT NOW()
+      );
+
+      CREATE TABLE IF NOT EXISTS squads (
+        id VARCHAR(120) PRIMARY KEY,
+        name TEXT,
+        game VARCHAR(50),
+        game_name TEXT,
+        type VARCHAR(50),
+        status VARCHAR(50),
+        mic_required BOOLEAN,
+        total_slots INT,
+        filled_slots INT,
+        leader TEXT,
+        color TEXT,
+        letter VARCHAR(10),
+        avatar_img TEXT,
+        avatar_icon TEXT,
+        roster JSONB DEFAULT '[]'::jsonb,
+        created_at TIMESTAMPTZ DEFAULT NOW()
+      );
+
+      CREATE TABLE IF NOT EXISTS events (
+        id VARCHAR(120) PRIMARY KEY,
+        title TEXT,
+        badge TEXT,
+        tag TEXT,
+        game VARCHAR(50),
+        game_name TEXT,
+        date TEXT,
+        prize_pool TEXT,
+        max_squads INT,
+        registered_squads INT,
+        status VARCHAR(50),
+        description TEXT,
+        icon TEXT,
+        winner TEXT,
+        completed_at TIMESTAMPTZ,
+        expires_at TIMESTAMPTZ,
+        created_at TIMESTAMPTZ DEFAULT NOW()
+      );
+
+      CREATE TABLE IF NOT EXISTS standings (
+        id VARCHAR(120) PRIMARY KEY,
+        match_id VARCHAR(120),
+        match_title TEXT,
+        rank INT,
+        name TEXT,
+        handle TEXT,
+        dept TEXT,
+        tier TEXT,
+        matches INT,
+        wins INT,
+        best_finish TEXT,
+        win_rate TEXT,
+        cp INT,
+        game VARCHAR(50),
+        avatar TEXT,
+        completed_at TIMESTAMPTZ,
+        expires_at TIMESTAMPTZ,
+        created_at TIMESTAMPTZ DEFAULT NOW()
+      );
+
+      CREATE TABLE IF NOT EXISTS _metadata (
+        key VARCHAR(100) PRIMARY KEY,
+        value JSONB,
+        created_at TIMESTAMPTZ DEFAULT NOW()
+      );
+    `);
+
+    // 2. Check if seeded
+    const metaCheck = await pool.query(`SELECT value FROM _metadata WHERE key = 'seeded_v1'`);
+    if (metaCheck.rows.length > 0) {
       return;
     }
 
-    console.log('[MongoDB] Performing one-time initial seed for new database...');
-    if (Array.isArray(TOURNAMENTS_DATA) && TOURNAMENTS_DATA.length > 0) {
-      await db.collection('tournaments').insertMany(TOURNAMENTS_DATA).catch(() => {});
+    console.log('[PostgreSQL] Initializing tables with default seed data...');
+
+    // Seed tournaments
+    if (Array.isArray(TOURNAMENTS_DATA)) {
+      for (const t of TOURNAMENTS_DATA) {
+        await pool.query(
+          `INSERT INTO tournaments (id, data) VALUES ($1, $2) ON CONFLICT (id) DO NOTHING`,
+          [t.id || 'tour-' + Math.random().toString(36).substring(2, 8), JSON.stringify(t)]
+        );
+      }
     }
-    await db.collection('leaderboard').updateOne(
-      { id: 'current' },
-      { $set: { id: 'current', data: LEADERBOARD_DATA } },
-      { upsert: true }
-    ).catch(() => {});
-    if (Array.isArray(fallbackStore.users) && fallbackStore.users.length > 0) {
-      await db.collection('users').insertMany(fallbackStore.users).catch(() => {});
+
+    // Seed squads
+    if (Array.isArray(INITIAL_SQUADS)) {
+      for (const s of INITIAL_SQUADS) {
+        await pool.query(
+          `INSERT INTO squads (id, name, game, game_name, type, status, mic_required, total_slots, filled_slots, leader, color, letter, avatar_img, avatar_icon, roster)
+           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
+           ON CONFLICT (id) DO NOTHING`,
+          [
+            s.id, s.name, s.game, s.gameName, s.type, s.status, s.micRequired,
+            s.totalSlots, s.filledSlots, s.leader, s.color || null, s.letter || null,
+            s.avatarImg || null, s.avatarIcon || null, JSON.stringify(s.roster || [])
+          ]
+        );
+      }
     }
-    if (Array.isArray(INITIAL_SQUADS) && INITIAL_SQUADS.length > 0) {
-      await db.collection('squads').insertMany(INITIAL_SQUADS).catch(() => {});
+
+    // Seed events
+    if (Array.isArray(INITIAL_EVENTS)) {
+      for (const e of INITIAL_EVENTS) {
+        await pool.query(
+          `INSERT INTO events (id, title, badge, tag, game, game_name, date, prize_pool, max_squads, registered_squads, status, description, icon, winner, completed_at, expires_at)
+           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)
+           ON CONFLICT (id) DO NOTHING`,
+          [
+            e.id, e.title, e.badge, e.tag, e.game, e.gameName, e.date, e.prizePool,
+            e.maxSquads, e.registeredSquads, e.status, e.description, e.icon,
+            e.winner || '', e.completedAt || null, e.expiresAt || null
+          ]
+        );
+      }
     }
-    if (Array.isArray(INITIAL_EVENTS) && INITIAL_EVENTS.length > 0) {
-      await db.collection('events').insertMany(INITIAL_EVENTS).catch(() => {});
+
+    // Seed standings
+    if (Array.isArray(INITIAL_STANDINGS)) {
+      for (const st of INITIAL_STANDINGS) {
+        await pool.query(
+          `INSERT INTO standings (id, match_id, match_title, rank, name, handle, dept, tier, matches, wins, best_finish, win_rate, cp, game, avatar, completed_at, expires_at)
+           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)
+           ON CONFLICT (id) DO NOTHING`,
+          [
+            st.id, st.matchId, st.matchTitle, st.rank, st.name, st.handle, st.dept,
+            st.tier, st.matches, st.wins, st.bestFinish, st.winRate, st.cp,
+            st.game, st.avatar, st.completedAt || null, st.expiresAt || null
+          ]
+        );
+      }
     }
-    if (Array.isArray(INITIAL_STANDINGS) && INITIAL_STANDINGS.length > 0) {
-      await db.collection('standings').insertMany(INITIAL_STANDINGS).catch(() => {});
+
+    // Seed users from fallback if any
+    if (Array.isArray(fallbackStore.users)) {
+      for (const u of fallbackStore.users) {
+        await pool.query(
+          `INSERT INTO users (id, full_name, username, email, password, division, department, avatar, stats)
+           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+           ON CONFLICT (id) DO NOTHING`,
+          [
+            u.id, u.fullName || '', u.username, u.email, u.password,
+            u.division || 'campus', u.department || '', u.avatar || '🎓', JSON.stringify(u.stats || {})
+          ]
+        );
+      }
     }
-    await db.collection('_metadata').insertOne({ key: 'seeded_v1', seededAt: new Date() });
-    console.log('[MongoDB] Initial database seed completed.');
-  } catch (e) {
-    console.error('[MongoDB] Error during seeding:', e.message);
+
+    await pool.query(`INSERT INTO _metadata (key, value) VALUES ('seeded_v1', '{"seeded": true}') ON CONFLICT (key) DO NOTHING`);
+    console.log('[PostgreSQL] Initial schema & seed completed successfully.');
+  } catch (err) {
+    console.error('[PostgreSQL] Schema initialization error:', err.message);
   }
 }
 
 export function getDBStatus() {
+  const connectionUri = DATABASE_URL
+    ? DATABASE_URL.replace(/:[^:@]*@/, ':****@')
+    : `${PGUSER}@${PGHOST}:${PGPORT}/${PGDATABASE}`;
+
   return {
     connected: isConnected,
-    uri: isConnected ? MONGODB_URI.replace(/:[^:]*@/, ':****@') : MONGODB_URI,
-    dbName: DB_NAME,
-    status: isConnected ? 'Connected (MongoDB Engine)' : 'Standby Mode (Memory Sync Active)',
+    engine: 'PostgreSQL',
+    uri: connectionUri,
+    dbName: DATABASE_URL ? (DATABASE_URL.split('/').pop() || 'database').split('?')[0] : PGDATABASE,
+    status: isConnected ? 'Connected (PostgreSQL Engine)' : 'Standby Mode (Local Sync Active)',
     error: connectionError
   };
 }
 
 /* ================== TOURNAMENT REPOSITORY ================== */
 export async function getTournaments() {
-  if (isConnected && db) {
+  if (isConnected && pool) {
     try {
-      const list = await db.collection('tournaments').find({}).toArray();
-      if (list && list.length > 0) return list;
+      const res = await pool.query(`SELECT data FROM tournaments ORDER BY created_at DESC`);
+      if (res.rows && res.rows.length > 0) {
+        return res.rows.map(r => r.data);
+      }
     } catch (e) {
-      console.error('[MongoDB] Query error:', e.message);
+      console.error('[PostgreSQL] Query tournaments error:', e.message);
     }
   }
   return fallbackStore.tournaments;
@@ -418,17 +622,21 @@ export async function getTournaments() {
 
 /* ================== REGISTRATIONS REPOSITORY ================== */
 export async function saveRegistration(registration) {
+  const regId = registration.id || 'reg-' + Date.now() + '-' + Math.random().toString(36).substring(2, 6);
   const record = {
     ...registration,
+    id: regId,
     createdAt: new Date()
   };
 
-  if (isConnected && db) {
+  if (isConnected && pool) {
     try {
-      const result = await db.collection('registrations').insertOne(record);
-      record._id = result.insertedId;
+      await pool.query(
+        `INSERT INTO registrations (id, data, created_at) VALUES ($1, $2, $3)`,
+        [regId, JSON.stringify(record), record.createdAt]
+      );
     } catch (e) {
-      console.error('[MongoDB] Registration save error:', e.message);
+      console.error('[PostgreSQL] Save registration error:', e.message);
     }
   }
 
@@ -438,11 +646,14 @@ export async function saveRegistration(registration) {
 }
 
 export async function getRegistrations() {
-  if (isConnected && db) {
+  if (isConnected && pool) {
     try {
-      return await db.collection('registrations').find({}).sort({ createdAt: -1 }).toArray();
+      const res = await pool.query(`SELECT data FROM registrations ORDER BY created_at DESC`);
+      if (res.rows && res.rows.length > 0) {
+        return res.rows.map(r => r.data);
+      }
     } catch (e) {
-      console.error('[MongoDB] Query registrations error:', e.message);
+      console.error('[PostgreSQL] Query registrations error:', e.message);
     }
   }
   return fallbackStore.registrations;
@@ -450,21 +661,21 @@ export async function getRegistrations() {
 
 /* ================== VOTES / CHEERS REPOSITORY ================== */
 export async function recordVote(matchId, teamName) {
-  const voteDoc = {
-    matchId,
-    teamName,
-    votedAt: new Date()
-  };
+  const voteId = 'vt-' + Date.now() + '-' + Math.random().toString(36).substring(2, 6);
 
-  if (isConnected && db) {
+  if (isConnected && pool) {
     try {
-      await db.collection('votes').insertOne(voteDoc);
+      await pool.query(
+        `INSERT INTO votes (id, match_id, team_name, voted_at) VALUES ($1, $2, $3, NOW())`,
+        [voteId, matchId, teamName]
+      );
     } catch (e) {
-      console.error('[MongoDB] Vote record error:', e.message);
+      console.error('[PostgreSQL] Record vote error:', e.message);
     }
   }
 
   fallbackStore.votes[matchId] = teamName;
+  saveLocalStore();
   return { success: true, matchId, teamName };
 }
 
@@ -475,26 +686,32 @@ export async function saveChatMessage(chatMsg) {
     createdAt: new Date()
   };
 
-  if (isConnected && db) {
+  if (isConnected && pool) {
     try {
-      await db.collection('chat').insertOne(msg);
+      await pool.query(
+        `INSERT INTO chat_messages (user_name, badge, text, time, created_at) VALUES ($1, $2, $3, $4, $5)`,
+        [msg.user || msg.username || 'Anonymous', msg.badge || '', msg.text, msg.time || '', msg.createdAt]
+      );
     } catch (e) {
-      console.error('[MongoDB] Chat save error:', e.message);
+      console.error('[PostgreSQL] Save chat message error:', e.message);
     }
   }
 
   fallbackStore.chat.push(msg);
   if (fallbackStore.chat.length > 30) fallbackStore.chat.shift();
+  saveLocalStore();
   return msg;
 }
 
 export async function getChatMessages() {
-  if (isConnected && db) {
+  if (isConnected && pool) {
     try {
-      const msgs = await db.collection('chat').find({}).sort({ createdAt: 1 }).limit(30).toArray();
-      if (msgs && msgs.length > 0) return msgs;
+      const res = await pool.query(`SELECT user_name as user, badge, text, time, created_at as "createdAt" FROM chat_messages ORDER BY id ASC LIMIT 30`);
+      if (res.rows && res.rows.length > 0) {
+        return res.rows;
+      }
     } catch (e) {
-      console.error('[MongoDB] Chat query error:', e.message);
+      console.error('[PostgreSQL] Query chat error:', e.message);
     }
   }
   return fallbackStore.chat;
@@ -502,14 +719,6 @@ export async function getChatMessages() {
 
 /* ================== LEADERBOARD REPOSITORY ================== */
 export async function getLeaderboard() {
-  if (isConnected && db) {
-    try {
-      const lb = await db.collection('leaderboard').findOne({ id: 'current' });
-      if (lb && lb.data) return lb.data;
-    } catch (e) {
-      console.error('[MongoDB] Leaderboard query error:', e.message);
-    }
-  }
   return fallbackStore.leaderboard;
 }
 
@@ -528,17 +737,24 @@ export async function createUser(userData) {
     stats: {
       matchesPlayed: 0,
       tournamentsWon: 0,
-      kCoins: 500, // Welcome bonus
+      kCoins: 500,
       rank: 'Contender I'
     }
   };
 
-  if (isConnected && db) {
+  if (isConnected && pool) {
     try {
-      const res = await db.collection('users').insertOne(newUser);
-      newUser._id = res.insertedId;
+      await pool.query(
+        `INSERT INTO users (id, full_name, username, email, password, division, department, avatar, stats, created_at)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
+        [
+          newUser.id, newUser.fullName, newUser.username, newUser.email,
+          newUser.password, newUser.division, newUser.department,
+          newUser.avatar, JSON.stringify(newUser.stats), newUser.createdAt
+        ]
+      );
     } catch (e) {
-      console.error('[MongoDB] Create user error:', e.message);
+      console.error('[PostgreSQL] Create user error:', e.message);
     }
   }
 
@@ -549,12 +765,16 @@ export async function createUser(userData) {
 
 export async function findUserByEmail(email) {
   const normalized = (email || '').trim().toLowerCase();
-  if (isConnected && db) {
+  if (isConnected && pool) {
     try {
-      const user = await db.collection('users').findOne({ email: normalized });
-      if (user) return user;
+      const res = await pool.query(
+        `SELECT id, full_name as "fullName", username, email, password, division, department, avatar, stats, created_at as "createdAt"
+         FROM users WHERE LOWER(email) = $1`,
+        [normalized]
+      );
+      if (res.rows && res.rows[0]) return res.rows[0];
     } catch (e) {
-      console.error('[MongoDB] Query user by email error:', e.message);
+      console.error('[PostgreSQL] Find user by email error:', e.message);
     }
   }
   return fallbackStore.users.find(u => u.email.toLowerCase() === normalized) || null;
@@ -562,12 +782,16 @@ export async function findUserByEmail(email) {
 
 export async function findUserByUsername(username) {
   const clean = (username || '').replace(/^@/, '').trim().toLowerCase();
-  if (isConnected && db) {
+  if (isConnected && pool) {
     try {
-      const user = await db.collection('users').findOne({ username: clean });
-      if (user) return user;
+      const res = await pool.query(
+        `SELECT id, full_name as "fullName", username, email, password, division, department, avatar, stats, created_at as "createdAt"
+         FROM users WHERE LOWER(username) = $1`,
+        [clean]
+      );
+      if (res.rows && res.rows[0]) return res.rows[0];
     } catch (e) {
-      console.error('[MongoDB] Query user by username error:', e.message);
+      console.error('[PostgreSQL] Find user by username error:', e.message);
     }
   }
   return fallbackStore.users.find(u => u.username.toLowerCase() === clean) || null;
@@ -579,17 +803,16 @@ export async function authenticateUser(identifier, password) {
 
   let candidates = [];
 
-  if (isConnected && db) {
+  if (isConnected && pool) {
     try {
-      candidates = await db.collection('users').find({
-        $or: [
-          { email: cleanId },
-          { username: cleanId },
-          { username: strippedId }
-        ]
-      }).toArray();
+      const res = await pool.query(
+        `SELECT id, full_name as "fullName", username, email, password, division, department, avatar, stats, created_at as "createdAt"
+         FROM users WHERE LOWER(email) = $1 OR LOWER(username) = $1 OR LOWER(username) = $2`,
+        [cleanId, strippedId]
+      );
+      if (res.rows) candidates = res.rows;
     } catch (e) {
-      console.error('[MongoDB] Query candidate users error:', e.message);
+      console.error('[PostgreSQL] Query candidate users error:', e.message);
     }
   }
 
@@ -605,7 +828,6 @@ export async function authenticateUser(identifier, password) {
     return { success: false, message: 'Account not found with this email or username' };
   }
 
-  // Check if any candidate has matching password
   const matchingUser = candidates.find(u => u.password === password);
   if (!matchingUser) {
     return { success: false, message: 'Invalid password. Please check and try again.' };
@@ -619,12 +841,16 @@ export async function authenticateUser(identifier, password) {
 }
 
 export async function findUserById(id) {
-  if (isConnected && db) {
+  if (isConnected && pool) {
     try {
-      const user = await db.collection('users').findOne({ id });
-      if (user) return sanitizeUser(user);
+      const res = await pool.query(
+        `SELECT id, full_name as "fullName", username, email, password, division, department, avatar, stats, created_at as "createdAt"
+         FROM users WHERE id = $1`,
+        [id]
+      );
+      if (res.rows && res.rows[0]) return sanitizeUser(res.rows[0]);
     } catch (e) {
-      console.error('[MongoDB] Query user by id error:', e.message);
+      console.error('[PostgreSQL] Query user by id error:', e.message);
     }
   }
   const u = fallbackStore.users.find(u => u.id === id);
@@ -633,21 +859,36 @@ export async function findUserById(id) {
 
 function sanitizeUser(user) {
   if (!user) return null;
-  const { password, _id, ...safe } = user;
+  const { password, ...safe } = user;
   return safe;
 }
 
 /* ================== SQUADS REPOSITORY ================== */
 export async function getSquads(gameFilter = null) {
-  if (isConnected && db) {
+  if (isConnected && pool) {
     try {
-      const query = gameFilter && gameFilter !== 'all' ? { game: gameFilter } : {};
-      const list = await db.collection('squads').find(query).toArray();
-      if (Array.isArray(list)) return list;
+      let query = `SELECT id, name, game, game_name as "gameName", type, status, mic_required as "micRequired",
+                          total_slots as "totalSlots", filled_slots as "filledSlots", leader, color, letter,
+                          avatar_img as "avatarImg", avatar_icon as "avatarIcon", roster
+                   FROM squads`;
+      const params = [];
+      if (gameFilter && gameFilter !== 'all') {
+        query += ` WHERE game = $1`;
+        params.push(gameFilter);
+      }
+      query += ` ORDER BY created_at DESC`;
+      const res = await pool.query(query, params);
+      if (res.rows && res.rows.length > 0) {
+        return res.rows.map(r => ({
+          ...r,
+          roster: typeof r.roster === 'string' ? JSON.parse(r.roster) : (r.roster || [])
+        }));
+      }
     } catch (e) {
-      console.error('[MongoDB] Query squads error:', e.message);
+      console.error('[PostgreSQL] Query squads error:', e.message);
     }
   }
+
   if (gameFilter && gameFilter !== 'all') {
     return fallbackStore.squads.filter(s => s.game === gameFilter);
   }
@@ -668,18 +909,27 @@ export async function createSquad(squadData) {
     leader: squadData.leader || 'Leader',
     color: squadData.color || '#ff4655',
     letter: (squadData.name || 'S')[0].toUpperCase(),
+    avatarImg: squadData.avatarImg || null,
+    avatarIcon: squadData.avatarIcon || null,
     roster: squadData.roster || [
       { name: squadData.leader || 'Leader', role: 'Captain / IGL', avatar: squadData.avatar || '🎯' }
     ],
     createdAt: new Date()
   };
 
-  if (isConnected && db) {
+  if (isConnected && pool) {
     try {
-      const res = await db.collection('squads').insertOne(newSquad);
-      newSquad._id = res.insertedId;
+      await pool.query(
+        `INSERT INTO squads (id, name, game, game_name, type, status, mic_required, total_slots, filled_slots, leader, color, letter, avatar_img, avatar_icon, roster, created_at)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)`,
+        [
+          newSquad.id, newSquad.name, newSquad.game, newSquad.gameName, newSquad.type, newSquad.status,
+          newSquad.micRequired, newSquad.totalSlots, newSquad.filledSlots, newSquad.leader, newSquad.color,
+          newSquad.letter, newSquad.avatarImg, newSquad.avatarIcon, JSON.stringify(newSquad.roster), newSquad.createdAt
+        ]
+      );
     } catch (e) {
-      console.error('[MongoDB] Create squad error:', e.message);
+      console.error('[PostgreSQL] Create squad error:', e.message);
     }
   }
 
@@ -690,13 +940,26 @@ export async function createSquad(squadData) {
 
 export async function joinSquad(squadId, applicantData) {
   let squad = null;
-  if (isConnected && db) {
+  if (isConnected && pool) {
     try {
-      squad = await db.collection('squads').findOne({ id: squadId });
+      const res = await pool.query(
+        `SELECT id, name, game, game_name as "gameName", type, status, mic_required as "micRequired",
+                total_slots as "totalSlots", filled_slots as "filledSlots", leader, color, letter,
+                avatar_img as "avatarImg", avatar_icon as "avatarIcon", roster
+         FROM squads WHERE id = $1`,
+        [squadId]
+      );
+      if (res.rows && res.rows[0]) {
+        squad = {
+          ...res.rows[0],
+          roster: typeof res.rows[0].roster === 'string' ? JSON.parse(res.rows[0].roster) : (res.rows[0].roster || [])
+        };
+      }
     } catch (e) {
-      console.error('[MongoDB] Find squad error:', e.message);
+      console.error('[PostgreSQL] Find squad error:', e.message);
     }
   }
+
   if (!squad) {
     squad = fallbackStore.squads.find(s => s.id === squadId);
   }
@@ -723,14 +986,14 @@ export async function joinSquad(squadId, applicantData) {
     squad.status = 'FULL';
   }
 
-  if (isConnected && db) {
+  if (isConnected && pool) {
     try {
-      await db.collection('squads').updateOne(
-        { id: squadId },
-        { $set: { roster: squad.roster, filledSlots: squad.filledSlots, status: squad.status } }
+      await pool.query(
+        `UPDATE squads SET roster = $1, filled_slots = $2, status = $3 WHERE id = $4`,
+        [JSON.stringify(squad.roster), squad.filledSlots, squad.status, squadId]
       );
     } catch (e) {
-      console.error('[MongoDB] Update squad roster error:', e.message);
+      console.error('[PostgreSQL] Update squad roster error:', e.message);
     }
   }
 
@@ -745,15 +1008,27 @@ export async function joinSquad(squadId, applicantData) {
 
 /* ================== EVENTS & SCRIMS REPOSITORY ================== */
 export async function getEvents(statusFilter = null) {
-  if (isConnected && db) {
+  if (isConnected && pool) {
     try {
-      const query = statusFilter && statusFilter !== 'all' ? { status: statusFilter } : {};
-      const list = await db.collection('events').find(query).toArray();
-      if (Array.isArray(list)) return list;
+      let query = `SELECT id, title, badge, tag, game, game_name as "gameName", date, prize_pool as "prizePool",
+                          max_squads as "maxSquads", registered_squads as "registeredSquads", status, description,
+                          icon, winner, completed_at as "completedAt", expires_at as "expiresAt", created_at as "createdAt"
+                   FROM events`;
+      const params = [];
+      if (statusFilter && statusFilter !== 'all') {
+        query += ` WHERE status = $1`;
+        params.push(statusFilter);
+      }
+      query += ` ORDER BY created_at DESC`;
+      const res = await pool.query(query, params);
+      if (res.rows && res.rows.length > 0) {
+        return res.rows;
+      }
     } catch (e) {
-      console.error('[MongoDB] Query events error:', e.message);
+      console.error('[PostgreSQL] Query events error:', e.message);
     }
   }
+
   if (statusFilter && statusFilter !== 'all') {
     return fallbackStore.events.filter(e => e.status === statusFilter);
   }
@@ -776,15 +1051,24 @@ export async function saveEvent(eventData) {
     description: eventData.description || '',
     icon: eventData.icon || 'assets/logos/freefire.png',
     winner: eventData.winner || '',
-    createdAt: new Date()
+    createdAt: new Date(),
+    completedAt: null,
+    expiresAt: null
   };
 
-  if (isConnected && db) {
+  if (isConnected && pool) {
     try {
-      const res = await db.collection('events').insertOne(newEvent);
-      newEvent._id = res.insertedId;
+      await pool.query(
+        `INSERT INTO events (id, title, badge, tag, game, game_name, date, prize_pool, max_squads, registered_squads, status, description, icon, winner, created_at)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)`,
+        [
+          newEvent.id, newEvent.title, newEvent.badge, newEvent.tag, newEvent.game, newEvent.gameName,
+          newEvent.date, newEvent.prizePool, newEvent.maxSquads, newEvent.registeredSquads,
+          newEvent.status, newEvent.description, newEvent.icon, newEvent.winner, newEvent.createdAt
+        ]
+      );
     } catch (e) {
-      console.error('[MongoDB] Save event error:', e.message);
+      console.error('[PostgreSQL] Save event error:', e.message);
     }
   }
 
@@ -795,20 +1079,6 @@ export async function saveEvent(eventData) {
 
 export async function updateEvent(id, updateData) {
   const cleanId = String(id || '').trim();
-  let objId = null;
-  try {
-    if (ObjectId.isValid(cleanId)) {
-      objId = new ObjectId(cleanId);
-    }
-  } catch (_) {}
-
-  const filter = {
-    $or: [
-      { id: cleanId },
-      { id: id },
-      ...(objId ? [{ _id: objId }] : [])
-    ]
-  };
 
   // Status transitions: completed (10-day retention) or live (ongoing)
   if (updateData.status === 'completed') {
@@ -821,29 +1091,52 @@ export async function updateEvent(id, updateData) {
     updateData.expiresAt = null;
   }
 
-  if (isConnected && db) {
+  if (isConnected && pool) {
     try {
-      await db.collection('events').updateMany(filter, { $set: updateData });
+      const setClauses = [];
+      const values = [cleanId];
+      let paramIdx = 2;
 
+      const mapping = {
+        title: 'title', badge: 'badge', tag: 'tag', game: 'game', gameName: 'game_name',
+        date: 'date', prizePool: 'prize_pool', maxSquads: 'max_squads', registeredSquads: 'registered_squads',
+        status: 'status', description: 'description', icon: 'icon', winner: 'winner',
+        completedAt: 'completed_at', expiresAt: 'expires_at'
+      };
+
+      for (const [key, val] of Object.entries(updateData)) {
+        if (mapping[key]) {
+          setClauses.push(`${mapping[key]} = $${paramIdx}`);
+          values.push(val);
+          paramIdx++;
+        }
+      }
+
+      if (setClauses.length > 0) {
+        await pool.query(
+          `UPDATE events SET ${setClauses.join(', ')} WHERE id = $1`,
+          values
+        );
+      }
+
+      // Sync standings timestamps
       if (updateData.status === 'completed') {
-        await db.collection('standings').updateMany(
-          { $or: [{ matchId: cleanId }, { matchId: id }] },
-          { $set: { completedAt: updateData.completedAt, expiresAt: updateData.expiresAt } }
+        await pool.query(
+          `UPDATE standings SET completed_at = $1, expires_at = $2 WHERE match_id = $3`,
+          [updateData.completedAt, updateData.expiresAt, cleanId]
         );
       } else if (updateData.status === 'live') {
-        await db.collection('standings').updateMany(
-          { $or: [{ matchId: cleanId }, { matchId: id }] },
-          { $set: { completedAt: null, expiresAt: null } }
+        await pool.query(
+          `UPDATE standings SET completed_at = NULL, expires_at = NULL WHERE match_id = $1`,
+          [cleanId]
         );
       }
     } catch (e) {
-      console.error('[MongoDB] Update event error:', e.message);
+      console.error('[PostgreSQL] Update event error:', e.message);
     }
   }
 
-  const idx = fallbackStore.events.findIndex(e =>
-    e.id === cleanId || e.id === id || (objId && String(e._id) === String(objId))
-  );
+  const idx = fallbackStore.events.findIndex(e => e.id === cleanId || e.id === id);
   if (idx !== -1) {
     fallbackStore.events[idx] = { ...fallbackStore.events[idx], ...updateData };
     const eventId = fallbackStore.events[idx].id;
@@ -867,71 +1160,38 @@ export async function updateEvent(id, updateData) {
     saveLocalStore();
     return fallbackStore.events[idx];
   }
+
   saveLocalStore();
   return { id, ...updateData };
 }
 
 export async function deleteEvent(id) {
   const cleanId = String(id || '').trim();
-  let objId = null;
-  try {
-    if (ObjectId.isValid(cleanId)) {
-      objId = new ObjectId(cleanId);
-    }
-  } catch (_) {}
 
-  const filter = {
-    $or: [
-      { id: cleanId },
-      { id: id },
-      ...(objId ? [{ _id: objId }] : [])
-    ]
-  };
-
-  if (isConnected && db) {
+  if (isConnected && pool) {
     try {
-      await db.collection('events').deleteMany(filter);
-      await db.collection('standings').deleteMany({
-        $or: [
-          { matchId: cleanId },
-          { matchId: id },
-          ...(objId ? [{ matchId: String(objId) }] : [])
-        ]
-      });
+      await pool.query(`DELETE FROM events WHERE id = $1`, [cleanId]);
+      await pool.query(`DELETE FROM standings WHERE match_id = $1`, [cleanId]);
     } catch (e) {
-      console.error('[MongoDB] Delete event error:', e.message);
+      console.error('[PostgreSQL] Delete event error:', e.message);
     }
   }
 
-  fallbackStore.events = fallbackStore.events.filter(e =>
-    e.id !== cleanId && e.id !== id && (!objId || String(e._id) !== String(objId))
-  );
-  fallbackStore.standings = fallbackStore.standings.filter(s =>
-    s.matchId !== cleanId && s.matchId !== id
-  );
+  fallbackStore.events = fallbackStore.events.filter(e => e.id !== cleanId && e.id !== id);
+  fallbackStore.standings = fallbackStore.standings.filter(s => s.matchId !== cleanId && s.matchId !== id);
   saveLocalStore();
   return { success: true, id };
 }
 
 /* ================== COMPETITIVE STANDINGS / POINTS REPOSITORY ================== */
-
 export async function purgeExpiredStandings() {
   const now = new Date();
 
-  if (isConnected && db) {
+  if (isConnected && pool) {
     try {
-      // Ensure TTL index exists on expiresAt
-      await db.collection('standings').createIndex(
-        { expiresAt: 1 },
-        { expireAfterSeconds: 0 }
-      ).catch(() => {});
-
-      // Delete standings where 10-day retention has expired
-      await db.collection('standings').deleteMany({
-        expiresAt: { $exists: true, $ne: null, $lte: now }
-      });
+      await pool.query(`DELETE FROM standings WHERE expires_at IS NOT NULL AND expires_at <= NOW()`);
     } catch (e) {
-      console.error('[MongoDB] Purge expired standings error:', e.message);
+      console.error('[PostgreSQL] Purge expired standings error:', e.message);
     }
   }
 
@@ -949,7 +1209,6 @@ export async function getStandingsMatches() {
   const allEvents = await getEvents();
   const now = Date.now();
 
-  // Standings are available for Live (ongoing) matches or completed matches within 10 days
   const matches = allEvents.filter(ev => {
     if (ev.status === 'live') return true;
     if (ev.status === 'completed') {
@@ -1002,7 +1261,6 @@ export async function getCompetitiveStandings(matchId = null, gameFilter = null)
     }
   }
 
-  // If no matchId specified, prioritize live match, then latest completed match
   if (!targetMatch && availableMatches.length > 0) {
     targetMatch = availableMatches.find(m => m.isLive) || availableMatches[0];
   }
@@ -1015,7 +1273,6 @@ export async function getCompetitiveStandings(matchId = null, gameFilter = null)
     };
   }
 
-  // If match is upcoming, standings are not active yet
   if (targetMatch.status === 'upcoming') {
     return {
       match: targetMatch,
@@ -1027,13 +1284,24 @@ export async function getCompetitiveStandings(matchId = null, gameFilter = null)
 
   let standingsList = [];
 
-  if (isConnected && db) {
+  if (isConnected && pool) {
     try {
-      const query = { matchId: targetMatch.id };
-      if (gameFilter && gameFilter !== 'all') query.game = gameFilter;
-      standingsList = await db.collection('standings').find(query).sort({ cp: -1 }).toArray();
+      let query = `SELECT id, match_id as "matchId", match_title as "matchTitle", rank, name, handle, dept,
+                          tier, matches, wins, best_finish as "bestFinish", win_rate as "winRate", cp,
+                          game, avatar, completed_at as "completedAt", expires_at as "expiresAt"
+                   FROM standings WHERE match_id = $1`;
+      const params = [targetMatch.id];
+      if (gameFilter && gameFilter !== 'all') {
+        query += ` AND game = $2`;
+        params.push(gameFilter);
+      }
+      query += ` ORDER BY cp DESC`;
+      const res = await pool.query(query, params);
+      if (res.rows && res.rows.length > 0) {
+        standingsList = res.rows;
+      }
     } catch (e) {
-      console.error('[MongoDB] Query match standings error:', e.message);
+      console.error('[PostgreSQL] Query standings error:', e.message);
     }
   }
 
@@ -1065,13 +1333,12 @@ export async function awardPlayerPoints(matchId, identifier, pointsDelta, detail
 
   const cleanId = (identifier || '').trim().toLowerCase();
   const allEvents = await getEvents();
-  const event = allEvents.find(e => e.id === matchId || String(e._id) === String(matchId));
+  const event = allEvents.find(e => e.id === matchId);
 
   if (!event) {
     return { success: false, error: 'Match not found.' };
   }
 
-  // Strict constraint: Points can ONLY be increased for ongoing games!
   if (event.status !== 'live') {
     return {
       success: false,
@@ -1081,18 +1348,21 @@ export async function awardPlayerPoints(matchId, identifier, pointsDelta, detail
 
   let playerStanding = null;
 
-  if (isConnected && db) {
+  if (isConnected && pool) {
     try {
-      playerStanding = await db.collection('standings').findOne({
-        matchId: event.id,
-        $or: [
-          { handle: cleanId },
-          { handle: '@' + cleanId.replace(/^@/, '') },
-          { name: new RegExp('^' + identifier + '$', 'i') }
-        ]
-      });
+      const res = await pool.query(
+        `SELECT id, match_id as "matchId", match_title as "matchTitle", rank, name, handle, dept,
+                tier, matches, wins, best_finish as "bestFinish", win_rate as "winRate", cp,
+                game, avatar, completed_at as "completedAt", expires_at as "expiresAt"
+         FROM standings
+         WHERE match_id = $1 AND (LOWER(handle) = $2 OR LOWER(handle) = $3 OR LOWER(name) = $4)`,
+        [event.id, cleanId, '@' + cleanId.replace(/^@/, ''), cleanId]
+      );
+      if (res.rows && res.rows[0]) {
+        playerStanding = res.rows[0];
+      }
     } catch (e) {
-      console.error('[MongoDB] Find match player standing error:', e.message);
+      console.error('[PostgreSQL] Find player standing error:', e.message);
     }
   }
 
@@ -1109,7 +1379,6 @@ export async function awardPlayerPoints(matchId, identifier, pointsDelta, detail
   const delta = Number(pointsDelta) || 0;
 
   if (!playerStanding) {
-    // Create new player standing for this ongoing match
     const newStanding = {
       id: 'st-' + Date.now() + '-' + Math.random().toString(36).substring(2, 6),
       matchId: event.id,
@@ -1136,19 +1405,28 @@ export async function awardPlayerPoints(matchId, identifier, pointsDelta, detail
     else if (newStanding.cp >= 50) newStanding.tier = 'Silver';
     else newStanding.tier = 'Bronze';
 
-    if (isConnected && db) {
+    if (isConnected && pool) {
       try {
-        await db.collection('standings').insertOne(newStanding);
+        await pool.query(
+          `INSERT INTO standings (id, match_id, match_title, rank, name, handle, dept, tier, matches, wins, best_finish, win_rate, cp, game, avatar, completed_at, expires_at, created_at)
+           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18)`,
+          [
+            newStanding.id, newStanding.matchId, newStanding.matchTitle, 1, newStanding.name, newStanding.handle,
+            newStanding.dept, newStanding.tier, newStanding.matches, newStanding.wins, newStanding.bestFinish,
+            newStanding.winRate, newStanding.cp, newStanding.game, newStanding.avatar, null, null, newStanding.createdAt
+          ]
+        );
       } catch (e) {
-        console.error('[MongoDB] Insert match standing error:', e.message);
+        console.error('[PostgreSQL] Insert standing error:', e.message);
       }
     }
+
     fallbackStore.standings.push(newStanding);
     saveLocalStore();
     return { success: true, match: event, player: newStanding, pointsAwarded: delta };
   }
 
-  // Update existing standing for this ongoing match
+  // Update existing standing
   playerStanding.cp = Math.max(0, (playerStanding.cp || 0) + delta);
   if (details.matches) playerStanding.matches = (playerStanding.matches || 0) + Number(details.matches);
   if (details.wins) playerStanding.wins = (playerStanding.wins || 0) + Number(details.wins);
@@ -1163,21 +1441,14 @@ export async function awardPlayerPoints(matchId, identifier, pointsDelta, detail
   else if (playerStanding.cp >= 50) playerStanding.tier = 'Silver';
   else playerStanding.tier = 'Bronze';
 
-  if (isConnected && db) {
+  if (isConnected && pool) {
     try {
-      await db.collection('standings').updateOne(
-        { id: playerStanding.id },
-        { $set: {
-          cp: playerStanding.cp,
-          matches: playerStanding.matches,
-          wins: playerStanding.wins,
-          tier: playerStanding.tier,
-          winRate: playerStanding.winRate,
-          bestFinish: playerStanding.bestFinish
-        }}
+      await pool.query(
+        `UPDATE standings SET cp = $1, matches = $2, wins = $3, tier = $4, win_rate = $5, best_finish = $6 WHERE id = $7`,
+        [playerStanding.cp, playerStanding.matches, playerStanding.wins, playerStanding.tier, playerStanding.winRate, playerStanding.bestFinish, playerStanding.id]
       );
     } catch (e) {
-      console.error('[MongoDB] Update match standing error:', e.message);
+      console.error('[PostgreSQL] Update standing error:', e.message);
     }
   }
 
@@ -1189,4 +1460,3 @@ export async function awardPlayerPoints(matchId, identifier, pointsDelta, detail
 
   return { success: true, match: event, player: playerStanding, pointsAwarded: delta };
 }
-

@@ -28,7 +28,7 @@ import {
   getCompetitiveStandings,
   getStandingsMatches,
   awardPlayerPoints
-} from './db/mongodb.js';
+} from './db/postgres.js';
 import { verifyPlayerGameID } from './services/playerVerification.js';
 
 dotenv.config();
@@ -51,7 +51,7 @@ const MIME_TYPES = {
   '.webp': 'image/webp'
 };
 
-// Connect to MongoDB
+// Connect to PostgreSQL (falls back to local_store.json if unavailable)
 connectDB();
 
 function sendJSON(res, statusCode, data) {
@@ -106,7 +106,7 @@ export async function handleRequest(req, res) {
     return res.end();
   }
 
-  /* ================= REST API ROUTES (MONGODB) ================= */
+  /* ================= REST API ROUTES (POSTGRESQL) ================= */
   if (reqPath.startsWith('/api/')) {
     try {
       // 1. Database Status
@@ -160,7 +160,7 @@ export async function handleRequest(req, res) {
         }
 
         const user = await createUser(payload);
-        const token = 'korg_' + Buffer.from(user._id + ':' + Date.now()).toString('base64');
+        const token = 'korg_' + Buffer.from(user.id + ':' + Date.now()).toString('base64');
         return sendJSON(res, 201, { success: true, message: 'Account registered successfully!', user, token });
       }
 
@@ -592,7 +592,7 @@ const server = http.createServer(handleRequest);
 if (!process.env.VERCEL) {
   server.listen(PORT, () => {
     console.log(`Kugofox Arena Server running at http://localhost:${PORT}`);
-    console.log(`MongoDB REST API available at http://localhost:${PORT}/api/db-status`);
+    console.log(`PostgreSQL REST API available at http://localhost:${PORT}/api/db-status`);
   });
 }
 

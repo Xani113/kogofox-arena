@@ -1,6 +1,6 @@
 /**
  * Kugofox Gaming Arena - Tournament & Bracket Engine
- * Integrated with MongoDB backend API
+ * Integrated with PostgreSQL backend API
  */
 
 import { sound } from './soundEngine.js';
@@ -20,7 +20,7 @@ export class TournamentSystem {
     this.container = document.getElementById(containerId);
     if (!this.container) return;
     
-    // Fetch latest data from MongoDB API
+    // Fetch latest data from API
     await this.fetchTournamentsFromDB();
     await this.fetchRegistrationsFromDB();
     this.render();
@@ -86,7 +86,7 @@ export class TournamentSystem {
           </div>
 
           <button id="open-register-modal-btn" class="btn-kugofox">
-            <span>🛡️</span> Register Squad (MongoDB)
+            <span>🛡️</span> Register Squad
           </button>
         </div>
 
@@ -146,7 +146,7 @@ export class TournamentSystem {
 
         ${this.userRegistrations.length > 0 ? `
           <div class="my-registrations-block">
-            <h4>🎟️ Verified Squad Passes (Synced to MongoDB)</h4>
+            <h4>🎟️ Verified Squad Passes (Synced!)</h4>
             <div class="registered-passes-grid">
               ${this.userRegistrations.map((reg, idx) => `
                 <div class="hologram-pass-card">
@@ -244,7 +244,7 @@ export class TournamentSystem {
         this.userPredictions[matchId] = team;
         localStorage.setItem('kugofox_predictions', JSON.stringify(this.userPredictions));
 
-        // Save vote to MongoDB
+        // Save vote to DB
         try {
           await fetch('/api/tournaments/vote', {
             method: 'POST',
@@ -252,10 +252,10 @@ export class TournamentSystem {
             body: JSON.stringify({ matchId, team })
           });
         } catch (err) {
-          console.warn('[MongoDB Vote]:', err.message);
+          console.warn('[DB Vote]:', err.message);
         }
 
-        this.app.showToast(`Cheering for ${team}! Synced to MongoDB.`, 'success');
+        this.app.showToast(`Cheering for ${team}! Synced!.`, 'success');
         this.render();
       });
     });
@@ -291,7 +291,7 @@ export class TournamentSystem {
           <h3 class="title-glow">🛡️ Register Official Arena Squad</h3>
           <button id="close-modal-btn" class="close-btn">×</button>
         </div>
-        <p class="modal-sub">Squad dossiers are permanently saved into MongoDB and verified for tournament seeding.</p>
+        <p class="modal-sub">Squad dossiers are permanently saved and verified for tournament seeding.</p>
 
         <form id="team-reg-form" class="reg-form">
           <div class="form-row">
@@ -338,7 +338,7 @@ export class TournamentSystem {
 
           <div class="form-actions">
             <button type="submit" class="btn-kugofox btn-full">
-              💾 Save to MongoDB & Issue Pass
+              💾 Save & Issue Pass
             </button>
           </div>
         </form>
@@ -390,7 +390,7 @@ export class TournamentSystem {
       localStorage.setItem('kugofox_registrations', JSON.stringify(this.userRegistrations));
 
       sound.playVictory();
-      this.app.showToast(`[${tag}] ${teamName} registered to MongoDB!`, 'success');
+      this.app.showToast(`[${tag}] ${teamName} registered!!`, 'success');
       modalOverlay.style.display = 'none';
       this.render();
     });

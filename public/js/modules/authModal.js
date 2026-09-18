@@ -5,12 +5,12 @@
  * - Social Sign-In with Google
  * - Clean Icon-Prefixed Inputs (Full Name, Username, Email, Password, Confirm Password)
  * - Password Show/Hide Toggle
- * - Client-Side & Server-Side MongoDB Validation
+ * - Client-Side & Server-Side Database Validation
  * - Persistent Session Management (localStorage)
  * - Header Profile Chip Integration
  */
 
-import { sound } from './soundEngine.js';
+import { sound } from './soundEngine.js?v=2.4.1';
 
 const OFFICIAL_GOOGLE_CLIENT_ID = '150459129894-kc8mepcmrio4qm968ue0fdpjc8p7fr5h.apps.googleusercontent.com';
 
@@ -99,7 +99,7 @@ export class AuthModal {
 
   checkExistingSession() {
     try {
-      const saved = localStorage.getItem('korg_user_session');
+      const saved = localStorage.getItem('korg_user_session') || localStorage.getItem('korg_user');
       if (saved) {
         this.currentUser = JSON.parse(saved);
         if (this.app && typeof this.app.onUserLogin === 'function') {
@@ -362,7 +362,7 @@ export class AuthModal {
     this.switchTab(initialTab);
     this.clearAlert();
     this.overlay?.classList.add('active');
-    sound.playModalOpen();
+    try { sound.playModalOpen?.(); } catch (e) {}
 
     // Focus initial input
     setTimeout(() => {
@@ -376,7 +376,7 @@ export class AuthModal {
 
   close() {
     this.overlay?.classList.remove('active');
-    sound.playModalClose();
+    try { sound.playModalClose?.(); } catch (e) {}
   }
 
   switchTab(tab) {
@@ -479,7 +479,7 @@ export class AuthModal {
       }
 
       this.saveSession(user, token);
-      sound.playSuccess();
+      try { sound.playSuccess?.(); } catch (e) {}
       this.showAlert(`Login successful as ${user.email}! Entering arena...`, 'success');
 
       setTimeout(() => {
@@ -493,7 +493,7 @@ export class AuthModal {
       }, 400);
 
     } catch (err) {
-      sound.playError();
+      try { sound.playError?.(); } catch (e) {}
       this.showAlert(err.message || 'Login failed. Please verify your credentials.');
     } finally {
       submitBtn.classList.remove('loading');
@@ -528,7 +528,7 @@ export class AuthModal {
 
     try {
       submitBtn.classList.add('loading');
-      submitBtn.innerHTML = `<span>Creating Account...</span>`;
+      submitBtn.innerHTML = `<span>Registering...</span>`;
 
       let apiUrl = '/api/auth/register';
       if (window.location.protocol === 'file:' || (window.location.port && window.location.port !== '5173')) {
@@ -540,7 +540,7 @@ export class AuthModal {
 
       try {
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 2500);
+        const timeoutId = setTimeout(() => controller.abort(), 1200);
 
         const res = await fetch(apiUrl, {
           method: 'POST',
@@ -555,10 +555,15 @@ export class AuthModal {
           user = data.user;
           token = data.token;
         } else {
-          throw new Error(data.error || 'Registration failed.');
+          const authErr = new Error(data.error || 'Registration failed.');
+          authErr.isAuthError = true;
+          throw authErr;
         }
-      } catch (netErr) {
-        if (netErr.message && netErr.message.includes('already exists')) throw netErr;
+      } catch (networkErr) {
+        if (networkErr.isAuthError || networkErr.message?.toLowerCase().includes('already') || networkErr.message?.toLowerCase().includes('match') || networkErr.message?.toLowerCase().includes('required')) {
+          throw networkErr;
+        }
+        console.warn('[Auth] Network notice during registration, saving local profile:', networkErr.message);
         user = {
           id: 'usr_' + Date.now(),
           fullName,
@@ -571,7 +576,7 @@ export class AuthModal {
       }
 
       this.saveSession(user, token);
-      sound.playSuccess();
+      try { sound.playSuccess?.(); } catch (e) {}
       this.showAlert(`Account created for ${user.email}! Entering arena...`, 'success');
 
       setTimeout(() => {
@@ -585,7 +590,7 @@ export class AuthModal {
       }, 400);
 
     } catch (err) {
-      sound.playError();
+      try { sound.playError?.(); } catch (e) {}
       this.showAlert(err.message || 'Registration failed.');
     } finally {
       submitBtn.classList.remove('loading');
@@ -704,7 +709,7 @@ export class AuthModal {
 
     // Guaranteed Completion: Save session & update UI
     this.saveSession(authUser, 'korg_google_' + btoa(cleanEmail + ':' + Date.now()));
-    sound.playSuccess();
+    try { sound.playSuccess?.(); } catch (e) {}
 
     setTimeout(() => {
       // Remove chooser overlay
@@ -725,7 +730,7 @@ export class AuthModal {
   }
 
   handleForgotPassword() {
-    sound.playClick();
+    try { sound.playClick?.(); } catch (e) {}
     const idInput = document.getElementById('login-identifier');
     const email = idInput?.value.trim() || 'your email';
     this.showAlert(`Password reset link sent to ${email}. Check your inbox!`, 'success');
@@ -735,6 +740,7 @@ export class AuthModal {
     this.currentUser = user;
     try {
       localStorage.setItem('korg_user_session', JSON.stringify(user));
+      localStorage.setItem('korg_user', JSON.stringify(user));
       if (token) localStorage.setItem('korg_auth_token', token);
     } catch (e) {
       console.warn('[Auth] localStorage write error:', e);
@@ -745,10 +751,11 @@ export class AuthModal {
     this.currentUser = null;
     try {
       localStorage.removeItem('korg_user_session');
+      localStorage.removeItem('korg_user');
       localStorage.removeItem('korg_auth_token');
     } catch (e) {}
 
-    sound.playClick();
+    try { sound.playClick?.(); } catch (e) {}
     if (this.app && typeof this.app.onUserLogout === 'function') {
       this.app.onUserLogout();
     }

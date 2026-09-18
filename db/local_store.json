@@ -851,7 +851,25 @@
       }
     ]
   },
-  "users": [],
+  "users": [
+    {
+      "id": "usr_1789729019962_oiq1y",
+      "fullName": "Mohit Gupta",
+      "username": "rpmohit9",
+      "email": "rpmohit9@gmail.com",
+      "password": "google_oauth_verified_0.17973979529504358",
+      "division": "campus",
+      "department": "eSports Contender",
+      "avatar": "https://lh3.googleusercontent.com/a/ACg8ocI6dUYYI4y5BWiLHcq_FK3Qb3lZSIK1dH_YsPm-x2TynuaSZQ4=s96-c",
+      "createdAt": "2026-09-18T10:56:59.962Z",
+      "stats": {
+        "matchesPlayed": 0,
+        "tournamentsWon": 0,
+        "kCoins": 500,
+        "rank": "Contender I"
+      }
+    }
+  ],
   "squads": [
     {
       "id": "sq-1",
@@ -1115,71 +1133,23 @@
   ],
   "events": [
     {
-      "id": "ev-1",
-      "title": "FREEFIRE CHAMPIONSHIP",
+      "id": "ev-1789729086198",
+      "title": "WINN or LANN",
       "badge": "TOURNAMENT",
       "tag": "OPEN FOR ALL",
-      "game": "freefire",
-      "gameName": "Free Fire",
-      "date": "Thursday, 24 Sep 2026, 6:30 PM IST",
-      "prizePool": "₹400",
-      "maxSquads": 24,
-      "registeredSquads": 0,
-      "status": "live",
-      "description": "Official collegiate squad championship. 24 teams battle across Bermuda & Purgatory for the prize pool.",
-      "icon": "assets/logos/freefire.png",
-      "winner": "",
-      "createdAt": "2026-09-18T07:55:01.119Z",
-      "_id": "6aacee5596863c76645e74ac",
-      "completedAt": null,
-      "expiresAt": null
-    },
-    {
-      "id": "ev-2",
-      "title": "BGMI BATTLEGROUND CLASH",
-      "badge": "SCRIMS",
-      "tag": "OPEN FOR ALL",
-      "game": "bgmi",
-      "gameName": "BGMI",
-      "date": "Friday, 25 Sep 2026, 8:00 PM IST",
-      "prizePool": "₹1,200",
-      "maxSquads": 25,
-      "registeredSquads": 14,
-      "status": "upcoming",
-      "description": "High-octane Erangel squad custom rooms with point multipliers.",
-      "icon": "assets/logos/bgmi.png"
-    },
-    {
-      "id": "ev-3",
-      "title": "CAMPUS VALORANT SHOWDOWN",
-      "badge": "TOURNAMENT",
-      "tag": "CAMPUS EXCLUSIVE",
-      "game": "valorant",
-      "gameName": "Valorant",
-      "date": "Completed on 10 Sep 2026",
-      "prizePool": "₹2,500",
-      "maxSquads": 16,
-      "registeredSquads": 16,
-      "status": "completed",
-      "winner": "Sentinels X",
-      "description": "Collegiate single-elimination tournament across Haven & Ascent.",
-      "icon": "assets/logos/valorant.png"
-    },
-    {
-      "id": "ev-4",
-      "title": "MOBA 5V5 DRAFT CUP",
-      "badge": "CUSTOM",
-      "tag": "VERIFIED TEAMS",
       "game": "mobalegends",
       "gameName": "Mobile Legends",
-      "date": "Completed on 15 Sep 2026",
-      "prizePool": "₹1,000",
-      "maxSquads": 8,
-      "registeredSquads": 8,
-      "status": "completed",
-      "winner": "Kugofox Mystic",
-      "description": "Ranked 5v5 draft tournament with verified collegiate rosters.",
-      "icon": "assets/logos/mobalegends.png"
+      "date": "28 sep 2026,6 pm",
+      "prizePool": "500",
+      "maxSquads": 10,
+      "registeredSquads": 0,
+      "status": "upcoming",
+      "description": "WINN! GET the prize pool",
+      "icon": "assets/logos/mobalegends.png",
+      "winner": "",
+      "createdAt": "2026-09-18T10:58:06.198Z",
+      "completedAt": null,
+      "expiresAt": null
     }
   ],
   "standings": [
@@ -1362,26 +1332,6 @@
       "cp": 45,
       "game": "freefire",
       "avatar": "🌸"
-    },
-    {
-      "_id": "6aacf556a845adebc6c74cba",
-      "id": "st-1789719894878-j2e4",
-      "matchId": "ev-1",
-      "matchTitle": "FREEFIRE CHAMPIONSHIP",
-      "game": "freefire",
-      "name": "skie",
-      "handle": "@skie",
-      "dept": "Statistics",
-      "tier": "Gold",
-      "matches": 2,
-      "wins": 2,
-      "bestFinish": "1st",
-      "winRate": "100%",
-      "cp": 100,
-      "avatar": "🎮",
-      "completedAt": null,
-      "expiresAt": null,
-      "createdAt": "2026-09-18T08:24:54.878Z"
     }
   ]
 }

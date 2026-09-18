@@ -340,7 +340,7 @@ export class RegistrationModal {
     const role = roleSelect?.value || 'Entry Fragger / Rusher';
 
     submitBtn.disabled = true;
-    submitBtn.innerHTML = `<span>⏳ RECORDING TO MONGODB...</span>`;
+    submitBtn.innerHTML = `<span>⏳ RECORDING TO DATABASE...</span>`;
 
     try {
       const payload = {
