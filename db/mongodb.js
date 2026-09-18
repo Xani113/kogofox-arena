@@ -11,13 +11,6 @@ import { LEADERBOARD_DATA } from '../js/data/leaderboardData.js';
 
 dotenv.config();
 
-// Ensure SRV DNS records resolve properly on Windows environments
-try {
-  dns.setServers(['8.8.8.8', '1.1.1.1', '8.8.4.4']);
-} catch (e) {
-  // Ignore if dns.setServers is unavailable in runtime
-}
-
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/kugofox_arena';
 const DB_NAME = process.env.DB_NAME || 'kugofox_arena';
 
@@ -25,6 +18,9 @@ let client = null;
 let db = null;
 let isConnected = false;
 let connectionError = null;
+let connectingPromise = null;
+let lastAttemptTime = 0;
+const RETRY_COOLDOWN_MS = 30000; // Only retry connection every 30s to avoid blocking requests
 
 // Local fallback in-memory store if MongoDB instance is not currently active
 const fallbackStore = {
@@ -41,26 +37,43 @@ const fallbackStore = {
 };
 
 export async function connectDB() {
-  try {
-    console.log(`[MongoDB] Connecting to ${MONGODB_URI}...`);
-    client = new MongoClient(MONGODB_URI, {
-      serverSelectionTimeoutMS: 5000,
-      connectTimeoutMS: 5000
-    });
-    await client.connect();
-    db = client.db(DB_NAME);
-    isConnected = true;
-    connectionError = null;
-    console.log(`[MongoDB] Successfully connected to database: ${DB_NAME}`);
+  if (isConnected && db) return db;
+  if (connectingPromise) return connectingPromise;
 
-    // Seed initial data if empty
-    await seedInitialData();
-  } catch (err) {
-    isConnected = false;
-    connectionError = err.message;
-    console.warn(`[MongoDB] Notice: Could not connect to MongoDB at ${MONGODB_URI} (${err.message}).`);
-    console.warn(`[MongoDB] Running in Resilient Storage Mode. Configure MONGODB_URI in .env to connect to your MongoDB Atlas or local daemon.`);
+  // If a connection attempt recently failed, skip waiting and immediately use resilient storage mode
+  if (Date.now() - lastAttemptTime < RETRY_COOLDOWN_MS) {
+    return null;
   }
+
+  lastAttemptTime = Date.now();
+  connectingPromise = (async () => {
+    try {
+      console.log(`[MongoDB] Connecting to ${MONGODB_URI.replace(/:[^:]*@/, ':****@')}...`);
+      client = new MongoClient(MONGODB_URI, {
+        serverSelectionTimeoutMS: 2000,
+        connectTimeoutMS: 2000
+      });
+      await client.connect();
+      db = client.db(DB_NAME);
+      isConnected = true;
+      connectionError = null;
+      console.log(`[MongoDB] Successfully connected to database: ${DB_NAME}`);
+
+      // Seed initial data if empty
+      await seedInitialData();
+      return db;
+    } catch (err) {
+      isConnected = false;
+      connectionError = err.message;
+      console.warn(`[MongoDB] Notice: Could not connect (${err.message.split('\n')[0]}).`);
+      console.warn(`[MongoDB] Running in Resilient Storage Mode.`);
+      return null;
+    } finally {
+      connectingPromise = null;
+    }
+  })();
+
+  return connectingPromise;
 }
 
 async function seedInitialData() {

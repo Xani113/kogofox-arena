@@ -441,7 +441,7 @@ export class AuthModal {
 
       try {
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 2500);
+        const timeoutId = setTimeout(() => controller.abort(), 1200);
 
         const res = await fetch(apiUrl, {
           method: 'POST',
@@ -681,7 +681,7 @@ export class AuthModal {
     // Attempt server sync
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 2000);
+      const timeoutId = setTimeout(() => controller.abort(), 1000);
 
       const res = await fetch(apiUrl, {
         method: 'POST',
