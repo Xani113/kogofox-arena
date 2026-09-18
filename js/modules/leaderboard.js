@@ -144,7 +144,7 @@ export class LeaderboardManager {
         </div>
 
         <div class="dossier-hero">
-          <div class="dossier-avatar">${player.avatar || '🦊'}</div>
+          <div class="dossier-avatar">${typeof player.avatar === 'string' && (player.avatar.startsWith('http') || player.avatar.startsWith('data:')) ? `<img src="${player.avatar}" alt="" style="width:48px;height:48px;border-radius:50%;object-fit:cover;" referrerpolicy="no-referrer">` : (player.avatar || '🦊')}</div>
           <div>
             <h2 class="dossier-name">${player.name} <span class="text-neon">${player.tag || ''}</span> ${player.country || ''}</h2>
             <p class="dossier-team">Team: <strong>${player.team || 'Independent Pro'}</strong> • Rank: <strong>${player.tier}</strong></p>

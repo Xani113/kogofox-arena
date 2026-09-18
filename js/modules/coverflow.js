@@ -69,7 +69,6 @@ export class CoverflowGallery {
                     <div class="arena-card-overlay">
                       <div class="arena-card-top">
                         <span class="arena-badge-pill">${g.badge || 'CHAMPIONSHIP'}</span>
-                        <span class="arena-prize-tag">Prize: ${g.prizePool || '$25,000'}</span>
                       </div>
 
                       <div class="arena-card-bottom">

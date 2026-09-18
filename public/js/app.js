@@ -14,6 +14,7 @@ import { LeaderboardManager } from './modules/leaderboard.js?v=2.4.0';
 import { CyberHeadphoneController } from './modules/cyberHeadphone.js?v=2.4.0';
 import { AuthModal } from './modules/authModal.js?v=2.4.0';
 import { PixelStarsEngine } from './modules/pixelStars.js?v=2.5.0';
+import { TournamentSystem } from './modules/tournamentSystem.js?v=2.4.0';
 
 class KugofoxApp {
   constructor() {
@@ -25,6 +26,7 @@ class KugofoxApp {
     this.regModal = new RegistrationModal(this);
     this.authModal = new AuthModal(this);
     this.streamHud = new StreamHud(this);
+    this.tournaments = new TournamentSystem(this);
     this.minigames = new MiniGameManager(this);
     this.leaderboard = new LeaderboardManager(this);
     this.headphone = new CyberHeadphoneController(this);
@@ -52,6 +54,7 @@ class KugofoxApp {
 
     // Init core submodules
     this.streamHud.init('stream-hud-container');
+    this.tournaments.init('tournaments-hub-container');
     this.leaderboard.init('leaderboard-container');
 
     // Init tactical simulators (4 Titles)
@@ -162,9 +165,14 @@ class KugofoxApp {
       parent.replaceChild(chipWrap, target);
     }
 
+    const isUrl = typeof user.avatar === 'string' && (user.avatar.startsWith('http://') || user.avatar.startsWith('https://') || user.avatar.startsWith('data:'));
+    const avatarHtml = isUrl
+      ? `<img src="${user.avatar}" alt="${user.username}" class="user-chip-avatar-img" referrerpolicy="no-referrer" onerror="this.onerror=null;this.parentElement.textContent='🦊';" />`
+      : `${user.avatar || '🦊'}`;
+
     chipWrap.innerHTML = `
       <div class="header-user-chip" id="header-user-chip" title="Player Profile: ${user.fullName || user.username}">
-        <div class="user-chip-avatar">${user.avatar || '🦊'}</div>
+        <div class="user-chip-avatar">${avatarHtml}</div>
         <span class="user-chip-name">@${user.username}</span>
       </div>
       <div class="header-user-dropdown" id="header-user-dropdown">
@@ -242,7 +250,7 @@ class KugofoxApp {
         el = document.getElementById('section-minigames');
         break;
       case 'events':
-        el = document.getElementById('section-gallery');
+        el = document.getElementById('section-tournaments') || document.getElementById('section-gallery');
         break;
       case 'leaderboard':
         el = document.getElementById('section-leaderboard');
