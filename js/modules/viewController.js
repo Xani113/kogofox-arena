@@ -71,9 +71,27 @@ export function initViewController() {
     }
   });
 
-  // Handle hash changes for direct linking (e.g. #squads, #events, #leaderboard, #admin)
+  // Auth hash handler for #login and #signup
+  const handleAuthHash = (hash) => {
+    if (hash === 'login') {
+      setTimeout(() => {
+        window.kugofoxApp?.authModal?.open('login');
+      }, 80);
+      return true;
+    }
+    if (hash === 'signup' || hash === 'create-account' || hash === 'register-account') {
+      setTimeout(() => {
+        window.kugofoxApp?.authModal?.open('create');
+      }, 80);
+      return true;
+    }
+    return false;
+  };
+
+  // Handle hash changes for direct linking (e.g. #squads, #events, #leaderboard, #admin, #login, #signup)
   window.addEventListener('hashchange', () => {
     const hash = window.location.hash.replace('#', '').toLowerCase();
+    if (handleAuthHash(hash)) return;
     if (VIEWS.includes(hash) && currentView !== hash) {
       switchView(hash, false);
     }
@@ -81,7 +99,9 @@ export function initViewController() {
 
   // Initial load from URL hash if present
   const initialHash = window.location.hash.replace('#', '').toLowerCase();
-  if (VIEWS.includes(initialHash)) {
+  if (handleAuthHash(initialHash)) {
+    switchView('home', false);
+  } else if (VIEWS.includes(initialHash)) {
     switchView(initialHash, false);
   } else {
     switchView('home', false);

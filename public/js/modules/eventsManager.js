@@ -8,6 +8,82 @@ let allEvents = [];
 let activeStatusTab = 'upcoming';
 let activeGameFilter = 'all';
 
+export function getAuthUser() {
+  try {
+    const raw = localStorage.getItem('korg_user_session') || localStorage.getItem('korg_user');
+    if (raw) {
+      const user = JSON.parse(raw);
+      if (user && (user.id || user.email || user.username)) {
+        return user;
+      }
+    }
+  } catch (e) {}
+  if (window.kugofoxApp && window.kugofoxApp.currentUser) {
+    return window.kugofoxApp.currentUser;
+  }
+  if (window.kugofox && window.kugofox.currentUser) {
+    return window.kugofox.currentUser;
+  }
+  return null;
+}
+
+export function openEventRegisterModal(evId, user = null) {
+  const ev = allEvents.find(e => e.id === evId);
+  if (!ev) return;
+
+  const modal = document.getElementById('modal-event-register');
+  const targetInput = document.getElementById('event-reg-target-id');
+  const subtitle = document.getElementById('event-register-subtitle');
+  const captainInput = document.getElementById('event-reg-captain');
+  const emailInput = document.getElementById('event-reg-email');
+
+  const currentUser = user || getAuthUser();
+
+  if (modal && targetInput) {
+    targetInput.value = evId;
+    if (subtitle) {
+      subtitle.textContent = `Registering for "${ev.title}" — Prize Pool: ${ev.prizePool}`;
+    }
+    if (currentUser) {
+      if (captainInput && (!captainInput.value || captainInput.value === 'Captain name')) {
+        captainInput.value = currentUser.username || currentUser.fullName || currentUser.inGameName || '';
+      }
+      if (emailInput && !emailInput.value) {
+        emailInput.value = currentUser.email || '';
+      }
+    }
+    modal.classList.add('open');
+    setTimeout(() => {
+      document.getElementById('event-reg-team')?.focus();
+    }, 100);
+  }
+}
+
+export function handleEventRegisterClick(evId) {
+  const user = getAuthUser();
+  if (!user) {
+    // 1. Not logged in! Save pending intent
+    sessionStorage.setItem('korg_pending_action', 'register_event');
+    sessionStorage.setItem('korg_pending_event_id', evId);
+
+    // 2. Toast notification
+    showToast('Please log in or sign up first to register your team.', 'info');
+
+    // 3. Redirect to login / sign up modal
+    const app = window.kugofoxApp || window.kugofox;
+    if (app && app.authModal) {
+      app.authModal.open('login', 'Please log in or create an account to register your squad for events & scrims.');
+    } else {
+      window.location.hash = 'login';
+      document.getElementById('sign-in-btn')?.click();
+    }
+    return;
+  }
+
+  // Already logged in! Open event registration modal directly
+  openEventRegisterModal(evId, user);
+}
+
 export function initEventsManager() {
   const container = document.getElementById('view-events');
   if (!container) return;
@@ -31,6 +107,27 @@ export function initEventsManager() {
       renderEventCards(filterEvents());
     } else {
       fetchEvents();
+    }
+  });
+
+  // Automatically resume event registration when user finishes logging in or signing up
+  window.addEventListener('korg:userLoggedIn', (e) => {
+    const pending = sessionStorage.getItem('korg_pending_action');
+    if (pending === 'register_event') {
+      const evId = sessionStorage.getItem('korg_pending_event_id');
+      sessionStorage.removeItem('korg_pending_action');
+      sessionStorage.removeItem('korg_pending_event_id');
+
+      if (typeof window.switchView === 'function') {
+        window.switchView('events');
+      }
+
+      setTimeout(() => {
+        if (evId) {
+          openEventRegisterModal(evId, e.detail?.user);
+          showToast('Signed in! You can now complete your team registration.', 'success');
+        }
+      }, 400);
     }
   });
 }
@@ -190,17 +287,39 @@ function renderEventsScaffold(container) {
   if (formReg) {
     formReg.addEventListener('submit', async (e) => {
       e.preventDefault();
+
+      const user = getAuthUser();
       const eventId = document.getElementById('event-reg-target-id').value;
+
+      if (!user) {
+        sessionStorage.setItem('korg_pending_action', 'register_event');
+        sessionStorage.setItem('korg_pending_event_id', eventId);
+        if (regModal) regModal.classList.remove('open');
+        showToast('Please log in or sign up first to register your team.', 'info');
+        const app = window.kugofoxApp || window.kugofox;
+        if (app && app.authModal) {
+          app.authModal.open('login', 'Please log in or create an account to register your squad for events & scrims.');
+        } else {
+          window.location.hash = 'login';
+          document.getElementById('sign-in-btn')?.click();
+        }
+        return;
+      }
+
       const teamName = document.getElementById('event-reg-team').value.trim();
-      const captainName = document.getElementById('event-reg-captain').value.trim();
+      const captainName = document.getElementById('event-reg-captain').value.trim() || user.username || user.fullName || 'Captain';
       const gameId = document.getElementById('event-reg-gameid').value.trim();
-      const email = document.getElementById('event-reg-email').value.trim();
+      const email = document.getElementById('event-reg-email').value.trim() || user.email;
       const phone = document.getElementById('event-reg-phone').value.trim();
+      const token = localStorage.getItem('korg_auth_token');
 
       try {
         const res = await fetch('/api/tournaments/register', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+          },
           body: JSON.stringify({
             tournamentId: eventId,
             teamName,
@@ -208,7 +327,8 @@ function renderEventsScaffold(container) {
             gameId,
             gameType: 'freefire',
             email,
-            phone
+            phone,
+            userId: user.id || null
           })
         });
 
@@ -340,20 +460,7 @@ function renderEventCards(events) {
   container.querySelectorAll('[data-register-event]').forEach(btn => {
     btn.addEventListener('click', () => {
       const evId = btn.getAttribute('data-register-event');
-      const ev = allEvents.find(e => e.id === evId);
-      if (!ev) return;
-
-      const modal = document.getElementById('modal-event-register');
-      const targetInput = document.getElementById('event-reg-target-id');
-      const subtitle = document.getElementById('event-register-subtitle');
-
-      if (modal && targetInput) {
-        targetInput.value = evId;
-        if (subtitle) {
-          subtitle.textContent = `Registering for "${ev.title}" — Prize Pool: ${ev.prizePool}`;
-        }
-        modal.classList.add('open');
-      }
+      handleEventRegisterClick(evId);
     });
   });
 

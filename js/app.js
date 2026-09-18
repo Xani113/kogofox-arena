@@ -147,12 +147,6 @@ class KugofoxApp {
     });
 
     // Header Action Buttons
-    document.getElementById('find-team-btn')?.addEventListener('click', (e) => {
-      e.preventDefault();
-      sound.playClick();
-      switchView('squads');
-    });
-
     document.getElementById('sign-in-btn')?.addEventListener('click', () => {
       sound.playClick();
       this.authModal.open('login');
@@ -487,6 +481,7 @@ function bootApp() {
   const app = new KugofoxApp();
   app.init();
   window.kugofox = app;
+  window.kugofoxApp = app;
 }
 
 if (document.readyState === 'loading') {

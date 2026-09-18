@@ -357,10 +357,17 @@ export class AuthModal {
     });
   }
 
-  open(initialTab = 'login') {
+  open(initialTab = 'login', notice = null) {
     this.injectModal();
     this.switchTab(initialTab);
     this.clearAlert();
+    if (notice) {
+      this.showAlert(notice, 'info');
+    } else if (sessionStorage.getItem('korg_pending_action') === 'create_squad') {
+      this.showAlert('Please log in or create an account to create your squad.', 'info');
+    } else if (sessionStorage.getItem('korg_pending_action') === 'register_event') {
+      this.showAlert('Please log in or create an account to register your squad for events & scrims.', 'info');
+    }
     this.overlay?.classList.add('active');
     try { sound.playModalOpen?.(); } catch (e) {}
 
@@ -745,6 +752,9 @@ export class AuthModal {
     } catch (e) {
       console.warn('[Auth] localStorage write error:', e);
     }
+
+    // Broadcast user logged in event across all modules
+    window.dispatchEvent(new CustomEvent('korg:userLoggedIn', { detail: { user, token } }));
   }
 
   logout() {
@@ -753,12 +763,15 @@ export class AuthModal {
       localStorage.removeItem('korg_user_session');
       localStorage.removeItem('korg_user');
       localStorage.removeItem('korg_auth_token');
+      sessionStorage.removeItem('korg_pending_action');
+      sessionStorage.removeItem('korg_pending_event_id');
     } catch (e) {}
 
     try { sound.playClick?.(); } catch (e) {}
     if (this.app && typeof this.app.onUserLogout === 'function') {
       this.app.onUserLogout();
     }
+    window.dispatchEvent(new CustomEvent('korg:userLoggedOut'));
     if (this.app && typeof this.app.showToast === 'function') {
       this.app.showToast('You have been signed out.', 'info');
     }

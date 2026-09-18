@@ -25,9 +25,43 @@ export class RegistrationModal {
       document.body.appendChild(overlay);
     }
     this.overlay = overlay;
+
+    window.addEventListener('korg:userLoggedIn', (e) => {
+      const pending = sessionStorage.getItem('korg_pending_action');
+      if (pending === 'register_tournament') {
+        const game = sessionStorage.getItem('korg_pending_game');
+        sessionStorage.removeItem('korg_pending_action');
+        sessionStorage.removeItem('korg_pending_game');
+        setTimeout(() => {
+          this.open(game || 'freefire');
+          if (this.app && typeof this.app.showToast === 'function') {
+            this.app.showToast('Signed in! You can now register your team.', 'success');
+          }
+        }, 400);
+      }
+    });
   }
 
   open(preselectedGame = null) {
+    let user = null;
+    try {
+      const raw = localStorage.getItem('korg_user_session') || localStorage.getItem('korg_user');
+      if (raw) user = JSON.parse(raw);
+    } catch (e) {}
+    if (!user && this.app?.currentUser) user = this.app.currentUser;
+
+    if (!user) {
+      sessionStorage.setItem('korg_pending_action', 'register_tournament');
+      sessionStorage.setItem('korg_pending_game', preselectedGame || 'freefire');
+      if (this.app && typeof this.app.showToast === 'function') {
+        this.app.showToast('Please log in or sign up first to register your team.', 'info');
+      }
+      if (this.app && this.app.authModal) {
+        this.app.authModal.open('login', 'Please log in or create an account to register for tournaments and scrims.');
+      }
+      return;
+    }
+
     if (preselectedGame && GAMES_DATA[preselectedGame]) {
       this.selectedGame = preselectedGame;
     }
@@ -45,6 +79,17 @@ export class RegistrationModal {
   render() {
     const game = GAMES_DATA[this.selectedGame] || GAMES_DATA.freefire;
     const games = Object.keys(GAMES_DATA);
+
+    let user = this.app?.currentUser;
+    if (!user) {
+      try {
+        const raw = localStorage.getItem('korg_user_session') || localStorage.getItem('korg_user');
+        if (raw) user = JSON.parse(raw);
+      } catch (e) {}
+    }
+
+    const defaultIgn = user ? (user.username || user.fullName || '') : '';
+    const defaultContact = user ? (user.email || '') : '';
 
     this.overlay.innerHTML = `
       <div class="reg-modal-card" id="reg-modal-card">
@@ -109,15 +154,15 @@ export class RegistrationModal {
           <div class="rm-grid-2col">
             <div class="rm-form-group">
               <span class="rm-field-lbl">Verified In-Game Name (IGN)</span>
-              <input type="text" id="rm-ign-input" class="rm-text-input" placeholder="e.g. Your In-Game Name">
+              <input type="text" id="rm-ign-input" class="rm-text-input" value="${defaultIgn}" placeholder="e.g. Your In-Game Name">
             </div>
             <div class="rm-form-group">
               <span class="rm-field-lbl">Squad / Team Tag</span>
               <input type="text" id="rm-team-input" class="rm-text-input" placeholder="e.g. Kugofox Esports">
             </div>
             <div class="rm-form-group">
-              <span class="rm-field-lbl">Discord / Contact Handle</span>
-              <input type="text" id="rm-contact-input" class="rm-text-input" placeholder="e.g. player#1234">
+              <span class="rm-field-lbl">Contact Email / Discord</span>
+              <input type="text" id="rm-contact-input" class="rm-text-input" value="${defaultContact}" placeholder="e.g. player@campus.edu">
             </div>
             <div class="rm-form-group">
               <span class="rm-field-lbl">Preferred Role</span>

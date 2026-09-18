@@ -7,6 +7,68 @@
 let currentSquads = [];
 let activeGameFilter = 'all';
 
+export function getAuthUser() {
+  try {
+    const raw = localStorage.getItem('korg_user_session') || localStorage.getItem('korg_user');
+    if (raw) {
+      const user = JSON.parse(raw);
+      if (user && (user.id || user.email || user.username)) {
+        return user;
+      }
+    }
+  } catch (e) {}
+  if (window.kugofoxApp && window.kugofoxApp.currentUser) {
+    return window.kugofoxApp.currentUser;
+  }
+  if (window.kugofox && window.kugofox.currentUser) {
+    return window.kugofox.currentUser;
+  }
+  return null;
+}
+
+export function openCreateSquadModal(user = null) {
+  const createModal = document.getElementById('modal-create-squad');
+  if (!createModal) return;
+
+  const currentUser = user || getAuthUser();
+  const leaderInput = document.getElementById('new-squad-leader');
+  if (leaderInput && currentUser) {
+    const preferredName = currentUser.username || currentUser.fullName || currentUser.inGameName || '';
+    if (preferredName) {
+      leaderInput.value = preferredName;
+    }
+  }
+
+  createModal.classList.add('open');
+  setTimeout(() => {
+    document.getElementById('new-squad-name')?.focus();
+  }, 100);
+}
+
+export function handleCreateSquadClick() {
+  const user = getAuthUser();
+  if (!user) {
+    // 1. Not logged in! Set pending action flag to resume immediately after login/signup
+    sessionStorage.setItem('korg_pending_action', 'create_squad');
+
+    // 2. Alert notification toast
+    showNotification('Please log in or sign up first to create a squad.', 'info');
+
+    // 3. Redirect to login / sign up modal
+    const app = window.kugofoxApp || window.kugofox;
+    if (app && app.authModal) {
+      app.authModal.open('login', 'Please log in or create an account to create your squad.');
+    } else {
+      window.location.hash = 'login';
+      document.getElementById('sign-in-btn')?.click();
+    }
+    return;
+  }
+
+  // Already logged in! Open create squad modal directly
+  openCreateSquadModal(user);
+}
+
 export function initSquadsManager() {
   const container = document.getElementById('view-squads');
   if (!container) return;
@@ -21,6 +83,21 @@ export function initSquadsManager() {
   window.addEventListener('korg:viewChanged', (e) => {
     if (e.detail && e.detail.view === 'squads') {
       fetchSquads();
+    }
+  });
+
+  // Automatically resume squad creation when user finishes logging in or signing up
+  window.addEventListener('korg:userLoggedIn', (e) => {
+    const pending = sessionStorage.getItem('korg_pending_action');
+    if (pending === 'create_squad') {
+      sessionStorage.removeItem('korg_pending_action');
+      if (typeof window.switchView === 'function') {
+        window.switchView('squads');
+      }
+      setTimeout(() => {
+        openCreateSquadModal(e.detail?.user);
+        showNotification('Signed in! You can now create your squad.', 'success');
+      }, 400);
     }
   });
 }
@@ -172,7 +249,7 @@ function renderSquadsScaffold(container) {
   const btnCloseCreate = document.getElementById('btn-close-create-squad');
 
   if (btnOpenCreate && createModal) {
-    btnOpenCreate.addEventListener('click', () => createModal.classList.add('open'));
+    btnOpenCreate.addEventListener('click', () => handleCreateSquadClick());
   }
   if (btnCloseCreate && createModal) {
     btnCloseCreate.addEventListener('click', () => createModal.classList.remove('open'));
@@ -189,10 +266,26 @@ function renderSquadsScaffold(container) {
   if (formCreate) {
     formCreate.addEventListener('submit', async (e) => {
       e.preventDefault();
+
+      const user = getAuthUser();
+      if (!user) {
+        sessionStorage.setItem('korg_pending_action', 'create_squad');
+        if (createModal) createModal.classList.remove('open');
+        showNotification('Please log in or sign up first to create your squad.', 'info');
+        const app = window.kugofoxApp || window.kugofox;
+        if (app && app.authModal) {
+          app.authModal.open('login', 'Please log in or create an account to create your squad.');
+        } else {
+          window.location.hash = 'login';
+          document.getElementById('sign-in-btn')?.click();
+        }
+        return;
+      }
+
       const squadName = document.getElementById('new-squad-name').value.trim();
       const game = document.getElementById('new-squad-game').value;
       const totalSlots = parseInt(document.getElementById('new-squad-slots').value, 10);
-      const leader = document.getElementById('new-squad-leader').value.trim();
+      const leader = document.getElementById('new-squad-leader').value.trim() || user.username || user.fullName || 'Captain';
       const micRequired = document.getElementById('new-squad-mic').value === 'true';
 
       const gameNames = {
@@ -202,10 +295,16 @@ function renderSquadsScaffold(container) {
         mobalegends: 'Mobile Legends'
       };
 
+      const token = localStorage.getItem('korg_auth_token');
+      const isHttpAvatar = typeof user.avatar === 'string' && (user.avatar.startsWith('http://') || user.avatar.startsWith('https://'));
+
       try {
         const res = await fetch('/api/squads', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+          },
           body: JSON.stringify({
             name: squadName,
             game,
@@ -213,8 +312,16 @@ function renderSquadsScaffold(container) {
             totalSlots,
             leader,
             micRequired,
+            creatorId: user.id || null,
+            creatorEmail: user.email || null,
+            avatarImg: isHttpAvatar ? user.avatar : null,
+            avatarIcon: !isHttpAvatar && user.avatar ? user.avatar : null,
             color: ['#00b4d8', '#7b2cbf', '#ff4655', '#22c55e'][Math.floor(Math.random() * 4)],
-            roster: [{ name: leader, role: 'Captain / IGL', avatar: '👑' }]
+            roster: [{
+              name: leader,
+              role: 'Captain / IGL',
+              avatar: (!isHttpAvatar && user.avatar) ? user.avatar : '👑'
+            }]
           })
         });
 
@@ -297,11 +404,21 @@ export async function fetchSquads() {
 function renderSquadCards(squads, container) {
   if (!squads || squads.length === 0) {
     container.innerHTML = `
-      <div style="color: #94a3b8; padding: 3rem; text-align: center; grid-column: 1 / -1; background: rgba(13,17,23,0.5); border-radius: 12px;">
-        <h3>No active squads found for this category.</h3>
-        <p>Be the first to create a squad and recruit campus teammates!</p>
+      <div style="color: #94a3b8; padding: 4rem 2rem; text-align: center; grid-column: 1 / -1; background: rgba(13,17,23,0.65); border: 1px dashed rgba(0, 240, 255, 0.25); border-radius: 14px; display: flex; flex-direction: column; align-items: center; gap: 1rem; box-shadow: 0 10px 30px rgba(0,0,0,0.4);">
+        <div style="font-size: 3rem; filter: drop-shadow(0 0 16px rgba(0,240,255,0.4));">🛡️</div>
+        <h3 style="color: #fff; font-size: 1.35rem; margin: 0; font-weight: 700; letter-spacing: 0.5px;">NO ACTIVE SQUADS FOUND</h3>
+        <p style="margin: 0; max-width: 480px; font-size: 0.92rem; line-height: 1.6; color: #94a3b8;">
+          All pre-made squads have been cleared. Be the first to build a squad, recruit campus teammates, and conquer collegiate tournaments!
+        </p>
+        <button id="btn-create-squad-empty" class="korg-btn-primary" style="margin-top: 0.6rem; padding: 0.75rem 1.75rem; font-size: 0.95rem;">
+          <span style="font-size: 1.1rem;">+</span> Create First Squad
+        </button>
       </div>
     `;
+    const emptyBtn = container.querySelector('#btn-create-squad-empty');
+    if (emptyBtn) {
+      emptyBtn.addEventListener('click', () => handleCreateSquadClick());
+    }
     return;
   }
 

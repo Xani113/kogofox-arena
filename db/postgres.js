@@ -35,159 +35,7 @@ let connectingPromise = null;
 let lastAttemptTime = 0;
 const RETRY_COOLDOWN_MS = 30000;
 
-export const INITIAL_SQUADS = [
-  {
-    id: "sq-1",
-    name: "FREEFIRE squad",
-    game: "freefire",
-    gameName: "Free Fire",
-    type: "SQUAD",
-    status: "OPEN",
-    micRequired: true,
-    totalSlots: 4,
-    filledSlots: 4,
-    leader: "Karan",
-    color: "#00b4d8",
-    letter: "W",
-    roster: [
-      { name: "Karan", role: "Leader / IGL", avatar: "👑" },
-      { name: "Aryan", role: "Rusher", avatar: "🔥" },
-      { name: "Rohit", role: "Sniper", avatar: "🎯" },
-      { name: "Dev", role: "Support", avatar: "🛡️" }
-    ]
-  },
-  {
-    id: "sq-2",
-    name: "NS esports",
-    game: "freefire",
-    gameName: "Free Fire",
-    type: "SQUAD",
-    status: "OPEN",
-    micRequired: true,
-    totalSlots: 6,
-    filledSlots: 6,
-    leader: "Nitin",
-    avatarImg: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=60&auto=format&fit=crop&q=80",
-    roster: [
-      { name: "Nitin", role: "Captain", avatar: "⚡" },
-      { name: "Sameer", role: "Assaulter", avatar: "🗡️" },
-      { name: "Vikas", role: "Flanker", avatar: "🦅" },
-      { name: "Ashish", role: "Sniper", avatar: "🎯" },
-      { name: "Rahul", role: "Sub", avatar: "🎮" },
-      { name: "Pooja", role: "Strategist", avatar: "🧠" }
-    ]
-  },
-  {
-    id: "sq-3",
-    name: "Andha rush",
-    game: "bgmi",
-    gameName: "BGMI",
-    type: "SQUAD",
-    status: "OPEN",
-    micRequired: true,
-    totalSlots: 4,
-    filledSlots: 2,
-    leader: "CyberBot",
-    avatarIcon: "🤖",
-    roster: [
-      { name: "CyberBot", role: "Rusher / IGL", avatar: "🤖" },
-      { name: "Hunter99", role: "Fragger", avatar: "🏹" }
-    ]
-  },
-  {
-    id: "sq-4",
-    name: "Seducers",
-    game: "freefire",
-    gameName: "Free Fire",
-    type: "SQUAD",
-    status: "OPEN",
-    micRequired: true,
-    totalSlots: 4,
-    filledSlots: 4,
-    leader: "Newton",
-    avatarIcon: "⚛️",
-    roster: [
-      { name: "Newton", role: "IGL", avatar: "⚛️" },
-      { name: "Pulse", role: "Rusher", avatar: "⚡" },
-      { name: "Zero", role: "Cover", avatar: "🎯" },
-      { name: "Blaze", role: "Entry", avatar: "🔥" }
-    ]
-  },
-  {
-    id: "sq-5",
-    name: "Bihari's Legend",
-    game: "freefire",
-    gameName: "Free Fire",
-    type: "SQUAD",
-    status: "OPEN",
-    micRequired: true,
-    totalSlots: 4,
-    filledSlots: 4,
-    leader: "Legend1",
-    avatarIcon: "🔥",
-    roster: [
-      { name: "Legend1", role: "Captain", avatar: "🔥" },
-      { name: "BihariBoy", role: "Rusher", avatar: "⚡" },
-      { name: "KGF_King", role: "Sniper", avatar: "🎯" },
-      { name: "PatnaOp", role: "Support", avatar: "🛡️" }
-    ]
-  },
-  {
-    id: "sq-6",
-    name: "7_hills_esports",
-    game: "freefire",
-    gameName: "Free Fire",
-    type: "SQUAD",
-    status: "OPEN",
-    micRequired: true,
-    totalSlots: 5,
-    filledSlots: 5,
-    leader: "HillClimber",
-    avatarIcon: "⛰️",
-    roster: [
-      { name: "HillClimber", role: "IGL", avatar: "⛰️" },
-      { name: "ValleyKing", role: "Assaulter", avatar: "🗡️" },
-      { name: "RidgeRider", role: "Scout", avatar: "🦅" },
-      { name: "PeakSniper", role: "Sniper", avatar: "🎯" },
-      { name: "SummitDoc", role: "Support", avatar: "💊" }
-    ]
-  },
-  {
-    id: "sq-7",
-    name: "Phoenix Rising",
-    game: "valorant",
-    gameName: "Valorant",
-    type: "TEAM",
-    status: "OPEN",
-    micRequired: true,
-    totalSlots: 5,
-    filledSlots: 3,
-    leader: "Ashes",
-    color: "#ff4655",
-    letter: "P",
-    roster: [
-      { name: "Ashes", role: "Duelist / IGL", avatar: "🔥" },
-      { name: "ViperMain", role: "Controller", avatar: "🐍" },
-      { name: "SovaGod", role: "Initiator", avatar: "🏹" }
-    ]
-  },
-  {
-    id: "sq-8",
-    name: "Shadow Syndicate",
-    game: "bgmi",
-    gameName: "BGMI",
-    type: "SQUAD",
-    status: "OPEN",
-    micRequired: false,
-    totalSlots: 4,
-    filledSlots: 1,
-    leader: "GhostRider",
-    avatarIcon: "👻",
-    roster: [
-      { name: "GhostRider", role: "Scout / IGL", avatar: "👻" }
-    ]
-  }
-];
+export const INITIAL_SQUADS = [];
 
 export const INITIAL_EVENTS = [
   {
@@ -335,7 +183,7 @@ const fallbackStore = {
   ],
   leaderboard: persisted?.leaderboard || { ...LEADERBOARD_DATA },
   users: persisted?.users || [],
-  squads: persisted?.squads || JSON.parse(JSON.stringify(INITIAL_SQUADS)),
+  squads: (persisted?.squads || []).filter(s => !['sq-1', 'sq-2', 'sq-3', 'sq-4', 'sq-5', 'sq-6', 'sq-7', 'sq-8', 'sq-9'].includes(s.id)),
   events: persisted?.events || JSON.parse(JSON.stringify(INITIAL_EVENTS)),
   standings: persisted?.standings || JSON.parse(JSON.stringify(INITIAL_STANDINGS))
 };
@@ -545,6 +393,13 @@ async function initializeSchema() {
         created_at TIMESTAMPTZ DEFAULT NOW()
       );
     `);
+
+    // Clean up any legacy pre-made squads
+    try {
+      await pool.query(`DELETE FROM squads WHERE id IN ('sq-1', 'sq-2', 'sq-3', 'sq-4', 'sq-5', 'sq-6', 'sq-7', 'sq-8', 'sq-9')`);
+    } catch (cleanErr) {
+      // ignore if table not yet populated
+    }
 
     // 2. Check if seeded
     const metaCheck = await pool.query(`SELECT value FROM _metadata WHERE key = 'seeded_v1'`);
@@ -955,6 +810,8 @@ export async function createSquad(squadData) {
     letter: (squadData.name || 'S')[0].toUpperCase(),
     avatarImg: squadData.avatarImg || null,
     avatarIcon: squadData.avatarIcon || null,
+    creatorId: squadData.creatorId || null,
+    creatorEmail: squadData.creatorEmail || null,
     roster: squadData.roster || [
       { name: squadData.leader || 'Leader', role: 'Captain / IGL', avatar: squadData.avatar || '🎯' }
     ],
