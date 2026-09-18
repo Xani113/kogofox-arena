@@ -110,9 +110,12 @@ export const BackgroundPixelStars = memo(
       // Clear existing stars
       backgroundStarsRef.current = [];
 
-      // Generate new stars
+      // Generate new stars with 50% reduction on mobile (< 768px)
+      const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+      const effectiveDensity = isMobile ? starDensity * 0.5 : starDensity;
       const area = canvas.width * canvas.height;
-      const numStars = Math.floor(area * starDensity);
+      const minStars = isMobile ? 12 : 25;
+      const numStars = Math.max(minStars, Math.floor(area * effectiveDensity));
 
       for (let i = 0; i < numStars; i++) {
         const shouldTwinkle = Math.random() < twinkleProbability;
@@ -358,10 +361,37 @@ export const BackgroundPixelStars = memo(
 
       window.addEventListener("resize", handleResize);
 
+      // Observe canvas intersection to pause animation when scrolled out of viewport
+      let observer: IntersectionObserver | null = null;
+      if (typeof window !== "undefined" && "IntersectionObserver" in window && canvasRef.current) {
+        observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                if (!animationFrameRef.current) {
+                  lastRenderTimeRef.current = performance.now();
+                  animationFrameRef.current = requestAnimationFrame(animateCanvas);
+                }
+              } else {
+                if (animationFrameRef.current) {
+                  cancelAnimationFrame(animationFrameRef.current);
+                  animationFrameRef.current = null;
+                }
+              }
+            });
+          },
+          { threshold: 0 }
+        );
+        observer.observe(canvasRef.current);
+      }
+
       // Cleanup
       return () => {
         if (animationFrameRef.current) {
           cancelAnimationFrame(animationFrameRef.current);
+        }
+        if (observer) {
+          observer.disconnect();
         }
         clearInterval(regenerationInterval);
         window.removeEventListener("resize", handleResize);

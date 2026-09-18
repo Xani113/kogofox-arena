@@ -9,19 +9,72 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
 }
 
-html {
+html, body {
   background-color: #030508 !important;
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {
-  background-color: #030508 !important;
   color: #f8fafc;
   font-family: 'Inter', sans-serif;
   overflow-x: hidden;
   position: relative;
   min-height: 100vh;
+}
+
+/* Mobile tap highlight & outline suppression for instant touch response */
+button,
+a,
+input,
+select,
+textarea,
+canvas,
+[role="button"],
+.cyber-headphone-wrapper,
+.hyperx-headset-stage,
+.headset-photo-wrapper,
+.headset-main-photo,
+.hp-interactive-btn,
+.hp-hud-badge,
+.btn-kugofox,
+.korg-nav-pill,
+.btn-find-team,
+.btn-sign-in,
+.header-user-chip,
+.korg-filter-pill,
+#bg-cyber-canvas {
+  -webkit-tap-highlight-color: transparent !important;
+  -webkit-touch-callout: none !important;
+  outline: none;
+}
+
+button:focus:not(:focus-visible),
+a:focus:not(:focus-visible),
+.btn-kugofox:focus:not(:focus-visible),
+.korg-nav-pill:focus:not(:focus-visible),
+.btn-find-team:focus:not(:focus-visible),
+.btn-sign-in:focus:not(:focus-visible),
+.header-user-chip:focus:not(:focus-visible),
+.hp-interactive-btn:focus:not(:focus-visible),
+.cyber-headphone-wrapper:focus,
+.cyber-headphone-wrapper:active {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Prevent accidental text selection and image drag during swipe/tap on interactive showcase */
+.cyber-headphone-wrapper,
+.hyperx-headset-stage,
+.headset-photo-wrapper,
+.headset-main-photo,
+#bg-cyber-canvas,
+.hp-interactive-btn {
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
 }
 
 h1, h2, h3, h4, h5, .orbitron {

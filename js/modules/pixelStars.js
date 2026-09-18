@@ -45,6 +45,9 @@ export class PixelStarsEngine {
     this.animationFrameId = null;
     this.regenInterval = null;
     this.nextShootingStarTimeout = null;
+    this.isPaused = false;
+    this.isIntersecting = true;
+    this.observer = null;
 
     this.init();
   }
@@ -54,10 +57,33 @@ export class PixelStarsEngine {
     this.initBackgroundStars();
     this.startAnimation();
     this.scheduleShootingStar();
+    this.startRegenInterval();
 
-    this.regenInterval = setInterval(() => {
-      this.regenerateBackgroundStars();
-    }, starRegenerationInterval);
+    // IntersectionObserver to pause rendering when scrolled out of viewport
+    if (typeof window !== 'undefined' && 'IntersectionObserver' in window && this.canvas) {
+      this.observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          this.isIntersecting = entry.isIntersecting;
+          if (entry.isIntersecting) {
+            this.resumeAnimation();
+          } else {
+            this.pauseAnimation();
+          }
+        });
+      }, { threshold: 0 });
+      this.observer.observe(this.canvas);
+    }
+
+    // Also pause on tab hidden to maximize mobile battery life
+    if (typeof document !== 'undefined') {
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+          this.pauseAnimation();
+        } else if (this.isIntersecting) {
+          this.resumeAnimation();
+        }
+      });
+    }
 
     // Optimized resize handler for phones
     window.addEventListener('resize', () => {
@@ -70,6 +96,15 @@ export class PixelStarsEngine {
         this.initBackgroundStars();
       }
     }, { passive: true });
+  }
+
+  startRegenInterval() {
+    if (this.regenInterval) clearInterval(this.regenInterval);
+    this.regenInterval = setInterval(() => {
+      if (!this.isPaused) {
+        this.regenerateBackgroundStars();
+      }
+    }, starRegenerationInterval);
   }
 
   resize() {
@@ -98,9 +133,14 @@ export class PixelStarsEngine {
   }
 
   scheduleShootingStar() {
+    if (this.nextShootingStarTimeout) {
+      clearTimeout(this.nextShootingStarTimeout);
+    }
     const delay = Math.random() * 4000 + 2000; // 2-6 seconds
     this.nextShootingStarTimeout = setTimeout(() => {
-      this.shootingStars.push(this.createNewShootingStar());
+      if (!this.isPaused) {
+        this.shootingStars.push(this.createNewShootingStar());
+      }
       this.scheduleShootingStar();
     }, delay);
   }
@@ -108,8 +148,12 @@ export class PixelStarsEngine {
   initBackgroundStars() {
     if (!this.canvas) return;
     this.backgroundStars = [];
+    // Mobile optimization: cut particle density by 50% on screens < 768px
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+    const effectiveDensity = isMobile ? starDensity * 0.5 : starDensity;
     const area = this.canvas.width * this.canvas.height;
-    const numStars = Math.max(25, Math.floor(area * starDensity));
+    const minStars = isMobile ? 12 : 25;
+    const numStars = Math.max(minStars, Math.floor(area * effectiveDensity));
 
     for (let i = 0; i < numStars; i++) {
       const shouldTwinkle = Math.random() < twinkleProbability;
@@ -132,8 +176,48 @@ export class PixelStarsEngine {
     }
   }
 
+  pauseAnimation() {
+    this.isPaused = true;
+    if (this.animationFrameId) {
+      cancelAnimationFrame(this.animationFrameId);
+      this.animationFrameId = null;
+    }
+  }
+
+  resumeAnimation() {
+    if (!this.isPaused) return;
+    this.isPaused = false;
+    this.lastRenderTime = performance.now();
+    if (!this.animationFrameId) {
+      this.startAnimation();
+    }
+  }
+
+  startAnimation() {
+    this.isPaused = false;
+    const loop = (timestamp) => {
+      if (this.isPaused) {
+        this.animationFrameId = null;
+        return;
+      }
+      // 16 FPS limiter for retro feel and high phone battery efficiency
+      if (timestamp - this.lastRenderTime < this.frameInterval) {
+        this.animationFrameId = requestAnimationFrame(loop);
+        return;
+      }
+      this.lastRenderTime = timestamp;
+
+      this.render();
+      this.animationFrameId = requestAnimationFrame(loop);
+    };
+
+    if (!this.animationFrameId) {
+      this.animationFrameId = requestAnimationFrame(loop);
+    }
+  }
+
   regenerateBackgroundStars() {
-    if (!this.canvas || this.backgroundStars.length === 0) return;
+    if (!this.canvas || this.backgroundStars.length === 0 || this.isPaused) return;
     const numToRegenerate = Math.max(
       1,
       Math.floor(this.backgroundStars.length * percentToRegenerate)
@@ -159,22 +243,6 @@ export class PixelStarsEngine {
         twinkleTimer: 0
       };
     }
-  }
-
-  startAnimation() {
-    const loop = (timestamp) => {
-      // 16 FPS limiter for retro feel and high phone battery efficiency
-      if (timestamp - this.lastRenderTime < this.frameInterval) {
-        this.animationFrameId = requestAnimationFrame(loop);
-        return;
-      }
-      this.lastRenderTime = timestamp;
-
-      this.render();
-      this.animationFrameId = requestAnimationFrame(loop);
-    };
-
-    this.animationFrameId = requestAnimationFrame(loop);
   }
 
   render() {
@@ -294,14 +362,18 @@ export class PixelStarsEngine {
   }
 
   destroy() {
-    if (this.animationFrameId) {
-      cancelAnimationFrame(this.animationFrameId);
+    this.pauseAnimation();
+    if (this.observer) {
+      this.observer.disconnect();
+      this.observer = null;
     }
     if (this.regenInterval) {
       clearInterval(this.regenInterval);
+      this.regenInterval = null;
     }
     if (this.nextShootingStarTimeout) {
       clearTimeout(this.nextShootingStarTimeout);
+      this.nextShootingStarTimeout = null;
     }
   }
 }

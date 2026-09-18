@@ -172,53 +172,121 @@ export class CyberHeadphoneController {
   bindMouseTilt() {
     if (!this.container || !this.wrapper) return;
 
-    // Track mouse over entire hero section for immersive responsiveness
+    // Track mouse & touch over entire hero section for immersive responsiveness
     const trackingArea = this.container.closest('.korg-hero-section') || this.container;
 
     let targetRotX = 0;
     let targetRotY = 0;
     let currentRotX = 0;
     let currentRotY = 0;
+    let lastRenderedX = 0;
+    let lastRenderedY = 0;
     let rafId = null;
+    let isLoopRunning = false;
 
-    const onMouseMove = (e) => {
-      const rect = trackingArea.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
+    // Cache tracking rect and refresh on resize/scroll with passive listeners
+    let cachedRect = null;
+    const updateRect = () => {
+      cachedRect = trackingArea.getBoundingClientRect();
+    };
+    updateRect();
+    window.addEventListener('resize', updateRect, { passive: true });
+    window.addEventListener('scroll', updateRect, { passive: true });
 
-      const normX = Math.max(-1, Math.min(1, (x / rect.width - 0.5) * 2));
-      const normY = Math.max(-1, Math.min(1, (y / rect.height - 0.5) * 2));
+    const handleCoords = (clientX, clientY) => {
+      if (!cachedRect) updateRect();
+      const x = clientX - cachedRect.left;
+      const y = clientY - cachedRect.top;
 
-      // Subtle, sleek 3D perspective tilt ("little movable")
+      const normX = Math.max(-1, Math.min(1, (x / cachedRect.width - 0.5) * 2));
+      const normY = Math.max(-1, Math.min(1, (y / cachedRect.height - 0.5) * 2));
+
+      // Subtle, sleek 3D perspective tilt
       targetRotX = -normY * 12;
       targetRotY = normX * 16;
+      startLoop();
+    };
+
+    // Mouse listeners with passive flags
+    const onMouseMove = (e) => {
+      handleCoords(e.clientX, e.clientY);
     };
 
     const onMouseLeave = () => {
       targetRotX = 0;
       targetRotY = 0;
+      startLoop();
     };
 
+    // Mobile touch & pointer listeners with { passive: true }
+    const onTouchMove = (e) => {
+      if (e.touches && e.touches.length > 0) {
+        handleCoords(e.touches[0].clientX, e.touches[0].clientY);
+      }
+    };
+
+    const onTouchEnd = () => {
+      targetRotX = 0;
+      targetRotY = 0;
+      startLoop();
+    };
+
+    // Gyroscope / device orientation for mobile with { passive: true }
+    const onOrientation = (e) => {
+      if (e.beta !== null && e.gamma !== null) {
+        const tiltX = Math.max(-1, Math.min(1, (e.beta - 45) / 35));
+        const tiltY = Math.max(-1, Math.min(1, e.gamma / 30));
+        targetRotX = -tiltX * 10;
+        targetRotY = tiltY * 14;
+        startLoop();
+      }
+    };
+
+    // Throttled 60 FPS animation loop with sleep state when settled
     const updateTilt = () => {
-      // Silky smooth organic interpolation
-      currentRotX += (targetRotX - currentRotX) * 0.08;
-      currentRotY += (targetRotY - currentRotY) * 0.08;
+      currentRotX += (targetRotX - currentRotX) * 0.1;
+      currentRotY += (targetRotY - currentRotY) * 0.1;
 
-      this.wrapper.style.transform = `perspective(1100px) rotateX(${currentRotX.toFixed(2)}deg) rotateY(${currentRotY.toFixed(2)}deg)`;
+      // Only write to DOM if change exceeds threshold (avoids style recalculation overhead)
+      if (Math.abs(currentRotX - lastRenderedX) > 0.02 || Math.abs(currentRotY - lastRenderedY) > 0.02) {
+        lastRenderedX = currentRotX;
+        lastRenderedY = currentRotY;
+        this.wrapper.style.transform = `perspective(1100px) translate3d(0, 0, 0) rotateX(${currentRotX.toFixed(2)}deg) rotateY(${currentRotY.toFixed(2)}deg)`;
+      }
 
-      rafId = requestAnimationFrame(updateTilt);
+      const isSettled = Math.abs(targetRotX - currentRotX) < 0.03 && Math.abs(targetRotY - currentRotY) < 0.03;
+      if (!isSettled) {
+        rafId = requestAnimationFrame(updateTilt);
+      } else {
+        isLoopRunning = false;
+        rafId = null;
+      }
     };
 
-    trackingArea.addEventListener('mousemove', onMouseMove);
-    trackingArea.addEventListener('mouseleave', onMouseLeave);
-    rafId = requestAnimationFrame(updateTilt);
+    const startLoop = () => {
+      if (!isLoopRunning) {
+        isLoopRunning = true;
+        rafId = requestAnimationFrame(updateTilt);
+      }
+    };
+
+    trackingArea.addEventListener('mousemove', onMouseMove, { passive: true });
+    trackingArea.addEventListener('mouseleave', onMouseLeave, { passive: true });
+    trackingArea.addEventListener('touchmove', onTouchMove, { passive: true });
+    trackingArea.addEventListener('touchend', onTouchEnd, { passive: true });
+    trackingArea.addEventListener('pointermove', onMouseMove, { passive: true });
+
+    if (window.DeviceOrientationEvent && typeof window.addEventListener === 'function') {
+      window.addEventListener('deviceorientation', onOrientation, { passive: true });
+    }
+
+    startLoop();
   }
 
   bindInteractions() {
     // Direct click on headphone art cycles RGB mode & plays bass beat
     if (this.wrapper) {
       this.wrapper.addEventListener('click', (e) => {
-        // If not clicking on an interactive control button inside
         if (e.target.closest('.hp-interactive-btn')) return;
         this.cycleColorMode();
       });
@@ -246,10 +314,11 @@ export class CyberHeadphoneController {
     if (!bars || bars.length === 0) return;
 
     setInterval(() => {
+      if (document.hidden) return;
       bars.forEach(bar => {
         const heightMultiplier = Math.random() * 0.9 + 0.3;
-        bar.style.transform = `scaleY(${heightMultiplier.toFixed(2)})`;
+        bar.style.transform = `scaleY(${heightMultiplier.toFixed(2)}) translateZ(0)`;
       });
-    }, 180);
+    }, 200);
   }
 }
