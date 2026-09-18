@@ -61,7 +61,7 @@ export class CyberHeadphoneController {
     ];
 
     this.currentModeIdx = 0;
-    this.spatialAudioEnabled = false; // Inactive on initial page load
+    this.spatialAudioEnabled = true;
     this.isPulsing = false;
   }
 
@@ -78,12 +78,6 @@ export class CyberHeadphoneController {
     this.bindMouseTilt();
     this.bindInteractions();
     this.initEqualizerPulse();
-
-    // Ensure spatial waves start muted/inactive
-    const waves = this.wrapper.querySelectorAll('.sonic-pulse-ring, .sonic-wave-arc');
-    waves.forEach(wave => {
-      wave.style.opacity = '0.15';
-    });
   }
 
   applyColorMode(mode) {
@@ -120,7 +114,6 @@ export class CyberHeadphoneController {
   }
 
   cycleColorMode() {
-    sound.enable?.();
     this.currentModeIdx = (this.currentModeIdx + 1) % this.colorModes.length;
     const mode = this.colorModes[this.currentModeIdx];
     this.applyColorMode(mode);
@@ -131,14 +124,12 @@ export class CyberHeadphoneController {
   }
 
   triggerBassDrop() {
-    sound.enable?.();
     sound.playHeadphoneBeat();
     this.triggerPulseAnimation();
     // Toast popup removed as per user instruction
   }
 
   toggleSpatialAudio() {
-    sound.enable?.();
     this.spatialAudioEnabled = !this.spatialAudioEnabled;
     sound.playClick();
     

@@ -7,12 +7,9 @@ class SoundEngine {
   constructor() {
     this.ctx = null;
     this.enabled = true;
-    this.hasUserInteracted = false;
   }
 
   init() {
-    // Audio remains inactive until explicit user interaction has occurred
-    if (!this.hasUserInteracted) return;
     if (!this.ctx) {
       const AudioContext = window.AudioContext || window.webkitAudioContext;
       if (AudioContext) {
@@ -20,25 +17,17 @@ class SoundEngine {
       }
     }
     if (this.ctx && this.ctx.state === 'suspended') {
-      this.ctx.resume().catch(() => {});
+      this.ctx.resume();
     }
   }
 
-  enable() {
-    this.hasUserInteracted = true;
-    this.enabled = true;
-    this.init();
-  }
-
   toggleSound() {
-    this.hasUserInteracted = true;
     this.enabled = !this.enabled;
-    if (this.enabled) this.init();
     return this.enabled;
   }
 
   playClick() {
-    if (!this.enabled || !this.hasUserInteracted) return;
+    if (!this.enabled) return;
     this.init();
     if (!this.ctx) return;
 
