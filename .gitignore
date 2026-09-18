@@ -20,4 +20,5 @@ graphify-out/
 .agent/
 .agents/
 dist/
+.vscode/
 

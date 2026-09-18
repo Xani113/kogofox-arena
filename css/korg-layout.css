@@ -2030,6 +2030,10 @@ body.mobile-menu-locked {
     width: 30px;
     height: 30px;
   }
+  .korg-right-actions {
+    gap: 0.5rem;
+    flex-shrink: 0;
+  }
   .btn-find-team {
     padding: 0.4rem 0.65rem;
     font-size: 0.72rem;
@@ -2037,10 +2041,6 @@ body.mobile-menu-locked {
   .btn-sign-in {
     padding: 0.45rem 0.85rem;
     font-size: 0.75rem;
-  }
-  .btn-icon-round {
-    width: 34px;
-    height: 34px;
   }
 
   /* Main Area on Phone */

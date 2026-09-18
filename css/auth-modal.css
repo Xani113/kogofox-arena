@@ -474,6 +474,7 @@
 /* ================== LOGGED IN HEADER USER CHIP ================== */
 .header-user-wrapper {
   position: relative;
+  flex-shrink: 0;
 }
 
 .header-user-chip {
@@ -487,6 +488,7 @@
   cursor: pointer;
   transition: all 0.2s ease;
   font-family: 'Inter', sans-serif;
+  user-select: none;
 }
 
 .header-user-chip:hover {
@@ -522,6 +524,10 @@
   font-size: 0.82rem;
   font-weight: 700;
   color: #ffffff;
+  max-width: 130px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .user-chip-badge {
@@ -533,6 +539,46 @@
   background: rgba(0, 240, 255, 0.15);
   color: #00f0ff;
   border: 1px solid rgba(0, 240, 255, 0.3);
+}
+
+/* Mobile: Perfectly round circular avatar icon button to prevent horizontal stretching on phones */
+@media (max-width: 768px) {
+  .header-user-chip {
+    padding: 0;
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    border-radius: 50%;
+    justify-content: center;
+    gap: 0;
+    box-sizing: border-box;
+    border: 1.5px solid rgba(0, 240, 255, 0.45);
+    background: rgba(0, 240, 255, 0.1);
+    box-shadow: 0 0 10px rgba(0, 240, 255, 0.25);
+  }
+
+  .header-user-chip:hover {
+    box-shadow: 0 0 14px rgba(0, 240, 255, 0.45);
+  }
+
+  .user-chip-name,
+  .user-chip-badge {
+    display: none !important;
+  }
+
+  .user-chip-avatar {
+    width: 100%;
+    height: 100%;
+    border: none;
+    font-size: 16px;
+  }
+
+  .user-chip-avatar-img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+  }
 }
 
 .header-user-dropdown {

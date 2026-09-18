@@ -157,11 +157,6 @@ class KugofoxApp {
       switchView('squads');
     });
 
-    document.getElementById('notification-btn')?.addEventListener('click', () => {
-      sound.playClick();
-      this.showToast('Championship Update: Free Fire Grand Finals start in 45m', 'info');
-    });
-
     document.getElementById('sign-in-btn')?.addEventListener('click', () => {
       sound.playClick();
       this.authModal.open('login');
