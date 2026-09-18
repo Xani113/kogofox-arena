@@ -430,8 +430,9 @@ function renderAdminView(container) {
         if (data.success) {
           formCreateEvent.reset();
           showAdminToast(`Event "${title}" published with prize pool ${prizePool}!`);
-          loadAdminEvents();
+          await loadAdminEvents();
           fetchEvents(); // update public events module
+          window.dispatchEvent(new CustomEvent('korg:eventsUpdated', { detail: { events: cachedEvents } }));
         } else {
           alert(data.error || 'Failed to save event');
         }
@@ -640,26 +641,47 @@ function renderAdminEventsTable(events, tbody) {
 
   // Attach Delete Event
   tbody.querySelectorAll('.adm-delete-ev-btn').forEach(btn => {
-    btn.addEventListener('click', async () => {
+    btn.addEventListener('click', async (e) => {
+      e.stopPropagation();
       const evId = btn.getAttribute('data-ev-id');
+      if (!evId) return;
       if (!confirm('Are you sure you want to delete this tournament?')) return;
 
+      const row = btn.closest('tr');
+      if (row) {
+        row.style.opacity = '0.35';
+        row.style.pointerEvents = 'none';
+      }
+
       try {
-        const res = await fetch('/api/admin/events/delete', {
+        const res = await fetch(`/api/admin/events/delete?id=${encodeURIComponent(evId)}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ id: evId })
         });
         const data = await res.json();
         if (data.success) {
-          showAdminToast('Event deleted.');
-          loadAdminEvents();
+          if (row) row.remove();
+          cachedEvents = cachedEvents.filter(ev => String(ev.id || ev._id) !== String(evId));
+          renderAdminEventsTable(cachedEvents, tbody);
+          showAdminToast('Event deleted successfully.');
           loadAdminStandings();
           fetchEvents();
           fetchStandings();
+          window.dispatchEvent(new CustomEvent('korg:eventsUpdated', { detail: { events: cachedEvents } }));
+        } else {
+          if (row) {
+            row.style.opacity = '1';
+            row.style.pointerEvents = 'auto';
+          }
+          alert(data.error || 'Failed to delete tournament');
         }
       } catch (err) {
-        alert('Error deleting event');
+        if (row) {
+          row.style.opacity = '1';
+          row.style.pointerEvents = 'auto';
+        }
+        alert('Server error deleting tournament');
       }
     });
   });

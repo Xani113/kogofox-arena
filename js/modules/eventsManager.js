@@ -24,6 +24,15 @@ export function initEventsManager() {
       fetchEvents(targetGame);
     }
   });
+
+  window.addEventListener('korg:eventsUpdated', (e) => {
+    if (e.detail && Array.isArray(e.detail.events)) {
+      allEvents = e.detail.events;
+      renderEventCards(filterEvents());
+    } else {
+      fetchEvents();
+    }
+  });
 }
 
 export function filterEventsByGame(gameId) {

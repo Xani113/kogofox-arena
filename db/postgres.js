@@ -344,7 +344,17 @@ export function saveLocalStore() {
   try {
     fs.writeFileSync(LOCAL_STORE_FILE, JSON.stringify(fallbackStore, null, 2), 'utf-8');
   } catch (e) {
-    console.warn('[Store] Could not write local_store.json:', e.message);
+    // Graceful fallback for read-only serverless filesystems
+  }
+}
+
+export async function ensureConnected() {
+  if (isConnected && pool) return pool;
+  if (connectingPromise) return await connectingPromise;
+  try {
+    return await connectDB();
+  } catch (e) {
+    return null;
   }
 }
 
@@ -1042,6 +1052,8 @@ export async function joinSquad(squadId, applicantData) {
 
 /* ================== EVENTS & SCRIMS REPOSITORY ================== */
 export async function getEvents(statusFilter = null) {
+  await ensureConnected();
+
   if (isConnected && pool) {
     try {
       let query = `SELECT id, title, badge, tag, game, game_name as "gameName", date, prize_pool as "prizePool",
@@ -1055,9 +1067,7 @@ export async function getEvents(statusFilter = null) {
       }
       query += ` ORDER BY created_at DESC`;
       const res = await pool.query(query, params);
-      if (res.rows && res.rows.length > 0) {
-        return res.rows;
-      }
+      return res.rows || [];
     } catch (e) {
       console.error('[PostgreSQL] Query events error:', e.message);
     }
@@ -1070,6 +1080,8 @@ export async function getEvents(statusFilter = null) {
 }
 
 export async function saveEvent(eventData) {
+  await ensureConnected();
+
   const newEvent = {
     id: eventData.id || 'ev-' + Date.now(),
     title: eventData.title || 'New Tournament',
@@ -1113,6 +1125,7 @@ export async function saveEvent(eventData) {
 
 export async function updateEvent(id, updateData) {
   const cleanId = String(id || '').trim();
+  await ensureConnected();
 
   // Status transitions: completed (10-day retention) or live (ongoing)
   if (updateData.status === 'completed') {
@@ -1201,6 +1214,7 @@ export async function updateEvent(id, updateData) {
 
 export async function deleteEvent(id) {
   const cleanId = String(id || '').trim();
+  await ensureConnected();
 
   if (isConnected && pool) {
     try {
@@ -1211,10 +1225,10 @@ export async function deleteEvent(id) {
     }
   }
 
-  fallbackStore.events = fallbackStore.events.filter(e => e.id !== cleanId && e.id !== id);
-  fallbackStore.standings = fallbackStore.standings.filter(s => s.matchId !== cleanId && s.matchId !== id);
+  fallbackStore.events = fallbackStore.events.filter(e => String(e.id || e._id) !== cleanId);
+  fallbackStore.standings = fallbackStore.standings.filter(s => String(s.matchId) !== cleanId);
   saveLocalStore();
-  return { success: true, id };
+  return { success: true, id: cleanId };
 }
 
 /* ================== COMPETITIVE STANDINGS / POINTS REPOSITORY ================== */

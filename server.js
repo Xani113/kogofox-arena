@@ -65,6 +65,17 @@ function sendJSON(res, statusCode, data) {
 }
 
 function parseRequestBody(req) {
+  if (req.body) {
+    if (typeof req.body === 'object') return Promise.resolve(req.body);
+    if (typeof req.body === 'string') {
+      try {
+        return Promise.resolve(JSON.parse(req.body));
+      } catch (e) {
+        return Promise.resolve({});
+      }
+    }
+  }
+
   return new Promise((resolve) => {
     let body = '';
     req.on('data', chunk => {
@@ -500,8 +511,11 @@ export async function handleRequest(req, res) {
 
       if ((reqPath === '/api/admin/events/update' || (reqPath.startsWith('/api/admin/events/') && req.method === 'PUT')) && (req.method === 'POST' || req.method === 'PUT')) {
         const payload = await parseRequestBody(req);
-        const id = payload.id || reqPath.replace('/api/admin/events/', '');
-        if (!id) {
+        let id = payload.id || parsedUrl.searchParams.get('id');
+        if (!id && reqPath.startsWith('/api/admin/events/') && reqPath !== '/api/admin/events/update') {
+          id = reqPath.replace('/api/admin/events/', '').trim();
+        }
+        if (!id || id === 'update') {
           return sendJSON(res, 400, { error: 'Event ID is required' });
         }
         const updated = await updateEvent(id, payload);
@@ -510,9 +524,12 @@ export async function handleRequest(req, res) {
 
       if ((reqPath === '/api/admin/events/delete' || (reqPath.startsWith('/api/admin/events/') && req.method === 'DELETE')) && (req.method === 'POST' || req.method === 'DELETE')) {
         const payload = await parseRequestBody(req);
-        const id = payload.id || reqPath.replace('/api/admin/events/', '');
-        if (!id) {
-          return sendJSON(res, 400, { error: 'Event ID is required' });
+        let id = payload.id || parsedUrl.searchParams.get('id');
+        if (!id && reqPath.startsWith('/api/admin/events/') && reqPath !== '/api/admin/events/delete') {
+          id = reqPath.replace('/api/admin/events/', '').trim();
+        }
+        if (!id || id === 'delete') {
+          return sendJSON(res, 400, { error: 'Valid Event ID is required' });
         }
         const result = await deleteEvent(id);
         return sendJSON(res, 200, { success: true, message: 'Event deleted successfully!', data: result });

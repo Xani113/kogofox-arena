@@ -17,9 +17,9 @@ import { PixelStarsEngine } from './modules/pixelStars.js?v=2.6.0';
 import { TournamentSystem } from './modules/tournamentSystem.js?v=2.6.0';
 import { initViewController, switchView, toggleMobileMenu } from './modules/viewController.js?v=2.6.0';
 import { initSquadsManager } from './modules/squadsManager.js?v=2.6.0';
-import { initEventsManager } from './modules/eventsManager.js?v=2.6.0';
+import { initEventsManager } from './modules/eventsManager.js?v=2.6.1';
 import { initLeaderboard } from './modules/leaderboard.js?v=2.6.0';
-import { initAdminPanel } from './modules/adminPanel.js?v=2.6.0';
+import { initAdminPanel } from './modules/adminPanel.js?v=2.6.1';
 import { initGamesManager } from './modules/gamesManager.js?v=2.6.0';
 import { initAnnouncementTicker } from './modules/announcementTicker.js?v=2.6.0';
 
