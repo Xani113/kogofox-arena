@@ -87,11 +87,7 @@ class KugofoxApp {
       this.syncAdminAccess(this.currentUser);
     });
 
-    // Init tactical simulators (4 Titles)
-    this.minigames.initReflexTrainer('valorant-reflex-container');
-    this.minigames.initBgmiDropLab('bgmi-drop-container');
-    this.minigames.initMobaDraftSim('moba-draft-container');
-    this.renderFreeFireSynergy('freefire-synergy-container');
+    // Tactical simulators removed from homepage per user request
 
     // Enable sound on first interaction
     const handleFirstTouch = () => {
@@ -414,12 +410,11 @@ class KugofoxApp {
       btn.addEventListener('click', () => {
         sound.playClick();
         const gid = btn.dataset.game;
-        const minigameSec = document.getElementById('section-minigames');
-        if (minigameSec) {
-          minigameSec.scrollIntoView({ behavior: 'smooth' });
+        if (this.regModal) {
+          this.regModal.open(gid);
+        } else {
+          this.switchView('events');
         }
-        const tabBtn = document.querySelector(`.mg-tab[data-mg="${gid}"]`);
-        if (tabBtn) tabBtn.click();
       });
     });
   }

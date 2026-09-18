@@ -424,60 +424,10 @@
           </div>
         </div>
 
-        <!-- OFFICIAL BATTLE ARENAS SLIDER (Replaces Campus Gaming Gallery) -->
-        <section class="gallery-container-section" id="section-gallery">
+        <!-- COMBAT ZONE'S (Vertical Single Arena Cards) -->
+        <section class="gallery-container-section combat-zones-container-section" id="section-gallery">
           <div id="coverflow-gallery-mount">
-            <!-- Injected by coverflow.js: Official Battle Arenas horizontal slider -->
-          </div>
-        </section>
-
-
-
-        <!-- TACTICAL TOOLS & SIMULATORS (Minigames) -->
-        <section class="korg-section" id="section-minigames">
-          <div class="korg-section-header">
-            <div class="sh-left">
-              <span class="sh-icon">🕹️</span>
-              <h2 class="sh-title">Tactical Simulators & Arsenal Range</h2>
-            </div>
-            <p class="sh-desc">Sharpen reaction speeds, calibrate squad synergies, simulate 5v5 drafts, and radar drop zones.</p>
-          </div>
-
-          <div class="minigames-tabs-bar" id="mg-tabs-bar">
-            <button class="mg-tab active" data-mg="freefire" onclick="switchMgTab('freefire')">
-              <img src="assets/logos/freefire.png" alt="Free Fire" class="tab-game-logo"> Free Fire Synergy Lab
-            </button>
-            <button class="mg-tab" data-mg="bgmi" onclick="switchMgTab('bgmi')">
-              <img src="assets/logos/bgmi.png" alt="BGMI" class="tab-game-logo"> BGMI Tactical Drop Lab
-            </button>
-            <button class="mg-tab" data-mg="valorant" onclick="switchMgTab('valorant')">
-              <img src="assets/logos/valorant.png" alt="Valorant" class="tab-game-logo"> Valorant Aim Drill
-            </button>
-            <button class="mg-tab" data-mg="mobalegends" onclick="switchMgTab('mobalegends')">
-              <img src="assets/logos/mobalegends.png" alt="MOBA Legends" class="tab-game-logo"> MOBA 5v5 Draft Sim
-            </button>
-          </div>
-
-          <div class="mg-panel-group">
-            <!-- Free Fire Synergy Lab -->
-            <div class="mg-panel active-panel" id="mg-panel-freefire">
-              <div id="freefire-synergy-container"></div>
-            </div>
-
-            <!-- BGMI Drop Zone & Tactical Lab -->
-            <div class="mg-panel" id="mg-panel-bgmi">
-              <div id="bgmi-drop-container"></div>
-            </div>
-
-            <!-- Valorant Aim Trainer -->
-            <div class="mg-panel" id="mg-panel-valorant">
-              <div id="valorant-reflex-container"></div>
-            </div>
-
-            <!-- MOBA Legends Draft Simulator -->
-            <div class="mg-panel" id="mg-panel-mobalegends">
-              <div id="moba-draft-container"></div>
-            </div>
+            <!-- Injected by coverflow.js: Combat Zone's vertical arena cards -->
           </div>
         </section>
         </div> <!-- /view-home -->
@@ -519,23 +469,6 @@
 
   <!-- TOAST CONTAINER -->
   <div id="toast-container"></div>
-
-  <!-- Tab Switcher Helper -->
-  <script>
-    function switchMgTab(tabId) {
-      document.querySelectorAll('.mg-tab').forEach(t => t.classList.remove('active'));
-      const activeBtn = document.querySelector(`.mg-tab[data-mg="${tabId}"]`);
-      if (activeBtn) activeBtn.classList.add('active');
-
-      document.querySelectorAll('.mg-panel').forEach(p => p.classList.remove('active-panel'));
-      const activePanel = document.getElementById(`mg-panel-${tabId}`);
-      if (activePanel) activePanel.classList.add('active-panel');
-
-      if (window.kugofox && window.kugofox.sound) {
-        window.kugofox.sound.playTabSwitch();
-      }
-    }
-  </script>
 
   <!-- Main Application Script -->
   <script type="module" src="js/app.js?v=2.4.1"></script>

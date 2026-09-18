@@ -888,6 +888,10 @@ body.mobile-menu-locked {
   transition: filter 0.35s ease;
 }
 
+.cyber-headphone-wrapper:hover .headset-main-photo {
+  filter: drop-shadow(0 18px 36px rgba(0, 0, 0, 0.9)) brightness(1.28) contrast(1.15) saturate(1.25);
+}
+
 /* Dynamic Glowing SVG RGB Overlay */
 .headset-rgb-overlay {
   position: absolute;
@@ -1221,146 +1225,132 @@ body.mobile-menu-locked {
   width: 100%;
 }
 
+.combat-zones-section,
 .battle-arenas-section {
   position: relative;
   width: 100%;
+  margin-bottom: 2.5rem;
 }
 
+.combat-zones-header,
 .battle-arenas-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 1.25rem;
+  margin-bottom: 1.4rem;
   padding: 0 0.5rem;
 }
 
+.cz-title-group,
 .ba-title-group {
   display: flex;
   align-items: center;
   gap: 0.75rem;
 }
 
+.cz-icon,
 .ba-icon {
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   line-height: 1;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  filter: drop-shadow(0 0 8px rgba(0, 240, 255, 0.4));
+  filter: drop-shadow(0 0 10px rgba(0, 240, 255, 0.45));
 }
 
+.cz-heading,
 .ba-heading {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Orbitron', 'Inter', sans-serif;
   font-weight: 800;
-  font-size: 1.6rem;
+  font-size: 1.65rem;
   color: #ffffff;
   margin: 0;
-  letter-spacing: -0.02em;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.85);
 }
 
-.ba-nav-controls {
-  display: flex;
+.cz-header-badge {
+  display: inline-flex;
   align-items: center;
-  gap: 0.65rem;
-}
-
-/* Round circle navigation buttons matching Image 1 */
-.ba-circle-btn {
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  background: rgba(14, 18, 28, 0.7);
-  backdrop-filter: blur(8px);
-  border: 1.5px solid rgba(255, 255, 255, 0.22);
-  color: #ffffff;
-  font-size: 1.35rem;
-  line-height: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
-  user-select: none;
-  padding-bottom: 2px;
-}
-
-.ba-circle-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
-  border-color: #00f0ff;
+  gap: 0.5rem;
+  padding: 0.35rem 0.85rem;
+  background: rgba(14, 18, 28, 0.75);
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  border-radius: 999px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  font-weight: 700;
   color: #00f0ff;
-  transform: scale(1.08);
-  box-shadow: 0 0 14px rgba(0, 240, 255, 0.35);
+  letter-spacing: 0.06em;
+  backdrop-filter: blur(8px);
 }
 
-.ba-circle-btn:active {
-  transform: scale(0.94);
+.cz-live-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #00f0ff;
+  box-shadow: 0 0 8px #00f0ff;
+  animation: czPulse 2s infinite ease-in-out;
 }
 
-/* Horizontal card slider viewport */
-.battle-arenas-viewport {
-  width: 100%;
-  overflow-x: auto;
-  overflow-y: hidden;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  scroll-behavior: smooth;
-  scroll-snap-type: x mandatory;
-  padding: 8px 4px 18px 4px;
-  cursor: grab;
+@keyframes czPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.8); }
 }
 
-.battle-arenas-viewport::-webkit-scrollbar {
-  display: none;
-}
-
-.battle-arenas-viewport.dragging {
-  cursor: grabbing;
-  scroll-behavior: auto;
-}
-
-.battle-arenas-track {
+/* Vertical Single Single Cards List (Not like sliding) */
+.combat-zones-list {
   display: flex;
+  flex-direction: column;
   gap: 1.35rem;
-  width: max-content;
-  align-items: stretch;
+  width: 100%;
+  padding: 4px 0 12px 0;
 }
 
-/* Rounded Cards matching Image 1 */
-.arena-card {
-  flex: 0 0 340px;
-  width: 340px;
-  height: 200px;
-  border-radius: 20px;
+/* Combat Zone Card - Full-width vertical single stacked (Elongated) */
+.arena-card,
+.cz-vertical-card {
+  width: 100%;
+  flex: 0 0 auto;
+  height: 280px;
+  border-radius: 22px;
   overflow: hidden;
   position: relative;
-  scroll-snap-align: start;
   border: 1.5px solid rgba(255, 255, 255, 0.14);
   background: #090d16;
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.65);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.68);
   cursor: pointer;
   transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), 
               border-color 0.28s ease, 
               box-shadow 0.28s ease;
   user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent !important;
+  outline: none;
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
 }
 
-.arena-card:hover {
-  transform: translateY(-5px) scale(1.015);
-  border-color: rgba(0, 240, 255, 0.65);
-  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.8), 0 0 24px rgba(0, 240, 255, 0.3);
+.arena-card:hover,
+.cz-vertical-card:hover {
+  transform: translateY(-5px) scale(1.005);
+  border-color: rgba(0, 240, 255, 0.75);
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.88), 0 0 32px rgba(0, 240, 255, 0.35);
 }
 
-.arena-card.active-card {
+.arena-card.active-card,
+.cz-vertical-card.active-card {
   border-color: #00f0ff;
-  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.85), 0 0 26px rgba(0, 240, 255, 0.38);
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.92), 0 0 32px rgba(0, 240, 255, 0.42);
 }
 
 .arena-card-inner {
   width: 100%;
   height: 100%;
   position: relative;
-  border-radius: 20px;
+  border-radius: 22px;
   overflow: hidden;
 }
 
@@ -1368,25 +1358,35 @@ body.mobile-menu-locked {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.4s ease;
+  object-position: center 30%;
+  transition: transform 0.4s ease, filter 0.35s ease;
   display: block;
 }
 
-.arena-card:hover .arena-banner-img {
+.arena-card:hover .arena-banner-img,
+.cz-vertical-card:hover .arena-banner-img {
   transform: scale(1.05);
+  filter: brightness(1.42) contrast(1.18) saturate(1.35);
 }
 
 .arena-card-gradient {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.08) 0%, rgba(0, 0, 0, 0.35) 45%, rgba(4, 7, 12, 0.94) 100%);
+  background: linear-gradient(90deg, rgba(3, 5, 8, 0.94) 0%, rgba(3, 5, 8, 0.68) 45%, rgba(3, 5, 8, 0.2) 100%),
+              linear-gradient(180deg, rgba(0, 0, 0, 0.06) 0%, rgba(0, 0, 0, 0.35) 45%, rgba(4, 7, 12, 0.95) 100%);
   pointer-events: none;
+  transition: opacity 0.35s ease;
+}
+
+.arena-card:hover .arena-card-gradient,
+.cz-vertical-card:hover .arena-card-gradient {
+  opacity: 0.72;
 }
 
 .arena-card-overlay {
   position: absolute;
   inset: 0;
-  padding: 1.1rem 1.25rem;
+  padding: 1.45rem 1.75rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -1441,15 +1441,15 @@ body.mobile-menu-locked {
 .arena-game-title {
   font-family: 'Inter', sans-serif;
   font-weight: 900;
-  font-size: 1.35rem;
+  font-size: 1.6rem;
   color: #ffffff;
-  margin: 0 0 0.15rem;
+  margin: 0 0 0.25rem;
   letter-spacing: -0.01em;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9);
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.95);
 }
 
 .arena-game-category {
-  font-size: 0.75rem;
+  font-size: 0.85rem;
   color: #cbd5e1;
   margin: 0;
   white-space: nowrap;
@@ -1461,20 +1461,20 @@ body.mobile-menu-locked {
 .arena-enter-btn {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.45rem;
   background: #ffffff;
   color: #000000;
   font-family: 'Inter', sans-serif;
   font-weight: 800;
-  font-size: 0.78rem;
+  font-size: 0.84rem;
   letter-spacing: 0.04em;
-  padding: 0.46rem 0.95rem;
-  border-radius: 6px;
+  padding: 0.55rem 1.15rem;
+  border-radius: 8px;
   border: none;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.22s ease;
   white-space: nowrap;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.55);
 }
 
 .arena-enter-btn:hover {
@@ -2172,23 +2172,46 @@ body.mobile-menu-locked {
     display: none;
   }
 
-  /* Battle Arenas Carousel on Phone */
+  /* Combat Zones Vertical Cards on Phone */
+  .combat-zones-header,
   .battle-arenas-header {
     padding: 0 0.25rem;
+    margin-bottom: 1rem;
   }
+  .cz-heading,
   .ba-heading {
-    font-size: 1.25rem;
+    font-size: 1.3rem;
   }
-  .ba-circle-btn {
-    width: 34px;
-    height: 34px;
-    font-size: 1.15rem;
+  .cz-header-badge {
+    font-size: 0.68rem;
+    padding: 0.28rem 0.65rem;
   }
-  .arena-card {
-    flex: 0 0 calc(100vw - 3rem);
-    max-width: 320px;
-    height: 185px;
-    border-radius: 16px;
+  .combat-zones-list {
+    gap: 1rem;
+  }
+  .arena-card,
+  .cz-vertical-card {
+    width: 100%;
+    max-width: 100%;
+    height: 220px;
+    border-radius: 18px;
+    flex: 0 0 auto;
+  }
+  .arena-card-overlay {
+    padding: 1.15rem 1.25rem;
+  }
+  .arena-prize-tag {
+    display: none;
+  }
+  .arena-game-title {
+    font-size: 1.35rem;
+  }
+  .arena-game-category {
+    font-size: 0.78rem;
+  }
+  .arena-enter-btn {
+    padding: 0.46rem 0.9rem;
+    font-size: 0.76rem;
   }
 
   /* Registration Modal on Phone */
