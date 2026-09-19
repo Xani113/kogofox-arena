@@ -144,20 +144,7 @@ export const INITIAL_EVENTS = [
   }
 ];
 
-export const INITIAL_STANDINGS = [
-  { id: "p-1", matchId: "ev-3", matchTitle: "CAMPUS VALORANT SHOWDOWN", rank: 1, name: "Prince Nanda", handle: "@skie", dept: "Statistics", tier: "Bronze", matches: 7, wins: 2, bestFinish: "7th", winRate: "29%", cp: 81, game: "valorant", avatar: "🧑‍💻", completedAt: new Date(Date.now() - 7 * 86400000), expiresAt: new Date(Date.now() + 3 * 86400000) },
-  { id: "p-2", matchId: "ev-3", matchTitle: "CAMPUS VALORANT SHOWDOWN", rank: 2, name: "Gautam Yadav", handle: "@gautam_486", dept: "Computer Science & Engineering", tier: "Bronze", matches: 7, wins: 2, bestFinish: "7th", winRate: "29%", cp: 75, game: "valorant", avatar: "👨‍🎓", completedAt: new Date(Date.now() - 7 * 86400000), expiresAt: new Date(Date.now() + 3 * 86400000) },
-  { id: "p-3", matchId: "ev-3", matchTitle: "CAMPUS VALORANT SHOWDOWN", rank: 3, name: "Bicky Sarkar", handle: "@bicky_798", dept: "Computer Science & Engineering", tier: "Bronze", matches: 7, wins: 1, bestFinish: "1st", winRate: "14%", cp: 69, game: "valorant", avatar: "🦸", completedAt: new Date(Date.now() - 7 * 86400000), expiresAt: new Date(Date.now() + 3 * 86400000) },
-  { id: "p-4", matchId: "ev-3", matchTitle: "CAMPUS VALORANT SHOWDOWN", rank: 4, name: "Sarthak Gupta", handle: "@sarthak", dept: "Computer Science & Engineering", tier: "Bronze", matches: 6, wins: 2, bestFinish: "1st", winRate: "33%", cp: 67, game: "valorant", avatar: "🧑", completedAt: new Date(Date.now() - 7 * 86400000), expiresAt: new Date(Date.now() + 3 * 86400000) },
-  { id: "p-5", matchId: "ev-3", matchTitle: "CAMPUS VALORANT SHOWDOWN", rank: 5, name: "Suman Nandi", handle: "@suman_590", dept: "Computer Science & Engineering", tier: "Bronze", matches: 5, wins: 2, bestFinish: "1st", winRate: "40%", cp: 64, game: "valorant", avatar: "⚡", completedAt: new Date(Date.now() - 7 * 86400000), expiresAt: new Date(Date.now() + 3 * 86400000) },
-  { id: "p-6", matchId: "ev-3", matchTitle: "CAMPUS VALORANT SHOWDOWN", rank: 6, name: "JOD OP", handle: "@jod_581", dept: "Computer Science & Engineering", tier: "Bronze", matches: 5, wins: 2, bestFinish: "1st", winRate: "40%", cp: 62, game: "valorant", avatar: "🔥", completedAt: new Date(Date.now() - 7 * 86400000), expiresAt: new Date(Date.now() + 3 * 86400000) },
-  { id: "p-7", matchId: "ev-4", matchTitle: "MOBA 5V5 DRAFT CUP", rank: 1, name: "Spondon Nath", handle: "@spondon_07", dept: "Computer Science & Engineering", tier: "Bronze", matches: 6, wins: 2, bestFinish: "1st", winRate: "33%", cp: 61, game: "mobalegends", avatar: "🎯", completedAt: new Date(Date.now() - 2 * 86400000), expiresAt: new Date(Date.now() + 8 * 86400000) },
-  { id: "p-8", matchId: "ev-4", matchTitle: "MOBA 5V5 DRAFT CUP", rank: 2, name: "Gurram yutish govind", handle: "@yutish", dept: "Mechanical Engineering", tier: "Bronze", matches: 5, wins: 1, bestFinish: "2nd", winRate: "20%", cp: 58, game: "mobalegends", avatar: "🕶️", completedAt: new Date(Date.now() - 2 * 86400000), expiresAt: new Date(Date.now() + 8 * 86400000) },
-  { id: "p-9", matchId: "ev-4", matchTitle: "MOBA 5V5 DRAFT CUP", rank: 3, name: "Aniket Roy", handle: "@aniket_roy", dept: "Electrical Engineering", tier: "Bronze", matches: 5, wins: 1, bestFinish: "3rd", winRate: "20%", cp: 55, game: "mobalegends", avatar: "🦊", completedAt: new Date(Date.now() - 2 * 86400000), expiresAt: new Date(Date.now() + 8 * 86400000) },
-  { id: "p-10", matchId: "ev-4", matchTitle: "MOBA 5V5 DRAFT CUP", rank: 4, name: "Tanmay Sharma", handle: "@tanmay_s", dept: "Civil Engineering", tier: "Bronze", matches: 4, wins: 1, bestFinish: "1st", winRate: "25%", cp: 52, game: "mobalegends", avatar: "👑", completedAt: new Date(Date.now() - 2 * 86400000), expiresAt: new Date(Date.now() + 8 * 86400000) },
-  { id: "p-11", matchId: "ev-4", matchTitle: "MOBA 5V5 DRAFT CUP", rank: 5, name: "Kushagra Verma", handle: "@kush_v", dept: "Information Technology", tier: "Bronze", matches: 4, wins: 1, bestFinish: "2nd", winRate: "25%", cp: 48, game: "mobalegends", avatar: "🎯", completedAt: new Date(Date.now() - 2 * 86400000), expiresAt: new Date(Date.now() + 8 * 86400000) },
-  { id: "p-12", matchId: "ev-4", matchTitle: "MOBA 5V5 DRAFT CUP", rank: 6, name: "Priya Das", handle: "@priya_d", dept: "Biotechnology", tier: "Bronze", matches: 3, wins: 1, bestFinish: "1st", winRate: "33%", cp: 45, game: "mobalegends", avatar: "🌸", completedAt: new Date(Date.now() - 2 * 86400000), expiresAt: new Date(Date.now() + 8 * 86400000) }
-];
+export const INITIAL_STANDINGS = [];
 
 function loadLocalStore() {
   try {
@@ -174,18 +161,14 @@ function loadLocalStore() {
 const persisted = loadLocalStore();
 const fallbackStore = {
   tournaments: persisted?.tournaments || [...TOURNAMENTS_DATA],
-  registrations: persisted?.registrations || [],
+  registrations: Array.isArray(persisted?.registrations) ? persisted.registrations : [],
   votes: persisted?.votes || {},
-  chat: persisted?.chat || [
-    { user: 'RadiantDemon', badge: 'VIP', text: 'THAT FLICK ON C-SITE WAS DISGUSTING!! 🔥', time: '19:10' },
-    { user: 'ErangelSniper', badge: 'PRO', text: 'AWM collateral incoming in the final circle!', time: '19:11' },
-    { user: 'FoxFanatic', badge: 'FAN', text: 'KUGOFOX RUNNING THE BRACKET TODAY 🦊🦊🦊', time: '19:12' }
-  ],
-  leaderboard: persisted?.leaderboard || { ...LEADERBOARD_DATA },
-  users: persisted?.users || [],
+  chat: Array.isArray(persisted?.chat) ? persisted.chat : [],
+  leaderboard: persisted?.leaderboard || {},
+  users: Array.isArray(persisted?.users) ? persisted.users : [],
   squads: (persisted?.squads || []).filter(s => !['sq-1', 'sq-2', 'sq-3', 'sq-4', 'sq-5', 'sq-6', 'sq-7', 'sq-8', 'sq-9'].includes(s.id)),
   events: persisted?.events || JSON.parse(JSON.stringify(INITIAL_EVENTS)),
-  standings: persisted?.standings || JSON.parse(JSON.stringify(INITIAL_STANDINGS))
+  standings: Array.isArray(persisted?.standings) ? persisted.standings : []
 };
 
 export function saveLocalStore() {
@@ -471,12 +454,12 @@ async function initializeSchema() {
     if (Array.isArray(fallbackStore.users)) {
       for (const u of fallbackStore.users) {
         await pool.query(
-          `INSERT INTO users (id, full_name, username, email, password, division, department, avatar, stats)
-           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+          `INSERT INTO users (id, full_name, username, email, password, avatar, stats)
+           VALUES ($1, $2, $3, $4, $5, $6, $7)
            ON CONFLICT (id) DO NOTHING`,
           [
             u.id, u.fullName || '', u.username, u.email, u.password,
-            u.division || 'campus', u.department || '', u.avatar || '🎓', JSON.stringify(u.stats || {})
+            u.avatar || '🦊', JSON.stringify(u.stats || {})
           ]
         );
       }
@@ -629,14 +612,11 @@ export async function createUser(userData) {
     username: (userData.username || '').replace(/^@/, '').trim().toLowerCase(),
     email: (userData.email || '').trim().toLowerCase(),
     password: userData.password || '',
-    division: userData.division || 'campus',
-    department: userData.department || '',
-    avatar: userData.avatar || (userData.division === 'campus' ? '🎓' : '🌐'),
+    avatar: userData.avatar || '🦊',
     createdAt: new Date(),
     stats: {
       matchesPlayed: 0,
       tournamentsWon: 0,
-      kCoins: 500,
       rank: 'Contender I'
     }
   };
@@ -644,12 +624,11 @@ export async function createUser(userData) {
   if (isConnected && pool) {
     try {
       await pool.query(
-        `INSERT INTO users (id, full_name, username, email, password, division, department, avatar, stats, created_at)
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
+        `INSERT INTO users (id, full_name, username, email, password, avatar, stats, created_at)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
         [
           newUser.id, newUser.fullName, newUser.username, newUser.email,
-          newUser.password, newUser.division, newUser.department,
-          newUser.avatar, JSON.stringify(newUser.stats), newUser.createdAt
+          newUser.password, newUser.avatar, JSON.stringify(newUser.stats), newUser.createdAt
         ]
       );
     } catch (e) {
@@ -667,7 +646,7 @@ export async function findUserByEmail(email) {
   if (isConnected && pool) {
     try {
       const res = await pool.query(
-        `SELECT id, full_name as "fullName", username, email, password, division, department, avatar, stats, created_at as "createdAt"
+        `SELECT id, full_name as "fullName", username, email, password, avatar, stats, created_at as "createdAt"
          FROM users WHERE LOWER(email) = $1`,
         [normalized]
       );
@@ -684,7 +663,7 @@ export async function findUserByUsername(username) {
   if (isConnected && pool) {
     try {
       const res = await pool.query(
-        `SELECT id, full_name as "fullName", username, email, password, division, department, avatar, stats, created_at as "createdAt"
+        `SELECT id, full_name as "fullName", username, email, password, avatar, stats, created_at as "createdAt"
          FROM users WHERE LOWER(username) = $1`,
         [clean]
       );
@@ -705,7 +684,7 @@ export async function authenticateUser(identifier, password) {
   if (isConnected && pool) {
     try {
       const res = await pool.query(
-        `SELECT id, full_name as "fullName", username, email, password, division, department, avatar, stats, created_at as "createdAt"
+        `SELECT id, full_name as "fullName", username, email, password, avatar, stats, created_at as "createdAt"
          FROM users WHERE LOWER(email) = $1 OR LOWER(username) = $1 OR LOWER(username) = $2`,
         [cleanId, strippedId]
       );
@@ -743,7 +722,7 @@ export async function findUserById(id) {
   if (isConnected && pool) {
     try {
       const res = await pool.query(
-        `SELECT id, full_name as "fullName", username, email, password, division, department, avatar, stats, created_at as "createdAt"
+        `SELECT id, full_name as "fullName", username, email, password, avatar, stats, created_at as "createdAt"
          FROM users WHERE id = $1`,
         [id]
       );
@@ -758,7 +737,11 @@ export async function findUserById(id) {
 
 function sanitizeUser(user) {
   if (!user) return null;
-  const { password, ...safe } = user;
+  const { password, division, department, ...safe } = user;
+  if (safe.stats && safe.stats.kCoins !== undefined) {
+    const { kCoins, ...cleanStats } = safe.stats;
+    safe.stats = cleanStats;
+  }
   return safe;
 }
 

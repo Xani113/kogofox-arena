@@ -49,7 +49,7 @@ function renderAdminView(container) {
         <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🛡️</div>
         <h3>Admin Command Center</h3>
         <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 1.5rem; line-height: 1.5;">
-          Restricted access. Only authorized administrator logins (<strong style="color: #00f0ff;">rpmohit9@gmail.com</strong>, <strong style="color: #00f0ff;">mkgsani9@gmail.com</strong>) can unlock the command center.
+          Restricted access. Only authorized administrator logins (<strong style="color: #00f0ff;">rpmohit9@gmail.com</strong>, <strong style="color: #00f0ff;">mkgsani9@gmail.com</strong>, <strong style="color: #00f0ff;">gy434307@gmail.com</strong>) can unlock the command center.
         </p>
 
         <form id="admin-login-form" style="display: flex; flex-direction: column; gap: 1rem; text-align: left;">

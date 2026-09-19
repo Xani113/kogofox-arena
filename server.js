@@ -289,8 +289,6 @@ export async function handleRequest(req, res) {
             username: googleUsername,
             email: googleEmail,
             password: 'google_oauth_verified_' + Math.random(),
-            division: 'campus',
-            department: 'eSports Contender',
             avatar: googleAvatar
           });
         }
@@ -459,7 +457,7 @@ export async function handleRequest(req, res) {
       // 10. Admin API endpoints
       if (reqPath === '/api/admin/check-access' && req.method === 'GET') {
         const email = (parsedUrl.searchParams.get('email') || '').toLowerCase().trim();
-        const allowedEmails = (process.env.ADMIN_EMAILS || 'rpmohit9@gmail.com,mkgsani9@gmail.com')
+        const allowedEmails = (process.env.ADMIN_EMAILS || 'rpmohit9@gmail.com,mkgsani9@gmail.com,gy434307@gmail.com')
           .toLowerCase()
           .split(',')
           .map(e => e.trim());
@@ -472,7 +470,7 @@ export async function handleRequest(req, res) {
         const email = (payload.email || '').toLowerCase().trim();
         const password = payload.password || payload.passkey || '';
 
-        const allowedEmails = (process.env.ADMIN_EMAILS || 'rpmohit9@gmail.com,mkgsani9@gmail.com')
+        const allowedEmails = (process.env.ADMIN_EMAILS || 'rpmohit9@gmail.com,mkgsani9@gmail.com,gy434307@gmail.com')
           .toLowerCase()
           .split(',')
           .map(e => e.trim());

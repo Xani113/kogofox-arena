@@ -76,7 +76,7 @@ class KugofoxApp {
     initLeaderboard('view-leaderboard');
     initAdminPanel();
 
-    // Sync Admin navigation buttons (restricted to rpmohit9@gmail.com, mkgsani9@gmail.com)
+    // Sync Admin navigation buttons (restricted to rpmohit9@gmail.com, mkgsani9@gmail.com, gy434307@gmail.com)
     this.syncAdminAccess();
 
     window.addEventListener('korg:adminLoggedIn', (e) => {
@@ -166,7 +166,7 @@ class KugofoxApp {
   }
 
   syncAdminAccess(user = this.currentUser) {
-    const allowedEmails = ['rpmohit9@gmail.com', 'mkgsani9@gmail.com'];
+    const allowedEmails = ['rpmohit9@gmail.com', 'mkgsani9@gmail.com', 'gy434307@gmail.com'];
     let userEmail = '';
     if (user && user.email) {
       userEmail = user.email.toLowerCase().trim();

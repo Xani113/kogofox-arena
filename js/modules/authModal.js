@@ -479,8 +479,7 @@ export class AuthModal {
           fullName: cleanName,
           username: cleanName.replace(/[^a-zA-Z0-9_]/g, '') || 'gamer',
           email: identifier.includes('@') ? identifier.toLowerCase() : `${identifier.toLowerCase()}@gmail.com`,
-          avatar: '🦊',
-          division: 'campus'
+          avatar: '🦊'
         };
         token = 'korg_token_' + btoa(user.email + ':' + Date.now());
       }
@@ -576,8 +575,7 @@ export class AuthModal {
           fullName,
           username,
           email,
-          avatar: '🦊',
-          division: 'campus'
+          avatar: '🦊'
         };
         token = 'korg_token_' + btoa(email + ':' + Date.now());
       }
@@ -676,9 +674,7 @@ export class AuthModal {
       fullName: cleanName,
       username: cleanUsername,
       email: cleanEmail,
-      avatar: avatar || '⚡',
-      division: 'campus',
-      department: 'eSports Contender'
+      avatar: avatar || '⚡'
     };
 
     // Show toast or alert
