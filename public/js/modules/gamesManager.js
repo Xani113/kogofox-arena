@@ -62,27 +62,27 @@ export function initGamesManager() {
 
 function renderGamesScaffold(container) {
   container.innerHTML = `
-    <div class="korg-view-header">
-      <div class="korg-view-title-row">
+    <div class="kugofox-view-header">
+      <div class="kugofox-view-title-row">
         <div>
-          <h1 class="korg-view-title">
+          <h1 class="kugofox-view-title">
             <span>CAMPUS GAMES DIRECTORY</span>
           </h1>
-          <p class="korg-view-subtitle">
+          <p class="kugofox-view-subtitle">
             Explore competitive titles played across campus scrims, tournaments, and community lobbies.
           </p>
         </div>
       </div>
 
       <!-- Search Bar -->
-      <div class="korg-search-box" style="margin-top: 1.5rem;">
+      <div class="kugofox-search-box" style="margin-top: 1.5rem;">
         <span style="color: #64748b; font-size: 1.1rem;">🔍</span>
         <input type="text" id="games-search-input" placeholder="Search games by title, genre, or platform..." />
       </div>
     </div>
 
     <!-- Games Grid -->
-    <div class="korg-games-grid" id="games-grid-container"></div>
+    <div class="kugofox-games-grid" id="games-grid-container"></div>
   `;
 
   const searchInput = document.getElementById('games-search-input');
@@ -115,24 +115,24 @@ function renderGameCards(games, container) {
   }
 
   container.innerHTML = games.map(g => `
-    <div class="korg-game-item-card">
-      <div class="korg-game-item-banner" style="background: ${g.bg}; display: flex; align-items: center; justify-content: center; position: relative;">
+    <div class="kugofox-game-item-card">
+      <div class="kugofox-game-item-banner" style="background: ${g.bg}; display: flex; align-items: center; justify-content: center; position: relative;">
         <img src="${g.banner}" alt="${g.title}" style="max-height: 80px; max-width: 80%; object-fit: contain; z-index: 1;" />
-        <span class="korg-pill-tag korg-pill-type" style="position: absolute; top: 12px; left: 12px; z-index: 2; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px);">
+        <span class="kugofox-pill-tag kugofox-pill-type" style="position: absolute; top: 12px; left: 12px; z-index: 2; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px);">
           ${g.genre}
         </span>
       </div>
 
-      <div class="korg-game-item-body">
-        <h3 class="korg-game-item-title">${g.title}</h3>
-        <p class="korg-game-item-desc">${g.description}</p>
+      <div class="kugofox-game-item-body">
+        <h3 class="kugofox-game-item-title">${g.title}</h3>
+        <p class="kugofox-game-item-desc">${g.description}</p>
 
-        <div class="korg-game-item-meta">
+        <div class="kugofox-game-item-meta">
           <span>🎮 ${g.platform}</span>
           <span style="color: #00f0ff; font-weight: 700;">${g.activeTourneys} Tournaments</span>
         </div>
 
-        <button class="korg-game-open-btn" data-open-game="${g.id}">
+        <button class="kugofox-game-open-btn" data-open-game="${g.id}">
           <span>OPEN</span>
           <span>→</span>
         </button>

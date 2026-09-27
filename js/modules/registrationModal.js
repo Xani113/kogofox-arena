@@ -26,12 +26,12 @@ export class RegistrationModal {
     }
     this.overlay = overlay;
 
-    window.addEventListener('korg:userLoggedIn', (e) => {
-      const pending = sessionStorage.getItem('korg_pending_action');
+    window.addEventListener('kugofox:userLoggedIn', (e) => {
+      const pending = sessionStorage.getItem('kugofox_pending_action');
       if (pending === 'register_tournament') {
-        const game = sessionStorage.getItem('korg_pending_game');
-        sessionStorage.removeItem('korg_pending_action');
-        sessionStorage.removeItem('korg_pending_game');
+        const game = sessionStorage.getItem('kugofox_pending_game');
+        sessionStorage.removeItem('kugofox_pending_action');
+        sessionStorage.removeItem('kugofox_pending_game');
         setTimeout(() => {
           this.open(game || 'freefire');
           if (this.app && typeof this.app.showToast === 'function') {
@@ -45,14 +45,14 @@ export class RegistrationModal {
   open(preselectedGame = null) {
     let user = null;
     try {
-      const raw = localStorage.getItem('korg_user_session') || localStorage.getItem('korg_user');
+      const raw = localStorage.getItem('kugofox_user_session') || localStorage.getItem('kugofox_user');
       if (raw) user = JSON.parse(raw);
     } catch (e) {}
     if (!user && this.app?.currentUser) user = this.app.currentUser;
 
     if (!user) {
-      sessionStorage.setItem('korg_pending_action', 'register_tournament');
-      sessionStorage.setItem('korg_pending_game', preselectedGame || 'freefire');
+      sessionStorage.setItem('kugofox_pending_action', 'register_tournament');
+      sessionStorage.setItem('kugofox_pending_game', preselectedGame || 'freefire');
       if (this.app && typeof this.app.showToast === 'function') {
         this.app.showToast('Please log in or sign up first to register your team.', 'info');
       }
@@ -83,7 +83,7 @@ export class RegistrationModal {
     let user = this.app?.currentUser;
     if (!user) {
       try {
-        const raw = localStorage.getItem('korg_user_session') || localStorage.getItem('korg_user');
+        const raw = localStorage.getItem('kugofox_user_session') || localStorage.getItem('kugofox_user');
         if (raw) user = JSON.parse(raw);
       } catch (e) {}
     }

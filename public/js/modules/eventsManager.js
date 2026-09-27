@@ -10,7 +10,7 @@ let activeGameFilter = 'all';
 
 export function getAuthUser() {
   try {
-    const raw = localStorage.getItem('korg_user_session') || localStorage.getItem('korg_user');
+    const raw = localStorage.getItem('kugofox_user_session') || localStorage.getItem('kugofox_user');
     if (raw) {
       const user = JSON.parse(raw);
       if (user && (user.id || user.email || user.username)) {
@@ -63,8 +63,8 @@ export function handleEventRegisterClick(evId) {
   const user = getAuthUser();
   if (!user) {
     // 1. Not logged in! Save pending intent
-    sessionStorage.setItem('korg_pending_action', 'register_event');
-    sessionStorage.setItem('korg_pending_event_id', evId);
+    sessionStorage.setItem('kugofox_pending_action', 'register_event');
+    sessionStorage.setItem('kugofox_pending_event_id', evId);
 
     // 2. Toast notification
     showToast('Please log in or sign up first to register your team.', 'info');
@@ -91,7 +91,7 @@ export function initEventsManager() {
   renderEventsScaffold(container);
   fetchEvents();
 
-  window.addEventListener('korg:viewChanged', (e) => {
+  window.addEventListener('kugofox:viewChanged', (e) => {
     if (e.detail && e.detail.view === 'events') {
       const targetGame = e.detail.game || activeGameFilter;
       if (e.detail.game) {
@@ -101,7 +101,7 @@ export function initEventsManager() {
     }
   });
 
-  window.addEventListener('korg:eventsUpdated', (e) => {
+  window.addEventListener('kugofox:eventsUpdated', (e) => {
     if (e.detail && Array.isArray(e.detail.events)) {
       allEvents = e.detail.events;
       renderEventCards(filterEvents());
@@ -111,12 +111,12 @@ export function initEventsManager() {
   });
 
   // Automatically resume event registration when user finishes logging in or signing up
-  window.addEventListener('korg:userLoggedIn', (e) => {
-    const pending = sessionStorage.getItem('korg_pending_action');
+  window.addEventListener('kugofox:userLoggedIn', (e) => {
+    const pending = sessionStorage.getItem('kugofox_pending_action');
     if (pending === 'register_event') {
-      const evId = sessionStorage.getItem('korg_pending_event_id');
-      sessionStorage.removeItem('korg_pending_action');
-      sessionStorage.removeItem('korg_pending_event_id');
+      const evId = sessionStorage.getItem('kugofox_pending_event_id');
+      sessionStorage.removeItem('kugofox_pending_action');
+      sessionStorage.removeItem('kugofox_pending_event_id');
 
       if (typeof window.switchView === 'function') {
         window.switchView('events');
@@ -160,7 +160,7 @@ export function filterEventsByGame(gameId) {
     });
 
     // Update filter pills UI
-    container.querySelectorAll('#events-filter-bar .korg-filter-pill').forEach(btn => {
+    container.querySelectorAll('#events-filter-bar .kugofox-filter-pill').forEach(btn => {
       btn.classList.toggle('active', btn.getAttribute('data-game') === gameId);
     });
   }
@@ -174,46 +174,46 @@ if (typeof window !== 'undefined') {
 
 function renderEventsScaffold(container) {
   container.innerHTML = `
-    <div class="korg-view-header">
-      <div class="korg-view-title-row">
+    <div class="kugofox-view-header">
+      <div class="kugofox-view-title-row">
         <div>
-          <h1 class="korg-view-title">
+          <h1 class="kugofox-view-title">
             <span>CAMPUS SCRIMS & TOURNAMENTS</span>
           </h1>
-          <p class="korg-view-subtitle">
+          <p class="kugofox-view-subtitle">
             Compete in daily scrims, weekly cups, and major campus championships for verified prize pools and Combat Points.
           </p>
         </div>
       </div>
 
       <!-- Navigation Status Tabs -->
-      <div class="korg-events-status-tabs">
-        <button class="korg-admin-tab-btn active" data-event-tab="upcoming">Upcoming</button>
-        <button class="korg-admin-tab-btn" data-event-tab="live">Live Now</button>
-        <button class="korg-admin-tab-btn" data-event-tab="completed">Completed</button>
+      <div class="kugofox-events-status-tabs">
+        <button class="kugofox-admin-tab-btn active" data-event-tab="upcoming">Upcoming</button>
+        <button class="kugofox-admin-tab-btn" data-event-tab="live">Live Now</button>
+        <button class="kugofox-admin-tab-btn" data-event-tab="completed">Completed</button>
       </div>
 
       <!-- Filter pills -->
-      <div class="korg-filter-bar" id="events-filter-bar">
-        <button class="korg-filter-pill active" data-game="all">All Games</button>
-        <button class="korg-filter-pill" data-game="freefire">Free Fire</button>
-        <button class="korg-filter-pill" data-game="bgmi">BGMI</button>
-        <button class="korg-filter-pill" data-game="valorant">Valorant</button>
-        <button class="korg-filter-pill" data-game="mobalegends">Mobile Legends</button>
+      <div class="kugofox-filter-bar" id="events-filter-bar">
+        <button class="kugofox-filter-pill active" data-game="all">All Games</button>
+        <button class="kugofox-filter-pill" data-game="freefire">Free Fire</button>
+        <button class="kugofox-filter-pill" data-game="bgmi">BGMI</button>
+        <button class="kugofox-filter-pill" data-game="valorant">Valorant</button>
+        <button class="kugofox-filter-pill" data-game="mobalegends">Mobile Legends</button>
       </div>
     </div>
 
     <!-- Events Grid -->
-    <div class="korg-events-grid" id="events-grid-container">
+    <div class="kugofox-events-grid" id="events-grid-container">
       <div style="color: #94a3b8; padding: 2rem; text-align: center; grid-column: 1 / -1;">
         Loading scrims and tournaments...
       </div>
     </div>
 
     <!-- Quick Register Modal for Events -->
-    <div id="modal-event-register" class="korg-modal-overlay">
-      <div class="korg-modal-box">
-        <button class="korg-modal-close" id="btn-close-event-register">&times;</button>
+    <div id="modal-event-register" class="kugofox-modal-overlay">
+      <div class="kugofox-modal-box">
+        <button class="kugofox-modal-close" id="btn-close-event-register">&times;</button>
         <h2 style="color: #fff; margin-top: 0; font-size: 1.4rem; display: flex; align-items: center; gap: 0.5rem;">
           <span>🏆</span> Register for Tournament
         </h2>
@@ -224,33 +224,33 @@ function renderEventsScaffold(container) {
         <form id="form-event-register" style="display: flex; flex-direction: column; gap: 1rem;">
           <input type="hidden" id="event-reg-target-id" value="" />
           <div>
-            <label class="korg-admin-label">Squad / Team Name</label>
-            <input type="text" id="event-reg-team" class="korg-admin-input" placeholder="e.g. Apex Predators" required />
+            <label class="kugofox-admin-label">Squad / Team Name</label>
+            <input type="text" id="event-reg-team" class="kugofox-admin-input" placeholder="e.g. Apex Predators" required />
           </div>
 
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
             <div>
-              <label class="korg-admin-label">Captain IGN / Name</label>
-              <input type="text" id="event-reg-captain" class="korg-admin-input" placeholder="Captain name" required />
+              <label class="kugofox-admin-label">Captain IGN / Name</label>
+              <input type="text" id="event-reg-captain" class="kugofox-admin-input" placeholder="Captain name" required />
             </div>
             <div>
-              <label class="korg-admin-label">In-Game UID / ID</label>
-              <input type="text" id="event-reg-gameid" class="korg-admin-input" placeholder="e.g. 1029384756" required />
+              <label class="kugofox-admin-label">In-Game UID / ID</label>
+              <input type="text" id="event-reg-gameid" class="kugofox-admin-input" placeholder="e.g. 1029384756" required />
             </div>
           </div>
 
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
             <div>
-              <label class="korg-admin-label">Contact Email</label>
-              <input type="email" id="event-reg-email" class="korg-admin-input" placeholder="student@campus.edu" required />
+              <label class="kugofox-admin-label">Contact Email</label>
+              <input type="email" id="event-reg-email" class="kugofox-admin-input" placeholder="student@campus.edu" required />
             </div>
             <div>
-              <label class="korg-admin-label">WhatsApp / Phone</label>
-              <input type="tel" id="event-reg-phone" class="korg-admin-input" placeholder="+91 98765 43210" required />
+              <label class="kugofox-admin-label">WhatsApp / Phone</label>
+              <input type="tel" id="event-reg-phone" class="kugofox-admin-input" placeholder="+91 98765 43210" required />
             </div>
           </div>
 
-          <button type="submit" class="korg-btn-primary" style="margin-top: 0.5rem; justify-content: center;">
+          <button type="submit" class="kugofox-btn-primary" style="margin-top: 0.5rem; justify-content: center;">
             Confirm Registration
           </button>
         </form>
@@ -269,7 +269,7 @@ function renderEventsScaffold(container) {
   });
 
   // Filter pills
-  container.querySelectorAll('#events-filter-bar .korg-filter-pill').forEach(btn => {
+  container.querySelectorAll('#events-filter-bar .kugofox-filter-pill').forEach(btn => {
     btn.addEventListener('click', () => {
       const selectedGame = btn.getAttribute('data-game');
       filterEventsByGame(selectedGame);
@@ -292,8 +292,8 @@ function renderEventsScaffold(container) {
       const eventId = document.getElementById('event-reg-target-id').value;
 
       if (!user) {
-        sessionStorage.setItem('korg_pending_action', 'register_event');
-        sessionStorage.setItem('korg_pending_event_id', eventId);
+        sessionStorage.setItem('kugofox_pending_action', 'register_event');
+        sessionStorage.setItem('kugofox_pending_event_id', eventId);
         if (regModal) regModal.classList.remove('open');
         showToast('Please log in or sign up first to register your team.', 'info');
         const app = window.kugofoxApp || window.kugofox;
@@ -311,7 +311,7 @@ function renderEventsScaffold(container) {
       const gameId = document.getElementById('event-reg-gameid').value.trim();
       const email = document.getElementById('event-reg-email').value.trim() || user.email;
       const phone = document.getElementById('event-reg-phone').value.trim();
-      const token = localStorage.getItem('korg_auth_token');
+      const token = localStorage.getItem('kugofox_auth_token');
 
       try {
         const res = await fetch('/api/tournaments/register', {
@@ -364,7 +364,7 @@ export async function fetchEvents(targetGame = null) {
       } else {
         renderEventCards(filterEvents());
       }
-      window.dispatchEvent(new CustomEvent('korg:eventsUpdated', { detail: { events: allEvents } }));
+      window.dispatchEvent(new CustomEvent('kugofox:eventsUpdated', { detail: { events: allEvents } }));
     }
   } catch (e) {
     console.error('Error fetching events:', e);
@@ -390,7 +390,7 @@ function renderEventCards(events) {
         <div style="font-size: 2.2rem; margin-bottom: 0.6rem;">⚔️</div>
         <h3 style="color: #ffffff; margin-bottom: 0.4rem; font-size: 1.25rem;">No events in "${activeStatusTab.toUpperCase()}" for ${gameLabel} right now.</h3>
         <p style="color: #94a3b8; font-size: 0.88rem; max-width: 480px; margin: 0 auto 1.4rem;">Check the other status tabs (Upcoming, Live Now, or Completed) or browse all collegiate tournaments.</p>
-        <button class="korg-btn-primary" id="btn-events-show-all" style="margin: 0 auto;">Show All Tournaments</button>
+        <button class="kugofox-btn-primary" id="btn-events-show-all" style="margin: 0 auto;">Show All Tournaments</button>
       </div>
     `;
     document.getElementById('btn-events-show-all')?.addEventListener('click', () => {
@@ -405,23 +405,23 @@ function renderEventCards(events) {
     const percentage = Math.min(100, Math.round((regCount / maxCount) * 100));
 
     return `
-      <div class="korg-event-card" data-event-id="${ev.id || ev._id}">
-        <div class="korg-event-top">
-          <div class="korg-event-header-left">
-            <div class="korg-event-badge-row">
-              <span class="korg-event-badge">${ev.badge || 'TOURNAMENT'}</span>
-              <span class="korg-event-badge" style="background: rgba(0,240,255,0.15); border-color: rgba(0,240,255,0.4); color: #00f0ff;">
+      <div class="kugofox-event-card" data-event-id="${ev.id || ev._id}">
+        <div class="kugofox-event-top">
+          <div class="kugofox-event-header-left">
+            <div class="kugofox-event-badge-row">
+              <span class="kugofox-event-badge">${ev.badge || 'TOURNAMENT'}</span>
+              <span class="kugofox-event-badge" style="background: rgba(0,240,255,0.15); border-color: rgba(0,240,255,0.4); color: #00f0ff;">
                 ${ev.tag || 'OPEN FOR ALL'}
               </span>
             </div>
-            <h3 class="korg-event-title">${ev.title}</h3>
-            <div class="korg-event-date">
+            <h3 class="kugofox-event-title">${ev.title}</h3>
+            <div class="kugofox-event-date">
               <span>📅</span>
               <span>${ev.date}</span>
             </div>
           </div>
 
-          <div class="korg-prize-pool-pill">
+          <div class="kugofox-prize-pool-pill">
             <span>🏆</span>
             <span>${ev.prizePool || '₹400'}</span>
           </div>
@@ -431,23 +431,23 @@ function renderEventCards(events) {
           ${ev.description || 'Collegiate squad competition. Battle for verified prize pool and Combat Points.'}
         </p>
 
-        <div class="korg-capacity-section">
-          <div class="korg-capacity-header">
+        <div class="kugofox-capacity-section">
+          <div class="kugofox-capacity-header">
             <span>Registration Capacity</span>
             <span style="color: #00f0ff; font-weight: 700;">${regCount} / ${maxCount} Squads</span>
           </div>
-          <div class="korg-capacity-track">
-            <div class="korg-capacity-fill" style="width: ${percentage}%;"></div>
+          <div class="kugofox-capacity-track">
+            <div class="kugofox-capacity-fill" style="width: ${percentage}%;"></div>
           </div>
         </div>
 
-        <div class="korg-event-actions">
+        <div class="kugofox-event-actions">
           ${ev.status === 'completed'
             ? `<span style="color: #22c55e; font-weight: 700; font-size: 0.9rem;">Winner: ${ev.winner || 'Champion Squad'}</span>`
-            : `<button class="korg-btn-primary" data-register-event="${ev.id}" style="flex: 1; justify-content: center;">
+            : `<button class="kugofox-btn-primary" data-register-event="${ev.id}" style="flex: 1; justify-content: center;">
                 Register Squad
               </button>
-              <button class="korg-btn-outline" data-event-details="${ev.id}">
+              <button class="kugofox-btn-outline" data-event-details="${ev.id}">
                 Rules
               </button>`
           }

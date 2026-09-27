@@ -19,7 +19,7 @@ export function initLeaderboard(containerId = 'view-leaderboard') {
   renderLeaderboardScaffold(container);
   fetchStandings();
 
-  window.addEventListener('korg:viewChanged', (e) => {
+  window.addEventListener('kugofox:viewChanged', (e) => {
     if (e.detail && (e.detail.view === 'leaderboard' || e.detail.view === 'standings')) {
       fetchStandings();
     }
@@ -28,13 +28,13 @@ export function initLeaderboard(containerId = 'view-leaderboard') {
 
 function renderLeaderboardScaffold(container) {
   container.innerHTML = `
-    <div class="korg-view-header">
-      <div class="korg-view-title-row">
+    <div class="kugofox-view-header">
+      <div class="kugofox-view-title-row">
         <div>
-          <h1 class="korg-view-title">
+          <h1 class="kugofox-view-title">
             <span>COMPETITIVE MATCH STANDINGS</span>
           </h1>
-          <p class="korg-view-subtitle">
+          <p class="kugofox-view-subtitle">
             Match-specific performance rankings & Combat Points (CP). Points can only be awarded during live ongoing games. Concluded match standings are archived for 10 days before automatic deletion.
           </p>
         </div>
@@ -51,12 +51,12 @@ function renderLeaderboardScaffold(container) {
       </div>
 
       <!-- Filter pills (Games) -->
-      <div class="korg-filter-bar" id="standings-filter-bar" style="margin-top: 0.8rem;">
-        <button class="korg-filter-pill active" data-game="all">All Games</button>
-        <button class="korg-filter-pill" data-game="freefire">Free Fire</button>
-        <button class="korg-filter-pill" data-game="bgmi">BGMI</button>
-        <button class="korg-filter-pill" data-game="valorant">Valorant</button>
-        <button class="korg-filter-pill" data-game="mobalegends">Mobile Legends</button>
+      <div class="kugofox-filter-bar" id="standings-filter-bar" style="margin-top: 0.8rem;">
+        <button class="kugofox-filter-pill active" data-game="all">All Games</button>
+        <button class="kugofox-filter-pill" data-game="freefire">Free Fire</button>
+        <button class="kugofox-filter-pill" data-game="bgmi">BGMI</button>
+        <button class="kugofox-filter-pill" data-game="valorant">Valorant</button>
+        <button class="kugofox-filter-pill" data-game="mobalegends">Mobile Legends</button>
       </div>
     </div>
 
@@ -64,9 +64,9 @@ function renderLeaderboardScaffold(container) {
     <div id="standings-match-banner" style="margin-bottom: 1.5rem;"></div>
 
     <!-- Standings Table Card -->
-    <div class="korg-standings-card">
-      <div class="korg-standings-table-wrapper">
-        <table class="korg-standings-table">
+    <div class="kugofox-standings-card">
+      <div class="kugofox-standings-table-wrapper">
+        <table class="kugofox-standings-table">
           <thead>
             <tr>
               <th style="width: 50px;">#</th>
@@ -92,9 +92,9 @@ function renderLeaderboardScaffold(container) {
   `;
 
   // Bind game filter buttons
-  container.querySelectorAll('#standings-filter-bar .korg-filter-pill').forEach(btn => {
+  container.querySelectorAll('#standings-filter-bar .kugofox-filter-pill').forEach(btn => {
     btn.addEventListener('click', () => {
-      container.querySelectorAll('#standings-filter-bar .korg-filter-pill').forEach(b => b.classList.remove('active'));
+      container.querySelectorAll('#standings-filter-bar .kugofox-filter-pill').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       activeGameFilter = btn.getAttribute('data-game');
       fetchStandings(currentMatchId);
@@ -152,7 +152,7 @@ function renderMatchSelector(matches, container) {
 
     let statusPill = '';
     if (isLive) {
-      statusPill = `<span style="background: #ef4444; color: #fff; font-size: 0.65rem; font-weight: 800; padding: 0.15rem 0.4rem; border-radius: 4px; animation: korgPulse 1.5s infinite;">● LIVE</span>`;
+      statusPill = `<span style="background: #ef4444; color: #fff; font-size: 0.65rem; font-weight: 800; padding: 0.15rem 0.4rem; border-radius: 4px; animation: kugofoxPulse 1.5s infinite;">● LIVE</span>`;
     } else if (isCompleted) {
       const daysText = m.daysRemaining ? `${m.daysRemaining}d left` : 'Archived';
       statusPill = `<span style="background: rgba(255,255,255,0.08); color: #94a3b8; font-size: 0.65rem; padding: 0.15rem 0.4rem; border-radius: 4px;">⏱️ ${daysText}</span>`;
@@ -201,7 +201,7 @@ function renderMatchBanner(match, container, notice) {
   if (isLive) {
     statusBadge = `
       <span style="display: inline-flex; align-items: center; gap: 0.4rem; background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.5); color: #ef4444; padding: 0.3rem 0.7rem; border-radius: 20px; font-size: 0.75rem; font-weight: 800; letter-spacing: 0.05em;">
-        <span style="width: 8px; height: 8px; border-radius: 50%; background: #ef4444; animation: korgPulse 1.2s infinite;"></span>
+        <span style="width: 8px; height: 8px; border-radius: 50%; background: #ef4444; animation: kugofoxPulse 1.2s infinite;"></span>
         LIVE ONGOING MATCH
       </span>
     `;
@@ -233,7 +233,7 @@ function renderMatchBanner(match, container, notice) {
         <div>
           <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.4rem;">
             ${statusBadge}
-            <span class="korg-pill-tag korg-pill-type" style="margin: 0;">${match.gameName || match.game}</span>
+            <span class="kugofox-pill-tag kugofox-pill-type" style="margin: 0;">${match.gameName || match.game}</span>
           </div>
           <h2 style="color: #fff; margin: 0 0 0.4rem; font-size: 1.35rem; font-weight: 800; letter-spacing: 0.02em;">
             ${match.title}
@@ -273,31 +273,31 @@ function renderTableRows(players, tbody, match) {
 
   tbody.innerHTML = players.map(p => {
     let rankBadge = `#${p.rank}`;
-    if (p.rank === 1) rankBadge = `<span class="korg-rank-badge korg-rank-1">1</span>`;
-    else if (p.rank === 2) rankBadge = `<span class="korg-rank-badge korg-rank-2">2</span>`;
-    else if (p.rank === 3) rankBadge = `<span class="korg-rank-badge korg-rank-3">3</span>`;
+    if (p.rank === 1) rankBadge = `<span class="kugofox-rank-badge kugofox-rank-1">1</span>`;
+    else if (p.rank === 2) rankBadge = `<span class="kugofox-rank-badge kugofox-rank-2">2</span>`;
+    else if (p.rank === 3) rankBadge = `<span class="kugofox-rank-badge kugofox-rank-3">3</span>`;
 
     return `
       <tr>
-        <td class="korg-rank-cell">${rankBadge}</td>
+        <td class="kugofox-rank-cell">${rankBadge}</td>
         <td>
-          <div class="korg-player-cell">
-            <div class="korg-player-avatar">${p.avatar || '🎮'}</div>
-            <div class="korg-player-meta">
-              <span class="korg-player-name">${p.name}</span>
-              <span class="korg-player-sub">${p.handle || ''} • ${p.dept || 'Campus Arena'}</span>
+          <div class="kugofox-player-cell">
+            <div class="kugofox-player-avatar">${p.avatar || '🎮'}</div>
+            <div class="kugofox-player-meta">
+              <span class="kugofox-player-name">${p.name}</span>
+              <span class="kugofox-player-sub">${p.handle || ''} • ${p.dept || 'Campus Arena'}</span>
             </div>
           </div>
         </td>
         <td>
-          <span class="korg-tier-badge">${p.tier || 'Bronze'}</span>
+          <span class="kugofox-tier-badge">${p.tier || 'Bronze'}</span>
         </td>
         <td style="text-align: center; font-weight: 600;">${p.matches || 0}</td>
         <td style="text-align: center; font-weight: 600;">${p.wins || 0}</td>
         <td style="text-align: center; color: #94a3b8;">${p.bestFinish || '1st'}</td>
         <td style="text-align: center; color: #38bdf8; font-weight: 700;">${p.winRate || '0%'}</td>
         <td style="text-align: right;">
-          <span class="korg-cp-pill">${p.cp || 0} CP</span>
+          <span class="kugofox-cp-pill">${p.cp || 0} CP</span>
         </td>
       </tr>
     `;

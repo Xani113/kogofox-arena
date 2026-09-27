@@ -8,7 +8,7 @@ const VIEWS = ['home', 'games', 'squads', 'events', 'leaderboard', 'admin'];
 let currentView = 'home';
 
 export function toggleMobileMenu(force = null) {
-  const sidebar = document.getElementById('korg-sidebar');
+  const sidebar = document.getElementById('kugofox-sidebar');
   const backdrop = document.getElementById('mobile-menu-backdrop');
   const btn = document.getElementById('mobile-menu-btn');
   if (!sidebar || !backdrop) return;
@@ -134,7 +134,7 @@ export function switchView(viewName, updateHash = true, extra = null) {
   });
 
   // 2. Sync Top Navigation Bar items
-  document.querySelectorAll('.korg-nav-pill, [data-view-target]').forEach(el => {
+  document.querySelectorAll('.kugofox-nav-pill, [data-view-target]').forEach(el => {
     const target = el.getAttribute('data-view-target');
     if (target === viewName) {
       el.classList.add('active');
@@ -165,7 +165,7 @@ export function switchView(viewName, updateHash = true, extra = null) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
   if (document.documentElement) document.documentElement.scrollTop = 0;
   if (document.body) document.body.scrollTop = 0;
-  const mainArea = document.getElementById('korg-main-area');
+  const mainArea = document.getElementById('kugofox-main-area');
   if (mainArea) mainArea.scrollTop = 0;
   const targetViewEl = document.getElementById(`view-${viewName}`);
   if (targetViewEl) {
@@ -175,7 +175,7 @@ export function switchView(viewName, updateHash = true, extra = null) {
   }
 
   // Dispatch view change event with optional extra details
-  window.dispatchEvent(new CustomEvent('korg:viewChanged', { detail: { view: viewName, ...(extra || {}) } }));
+  window.dispatchEvent(new CustomEvent('kugofox:viewChanged', { detail: { view: viewName, ...(extra || {}) } }));
 }
 
 // Ensure switchView is globally available

@@ -171,7 +171,7 @@ export async function handleRequest(req, res) {
         }
 
         const user = await createUser(payload);
-        const token = 'korg_' + Buffer.from(user.id + ':' + Date.now()).toString('base64');
+        const token = 'kugofox_' + Buffer.from(user.id + ':' + Date.now()).toString('base64');
         return sendJSON(res, 201, { success: true, message: 'Account registered successfully!', user, token });
       }
 
@@ -293,7 +293,7 @@ export async function handleRequest(req, res) {
           });
         }
 
-        const token = 'korg_google_' + Buffer.from(googleEmail + ':' + Date.now()).toString('base64');
+        const token = 'kugofox_google_' + Buffer.from(googleEmail + ':' + Date.now()).toString('base64');
         return sendJSON(res, 200, {
           success: true,
           message: 'Google Sign-In verified successfully!',
@@ -309,7 +309,7 @@ export async function handleRequest(req, res) {
         }
         const token = authHeader.split(' ')[1];
         try {
-          const raw = Buffer.from(token.replace('korg_', ''), 'base64').toString('utf-8');
+          const raw = Buffer.from(token.replace(/^kugofox_(google_)?/, ''), 'base64').toString('utf-8');
           const [idOrEmail] = raw.split(':');
           let user = await findUserById(idOrEmail);
           if (!user) {
@@ -493,7 +493,7 @@ export async function handleRequest(req, res) {
         return sendJSON(res, 200, {
           success: true,
           message: `Admin authorization granted for ${email}`,
-          token: 'korg_admin_' + Buffer.from(email + ':' + Date.now()).toString('base64'),
+          token: 'kugofox_admin_' + Buffer.from(email + ':' + Date.now()).toString('base64'),
           adminEmail: email
         });
       }

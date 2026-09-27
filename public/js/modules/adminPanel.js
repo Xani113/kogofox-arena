@@ -17,14 +17,14 @@ export function initAdminPanel() {
   if (!container) return;
 
   // Check existing session token
-  const token = sessionStorage.getItem('korg_admin_token');
+  const token = sessionStorage.getItem('kugofox_admin_token');
   if (token) {
     isAdminAuthenticated = true;
   }
 
   renderAdminView(container);
 
-  window.addEventListener('korg:viewChanged', (e) => {
+  window.addEventListener('kugofox:viewChanged', (e) => {
     if (e.detail && e.detail.view === 'admin' && isAdminAuthenticated) {
       loadAdminData();
     }
@@ -36,7 +36,7 @@ function renderAdminView(container) {
     // Try to auto-populate email from currentUser if stored
     let prefillEmail = '';
     try {
-      const storedUser = localStorage.getItem('korg_user');
+      const storedUser = localStorage.getItem('kugofox_user');
       if (storedUser) {
         const u = JSON.parse(storedUser);
         if (u && u.email) prefillEmail = u.email;
@@ -45,7 +45,7 @@ function renderAdminView(container) {
 
     // Show email & password admin login box
     container.innerHTML = `
-      <div class="korg-admin-auth-wrapper">
+      <div class="kugofox-admin-auth-wrapper">
         <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🛡️</div>
         <h3>Admin Command Center</h3>
         <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 1.5rem; line-height: 1.5;">
@@ -54,16 +54,16 @@ function renderAdminView(container) {
 
         <form id="admin-login-form" style="display: flex; flex-direction: column; gap: 1rem; text-align: left;">
           <div>
-            <label class="korg-admin-label">Admin Email</label>
-            <input type="email" id="admin-email-input" class="korg-admin-input" placeholder="e.g. rpmohit9@gmail.com" value="${prefillEmail}" required autocomplete="username" />
+            <label class="kugofox-admin-label">Admin Email</label>
+            <input type="email" id="admin-email-input" class="kugofox-admin-input" placeholder="e.g. rpmohit9@gmail.com" value="${prefillEmail}" required autocomplete="username" />
           </div>
 
           <div>
-            <label class="korg-admin-label">Admin Password</label>
-            <input type="password" id="admin-password-input" class="korg-admin-input" placeholder="Enter admin password" required autocomplete="current-password" />
+            <label class="kugofox-admin-label">Admin Password</label>
+            <input type="password" id="admin-password-input" class="kugofox-admin-input" placeholder="Enter admin password" required autocomplete="current-password" />
           </div>
 
-          <button type="submit" class="korg-btn-primary" style="width: 100%; justify-content: center; margin-top: 0.5rem;">
+          <button type="submit" class="kugofox-btn-primary" style="width: 100%; justify-content: center; margin-top: 0.5rem;">
             Unlock Admin Panel
           </button>
         </form>
@@ -88,12 +88,12 @@ function renderAdminView(container) {
         });
         const data = await res.json();
         if (data.success && data.token) {
-          sessionStorage.setItem('korg_admin_token', data.token);
-          sessionStorage.setItem('korg_admin_email', data.adminEmail || email);
+          sessionStorage.setItem('kugofox_admin_token', data.token);
+          sessionStorage.setItem('kugofox_admin_email', data.adminEmail || email);
           isAdminAuthenticated = true;
           renderAdminView(container);
           loadAdminData();
-          window.dispatchEvent(new CustomEvent('korg:adminLoggedIn', { detail: { email: data.adminEmail || email } }));
+          window.dispatchEvent(new CustomEvent('kugofox:adminLoggedIn', { detail: { email: data.adminEmail || email } }));
         } else {
           err.textContent = data.error || 'Access denied. Invalid email or password.';
           err.style.display = 'block';
@@ -109,51 +109,51 @@ function renderAdminView(container) {
 
   // Render full admin interface
   container.innerHTML = `
-    <div class="korg-view-header">
-      <div class="korg-view-title-row">
+    <div class="kugofox-view-header">
+      <div class="kugofox-view-title-row">
         <div>
-          <h1 class="korg-view-title">
+          <h1 class="kugofox-view-title">
             <span>⚙️ ARENA CONTROL PANEL</span>
           </h1>
-          <p class="korg-view-subtitle">
+          <p class="kugofox-view-subtitle">
             Manage upcoming tournaments, adjust prize pools, and award Combat Points (CP) to campus competitors.
           </p>
         </div>
         <div style="display: flex; gap: 0.75rem;">
-          <button id="admin-logout-btn" class="korg-btn-outline" style="color: #ef4444; border-color: rgba(239,68,68,0.3);">
+          <button id="admin-logout-btn" class="kugofox-btn-outline" style="color: #ef4444; border-color: rgba(239,68,68,0.3);">
             Lock Admin Panel
           </button>
         </div>
       </div>
 
       <!-- Navigation Admin Tabs -->
-      <div class="korg-admin-tabs">
-        <button class="korg-admin-tab-btn active" data-admin-tab="events">🏆 Event & Prize Pool Manager</button>
-        <button class="korg-admin-tab-btn" data-admin-tab="points">⚡ Player Points & Standings</button>
+      <div class="kugofox-admin-tabs">
+        <button class="kugofox-admin-tab-btn active" data-admin-tab="events">🏆 Event & Prize Pool Manager</button>
+        <button class="kugofox-admin-tab-btn" data-admin-tab="points">⚡ Player Points & Standings</button>
       </div>
     </div>
 
     <!-- Admin Dashboard Body -->
-    <div class="korg-admin-dashboard">
+    <div class="kugofox-admin-dashboard">
 
       <!-- 1. EVENT & PRIZE POOL SECTION -->
-      <div class="korg-admin-section active" id="admin-sec-events">
+      <div class="kugofox-admin-section active" id="admin-sec-events">
 
         <!-- Create / Publish Event Form -->
-        <div class="korg-admin-form-card">
+        <div class="kugofox-admin-form-card">
           <h3 style="color: #fff; margin: 0 0 0.5rem; font-size: 1.2rem; display: flex; align-items: center; gap: 0.5rem;">
             <span>➕</span> Publish New Tournament or Scrim
           </h3>
 
           <form id="admin-create-event-form" style="display: flex; flex-direction: column; gap: 1rem;">
-            <div class="korg-admin-form-row">
+            <div class="kugofox-admin-form-row">
               <div>
-                <label class="korg-admin-label">Tournament / Scrim Title</label>
-                <input type="text" id="adm-ev-title" class="korg-admin-input" placeholder="e.g. FREEFIRE CHAMPIONSHIP" required />
+                <label class="kugofox-admin-label">Tournament / Scrim Title</label>
+                <input type="text" id="adm-ev-title" class="kugofox-admin-input" placeholder="e.g. FREEFIRE CHAMPIONSHIP" required />
               </div>
               <div>
-                <label class="korg-admin-label">Game Title</label>
-                <select id="adm-ev-game" class="korg-admin-input" style="background: #0f172a;">
+                <label class="kugofox-admin-label">Game Title</label>
+                <select id="adm-ev-game" class="kugofox-admin-input" style="background: #0f172a;">
                   <option value="freefire">Free Fire</option>
                   <option value="bgmi">BGMI</option>
                   <option value="valorant">Valorant</option>
@@ -162,41 +162,41 @@ function renderAdminView(container) {
               </div>
             </div>
 
-            <div class="korg-admin-form-row">
+            <div class="kugofox-admin-form-row">
               <div>
-                <label class="korg-admin-label">Date & Time</label>
-                <input type="text" id="adm-ev-date" class="korg-admin-input" placeholder="e.g. Thursday, 24 Sep 2026, 6:30 PM IST" required />
+                <label class="kugofox-admin-label">Date & Time</label>
+                <input type="text" id="adm-ev-date" class="kugofox-admin-input" placeholder="e.g. Thursday, 24 Sep 2026, 6:30 PM IST" required />
               </div>
               <div>
-                <label class="korg-admin-label">Prize Pool (e.g. ₹400, ₹1,200)</label>
-                <input type="text" id="adm-ev-prize" class="korg-admin-input" placeholder="₹400" required />
+                <label class="kugofox-admin-label">Prize Pool (e.g. ₹400, ₹1,200)</label>
+                <input type="text" id="adm-ev-prize" class="kugofox-admin-input" placeholder="₹400" required />
               </div>
               <div>
-                <label class="korg-admin-label">Max Squads Slot</label>
-                <input type="number" id="adm-ev-max" class="korg-admin-input" value="24" min="2" max="100" />
+                <label class="kugofox-admin-label">Max Squads Slot</label>
+                <input type="number" id="adm-ev-max" class="kugofox-admin-input" value="24" min="2" max="100" />
               </div>
             </div>
 
-            <div class="korg-admin-form-row">
+            <div class="kugofox-admin-form-row">
               <div>
-                <label class="korg-admin-label">Badge Tag</label>
-                <select id="adm-ev-badge" class="korg-admin-input" style="background: #0f172a;">
+                <label class="kugofox-admin-label">Badge Tag</label>
+                <select id="adm-ev-badge" class="kugofox-admin-input" style="background: #0f172a;">
                   <option value="TOURNAMENT">TOURNAMENT</option>
                   <option value="SCRIMS">SCRIMS</option>
                   <option value="CUSTOM">CUSTOM</option>
                 </select>
               </div>
               <div>
-                <label class="korg-admin-label">Access Tag</label>
-                <select id="adm-ev-tag" class="korg-admin-input" style="background: #0f172a;">
+                <label class="kugofox-admin-label">Access Tag</label>
+                <select id="adm-ev-tag" class="kugofox-admin-input" style="background: #0f172a;">
                   <option value="OPEN FOR ALL">OPEN FOR ALL</option>
                   <option value="CAMPUS EXCLUSIVE">CAMPUS EXCLUSIVE</option>
                   <option value="VERIFIED TEAMS">VERIFIED TEAMS</option>
                 </select>
               </div>
               <div>
-                <label class="korg-admin-label">Initial Status</label>
-                <select id="adm-ev-status" class="korg-admin-input" style="background: #0f172a;">
+                <label class="kugofox-admin-label">Initial Status</label>
+                <select id="adm-ev-status" class="kugofox-admin-input" style="background: #0f172a;">
                   <option value="upcoming">Upcoming</option>
                   <option value="live">Live Now</option>
                   <option value="completed">Completed</option>
@@ -205,26 +205,26 @@ function renderAdminView(container) {
             </div>
 
             <div>
-              <label class="korg-admin-label">Description / Format Details</label>
-              <input type="text" id="adm-ev-desc" class="korg-admin-input" placeholder="Official collegiate squad championship. 24 teams battle across Bermuda & Purgatory." />
+              <label class="kugofox-admin-label">Description / Format Details</label>
+              <input type="text" id="adm-ev-desc" class="kugofox-admin-input" placeholder="Official collegiate squad championship. 24 teams battle across Bermuda & Purgatory." />
             </div>
 
-            <button type="submit" class="korg-btn-primary" style="align-self: flex-start;">
+            <button type="submit" class="kugofox-btn-primary" style="align-self: flex-start;">
               Publish Event to Public Schedule
             </button>
           </form>
         </div>
 
         <!-- Live Events Table with Prize Pool Quick Editor -->
-        <div class="korg-standings-card">
+        <div class="kugofox-standings-card">
           <div style="padding: 1.2rem 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-between; align-items: center;">
             <h3 style="color: #fff; margin: 0; font-size: 1.1rem;">Manage Existing Events & Modify Prize Pools</h3>
-            <button id="adm-refresh-events-btn" class="korg-btn-outline" style="font-size: 0.75rem; padding: 0.3rem 0.7rem;">
+            <button id="adm-refresh-events-btn" class="kugofox-btn-outline" style="font-size: 0.75rem; padding: 0.3rem 0.7rem;">
               ↻ Refresh List
             </button>
           </div>
-          <div class="korg-standings-table-wrapper">
-            <table class="korg-standings-table">
+          <div class="kugofox-standings-table-wrapper">
+            <table class="kugofox-standings-table">
               <thead>
                 <tr>
                   <th>Event Title</th>
@@ -246,10 +246,10 @@ function renderAdminView(container) {
       </div>
 
       <!-- 2. PLAYER POINTS SECTION -->
-      <div class="korg-admin-section" id="admin-sec-points">
+      <div class="kugofox-admin-section" id="admin-sec-points">
 
         <!-- Award Points Form Card -->
-        <div class="korg-admin-form-card">
+        <div class="kugofox-admin-form-card">
           <h3 style="color: #fff; margin: 0 0 0.5rem; font-size: 1.2rem; display: flex; align-items: center; gap: 0.5rem;">
             <span>⚡</span> Award / Modify Player Combat Points (CP)
           </h3>
@@ -259,11 +259,11 @@ function renderAdminView(container) {
 
           <form id="admin-award-points-form" style="display: flex; flex-direction: column; gap: 1rem;">
             <div>
-              <label class="korg-admin-label" style="display: flex; justify-content: space-between; align-items: center;">
+              <label class="kugofox-admin-label" style="display: flex; justify-content: space-between; align-items: center;">
                 <span>🔴 Select Ongoing Match (Live Games Only)</span>
                 <span style="color: #38bdf8; font-size: 0.72rem;">Points locked for completed matches</span>
               </label>
-              <select id="adm-pt-match" class="korg-admin-input" required style="background: #0f172a;">
+              <select id="adm-pt-match" class="kugofox-admin-input" required style="background: #0f172a;">
                 <option value="">-- Choose Active Ongoing Match --</option>
               </select>
               <div id="adm-pt-match-warning" style="display: none; margin-top: 0.4rem; padding: 0.6rem 0.8rem; background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239,68,68,0.3); border-radius: 6px; color: #fca5a5; font-size: 0.82rem;">
@@ -271,65 +271,65 @@ function renderAdminView(container) {
               </div>
             </div>
 
-            <div class="korg-admin-form-row">
+            <div class="kugofox-admin-form-row">
               <div>
-                <label class="korg-admin-label">Player @Handle or Name</label>
-                <input type="text" id="adm-pt-identifier" class="korg-admin-input" placeholder="e.g. @skie or Prince Nanda" required list="adm-players-datalist" />
+                <label class="kugofox-admin-label">Player @Handle or Name</label>
+                <input type="text" id="adm-pt-identifier" class="kugofox-admin-input" placeholder="e.g. @skie or Prince Nanda" required list="adm-players-datalist" />
                 <datalist id="adm-players-datalist"></datalist>
               </div>
               <div>
-                <label class="korg-admin-label">Points to Add / Deduct (+CP / -CP)</label>
-                <input type="number" id="adm-pt-delta" class="korg-admin-input" placeholder="e.g. 25 or -10" required />
+                <label class="kugofox-admin-label">Points to Add / Deduct (+CP / -CP)</label>
+                <input type="number" id="adm-pt-delta" class="kugofox-admin-input" placeholder="e.g. 25 or -10" required />
               </div>
             </div>
 
             <!-- Preset Points Buttons -->
             <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
               <span style="font-size: 0.76rem; color: #94a3b8; align-self: center; margin-right: 0.3rem;">Presets:</span>
-              <button type="button" class="korg-btn-outline adm-preset-btn" data-preset="10">+10 (Match Win)</button>
-              <button type="button" class="korg-btn-outline adm-preset-btn" data-preset="25">+25 (Scrim MVP)</button>
-              <button type="button" class="korg-btn-outline adm-preset-btn" data-preset="50">+50 (Weekly Winner)</button>
-              <button type="button" class="korg-btn-outline adm-preset-btn" data-preset="100">+100 (Championship)</button>
-              <button type="button" class="korg-btn-outline adm-preset-btn" data-preset="-10" style="color: #ef4444;">-10 (Penalty)</button>
+              <button type="button" class="kugofox-btn-outline adm-preset-btn" data-preset="10">+10 (Match Win)</button>
+              <button type="button" class="kugofox-btn-outline adm-preset-btn" data-preset="25">+25 (Scrim MVP)</button>
+              <button type="button" class="kugofox-btn-outline adm-preset-btn" data-preset="50">+50 (Weekly Winner)</button>
+              <button type="button" class="kugofox-btn-outline adm-preset-btn" data-preset="100">+100 (Championship)</button>
+              <button type="button" class="kugofox-btn-outline adm-preset-btn" data-preset="-10" style="color: #ef4444;">-10 (Penalty)</button>
             </div>
 
-            <div class="korg-admin-form-row">
+            <div class="kugofox-admin-form-row">
               <div>
-                <label class="korg-admin-label">Increment Matches (+1)</label>
-                <input type="number" id="adm-pt-matches" class="korg-admin-input" value="1" min="0" />
+                <label class="kugofox-admin-label">Increment Matches (+1)</label>
+                <input type="number" id="adm-pt-matches" class="kugofox-admin-input" value="1" min="0" />
               </div>
               <div>
-                <label class="korg-admin-label">Increment Wins (+1)</label>
-                <input type="number" id="adm-pt-wins" class="korg-admin-input" value="1" min="0" />
+                <label class="kugofox-admin-label">Increment Wins (+1)</label>
+                <input type="number" id="adm-pt-wins" class="kugofox-admin-input" value="1" min="0" />
               </div>
               <div>
-                <label class="korg-admin-label">Department</label>
-                <input type="text" id="adm-pt-dept" class="korg-admin-input" placeholder="e.g. Computer Science" />
+                <label class="kugofox-admin-label">Department</label>
+                <input type="text" id="adm-pt-dept" class="kugofox-admin-input" placeholder="e.g. Computer Science" />
               </div>
             </div>
 
-            <button type="submit" id="adm-pt-submit-btn" class="korg-btn-primary" style="align-self: flex-start;">
+            <button type="submit" id="adm-pt-submit-btn" class="kugofox-btn-primary" style="align-self: flex-start;">
               Apply Points to Ongoing Match
             </button>
           </form>
         </div>
 
         <!-- Live Standings Snapshot with Admin Controls -->
-        <div class="korg-standings-card">
+        <div class="kugofox-standings-card">
           <div style="padding: 1.2rem 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap;">
             <div>
               <h3 style="color: #fff; margin: 0; font-size: 1.1rem;">Match Standings Roster</h3>
               <p style="color: #94a3b8; font-size: 0.78rem; margin: 0.2rem 0 0;">Inspect standings per match (concluded matches auto-delete after 10 days)</p>
             </div>
             <div style="display: flex; align-items: center; gap: 0.6rem;">
-              <select id="adm-standings-match-filter" class="korg-admin-input" style="width: auto; margin-bottom: 0; padding: 0.35rem 0.7rem; font-size: 0.82rem; background: #0f172a;"></select>
-              <button id="adm-refresh-standings-btn" class="korg-btn-outline" style="font-size: 0.75rem; padding: 0.3rem 0.7rem;">
+              <select id="adm-standings-match-filter" class="kugofox-admin-input" style="width: auto; margin-bottom: 0; padding: 0.35rem 0.7rem; font-size: 0.82rem; background: #0f172a;"></select>
+              <button id="adm-refresh-standings-btn" class="kugofox-btn-outline" style="font-size: 0.75rem; padding: 0.3rem 0.7rem;">
                 ↻ Refresh Standings
               </button>
             </div>
           </div>
-          <div class="korg-standings-table-wrapper">
-            <table class="korg-standings-table">
+          <div class="kugofox-standings-table-wrapper">
+            <table class="kugofox-standings-table">
               <thead>
                 <tr>
                   <th>Rank</th>
@@ -360,7 +360,7 @@ function renderAdminView(container) {
       container.querySelectorAll('[data-admin-tab]').forEach(t => t.classList.remove('active'));
       tab.classList.add('active');
       const target = tab.getAttribute('data-admin-tab');
-      document.querySelectorAll('.korg-admin-section').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.kugofox-admin-section').forEach(s => s.classList.remove('active'));
       const sec = document.getElementById(`admin-sec-${target}`);
       if (sec) sec.classList.add('active');
     });
@@ -370,7 +370,7 @@ function renderAdminView(container) {
   const logoutBtn = document.getElementById('admin-logout-btn');
   if (logoutBtn) {
     logoutBtn.addEventListener('click', () => {
-      sessionStorage.removeItem('korg_admin_token');
+      sessionStorage.removeItem('kugofox_admin_token');
       isAdminAuthenticated = false;
       renderAdminView(container);
     });
@@ -432,7 +432,7 @@ function renderAdminView(container) {
           showAdminToast(`Event "${title}" published with prize pool ${prizePool}!`);
           await loadAdminEvents();
           fetchEvents(); // update public events module
-          window.dispatchEvent(new CustomEvent('korg:eventsUpdated', { detail: { events: cachedEvents } }));
+          window.dispatchEvent(new CustomEvent('kugofox:eventsUpdated', { detail: { events: cachedEvents } }));
         } else {
           alert(data.error || 'Failed to save event');
         }
@@ -559,26 +559,26 @@ function renderAdminEventsTable(events, tbody) {
       <td>
         <strong style="color: #fff;">${ev.title}</strong>
       </td>
-      <td><span class="korg-pill-tag korg-pill-type">${ev.gameName || ev.game}</span></td>
+      <td><span class="kugofox-pill-tag kugofox-pill-type">${ev.gameName || ev.game}</span></td>
       <td style="font-size: 0.82rem; color: #94a3b8;">${ev.date}</td>
       <td>
         <div style="display: flex; align-items: center; gap: 0.4rem;">
-          <input type="text" class="korg-admin-input adm-prize-input" value="${ev.prizePool || '₹400'}" style="width: 90px; margin-bottom: 0; padding: 0.35rem 0.5rem; font-size: 0.85rem;" />
-          <button class="korg-btn-outline adm-update-prize-btn" data-ev-id="${evId}" style="padding: 0.35rem 0.6rem; font-size: 0.75rem;">
+          <input type="text" class="kugofox-admin-input adm-prize-input" value="${ev.prizePool || '₹400'}" style="width: 90px; margin-bottom: 0; padding: 0.35rem 0.5rem; font-size: 0.85rem;" />
+          <button class="kugofox-btn-outline adm-update-prize-btn" data-ev-id="${evId}" style="padding: 0.35rem 0.6rem; font-size: 0.75rem;">
             Save
           </button>
         </div>
       </td>
       <td style="font-size: 0.85rem; color: #cbd5e1;">${ev.registeredSquads || 0} / ${ev.maxSquads || 24}</td>
       <td>
-        <select class="korg-admin-input adm-status-select" data-ev-id="${evId}" style="width: 110px; margin-bottom: 0; padding: 0.3rem; font-size: 0.8rem; background: #0f172a;">
+        <select class="kugofox-admin-input adm-status-select" data-ev-id="${evId}" style="width: 110px; margin-bottom: 0; padding: 0.3rem; font-size: 0.8rem; background: #0f172a;">
           <option value="upcoming" ${ev.status === 'upcoming' ? 'selected' : ''}>Upcoming</option>
           <option value="live" ${ev.status === 'live' ? 'selected' : ''}>Live Now</option>
           <option value="completed" ${ev.status === 'completed' ? 'selected' : ''}>Completed</option>
         </select>
       </td>
       <td style="text-align: right;">
-        <button class="korg-btn-outline adm-delete-ev-btn" data-ev-id="${evId}" style="color: #ef4444; border-color: rgba(239,68,68,0.3); padding: 0.3rem 0.6rem; font-size: 0.75rem;">
+        <button class="kugofox-btn-outline adm-delete-ev-btn" data-ev-id="${evId}" style="color: #ef4444; border-color: rgba(239,68,68,0.3); padding: 0.3rem 0.6rem; font-size: 0.75rem;">
           Delete
         </button>
       </td>
@@ -668,7 +668,7 @@ function renderAdminEventsTable(events, tbody) {
           loadAdminStandings();
           fetchEvents();
           fetchStandings();
-          window.dispatchEvent(new CustomEvent('korg:eventsUpdated', { detail: { events: cachedEvents } }));
+          window.dispatchEvent(new CustomEvent('kugofox:eventsUpdated', { detail: { events: cachedEvents } }));
         } else {
           if (row) {
             row.style.opacity = '1';
@@ -749,24 +749,24 @@ function renderAdminStandingsTable(players, tbody, match) {
 
   tbody.innerHTML = players.map(p => `
     <tr>
-      <td class="korg-rank-cell">#${p.rank}</td>
+      <td class="kugofox-rank-cell">#${p.rank}</td>
       <td>
-        <div class="korg-player-cell">
-          <div class="korg-player-avatar" style="width: 32px; height: 32px; font-size: 1rem;">${p.avatar || '🎮'}</div>
-          <div class="korg-player-meta">
-            <span class="korg-player-name" style="font-size: 0.88rem;">${p.name}</span>
-            <span class="korg-player-sub">${p.handle}</span>
+        <div class="kugofox-player-cell">
+          <div class="kugofox-player-avatar" style="width: 32px; height: 32px; font-size: 1rem;">${p.avatar || '🎮'}</div>
+          <div class="kugofox-player-meta">
+            <span class="kugofox-player-name" style="font-size: 0.88rem;">${p.name}</span>
+            <span class="kugofox-player-sub">${p.handle}</span>
           </div>
         </div>
       </td>
-      <td><span class="korg-tier-badge">${p.tier || 'Bronze'}</span></td>
+      <td><span class="kugofox-tier-badge">${p.tier || 'Bronze'}</span></td>
       <td style="text-align: center;">${p.matches || 0}</td>
       <td style="text-align: center;">${p.wins || 0}</td>
       <td style="text-align: center; color: #38bdf8;">${p.winRate || '0%'}</td>
-      <td><span class="korg-cp-pill" style="font-size: 0.82rem; padding: 0.2rem 0.5rem;">${p.cp || 0} CP</span></td>
+      <td><span class="kugofox-cp-pill" style="font-size: 0.82rem; padding: 0.2rem 0.5rem;">${p.cp || 0} CP</span></td>
       <td style="text-align: right;">
         ${isLive ? `
-          <button class="korg-btn-outline adm-quick-award-btn" data-player-handle="${p.handle}" data-delta="25" style="padding: 0.25rem 0.6rem; font-size: 0.72rem; color: #00f0ff; border-color: rgba(0,240,255,0.3);">
+          <button class="kugofox-btn-outline adm-quick-award-btn" data-player-handle="${p.handle}" data-delta="25" style="padding: 0.25rem 0.6rem; font-size: 0.72rem; color: #00f0ff; border-color: rgba(0,240,255,0.3);">
             +25 CP
           </button>
         ` : `

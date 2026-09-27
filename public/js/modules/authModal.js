@@ -1,5 +1,5 @@
 /**
- * Kugofox Gaming Arena - KORG Authentication Modal Controller
+ * Kugofox Gaming Arena - KUGOFOX Authentication Modal Controller
  * Features:
  * - Segmented Tabs: "Log In" & "Create Account"
  * - Social Sign-In with Google
@@ -99,7 +99,7 @@ export class AuthModal {
 
   checkExistingSession() {
     try {
-      const saved = localStorage.getItem('korg_user_session') || localStorage.getItem('korg_user');
+      const saved = localStorage.getItem('kugofox_user_session') || localStorage.getItem('kugofox_user');
       if (saved) {
         this.currentUser = JSON.parse(saved);
         if (this.app && typeof this.app.onUserLogin === 'function') {
@@ -363,9 +363,9 @@ export class AuthModal {
     this.clearAlert();
     if (notice) {
       this.showAlert(notice, 'info');
-    } else if (sessionStorage.getItem('korg_pending_action') === 'create_squad') {
+    } else if (sessionStorage.getItem('kugofox_pending_action') === 'create_squad') {
       this.showAlert('Please log in or create an account to create your squad.', 'info');
-    } else if (sessionStorage.getItem('korg_pending_action') === 'register_event') {
+    } else if (sessionStorage.getItem('kugofox_pending_action') === 'register_event') {
       this.showAlert('Please log in or create an account to register your squad for events & scrims.', 'info');
     }
     this.overlay?.classList.add('active');
@@ -481,7 +481,7 @@ export class AuthModal {
           email: identifier.includes('@') ? identifier.toLowerCase() : `${identifier.toLowerCase()}@gmail.com`,
           avatar: '🦊'
         };
-        token = 'korg_token_' + btoa(user.email + ':' + Date.now());
+        token = 'kugofox_token_' + btoa(user.email + ':' + Date.now());
       }
 
       this.saveSession(user, token);
@@ -577,7 +577,7 @@ export class AuthModal {
           email,
           avatar: '🦊'
         };
-        token = 'korg_token_' + btoa(email + ':' + Date.now());
+        token = 'kugofox_token_' + btoa(email + ':' + Date.now());
       }
 
       this.saveSession(user, token);
@@ -711,7 +711,7 @@ export class AuthModal {
     }
 
     // Guaranteed Completion: Save session & update UI
-    this.saveSession(authUser, 'korg_google_' + btoa(cleanEmail + ':' + Date.now()));
+    this.saveSession(authUser, 'kugofox_google_' + btoa(cleanEmail + ':' + Date.now()));
     try { sound.playSuccess?.(); } catch (e) {}
 
     setTimeout(() => {
@@ -742,32 +742,32 @@ export class AuthModal {
   saveSession(user, token) {
     this.currentUser = user;
     try {
-      localStorage.setItem('korg_user_session', JSON.stringify(user));
-      localStorage.setItem('korg_user', JSON.stringify(user));
-      if (token) localStorage.setItem('korg_auth_token', token);
+      localStorage.setItem('kugofox_user_session', JSON.stringify(user));
+      localStorage.setItem('kugofox_user', JSON.stringify(user));
+      if (token) localStorage.setItem('kugofox_auth_token', token);
     } catch (e) {
       console.warn('[Auth] localStorage write error:', e);
     }
 
     // Broadcast user logged in event across all modules
-    window.dispatchEvent(new CustomEvent('korg:userLoggedIn', { detail: { user, token } }));
+    window.dispatchEvent(new CustomEvent('kugofox:userLoggedIn', { detail: { user, token } }));
   }
 
   logout() {
     this.currentUser = null;
     try {
-      localStorage.removeItem('korg_user_session');
-      localStorage.removeItem('korg_user');
-      localStorage.removeItem('korg_auth_token');
-      sessionStorage.removeItem('korg_pending_action');
-      sessionStorage.removeItem('korg_pending_event_id');
+      localStorage.removeItem('kugofox_user_session');
+      localStorage.removeItem('kugofox_user');
+      localStorage.removeItem('kugofox_auth_token');
+      sessionStorage.removeItem('kugofox_pending_action');
+      sessionStorage.removeItem('kugofox_pending_event_id');
     } catch (e) {}
 
     try { sound.playClick?.(); } catch (e) {}
     if (this.app && typeof this.app.onUserLogout === 'function') {
       this.app.onUserLogout();
     }
-    window.dispatchEvent(new CustomEvent('korg:userLoggedOut'));
+    window.dispatchEvent(new CustomEvent('kugofox:userLoggedOut'));
     if (this.app && typeof this.app.showToast === 'function') {
       this.app.showToast('You have been signed out.', 'info');
     }

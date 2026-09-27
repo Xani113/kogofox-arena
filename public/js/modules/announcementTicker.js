@@ -109,7 +109,7 @@ export function isEventActive(event) {
  * Refresh and update the announcement ticker DOM element.
  */
 export async function updateAnnouncementTicker(providedEvents = null) {
-  const tickerEl = document.getElementById('korg-announcement-ticker');
+  const tickerEl = document.getElementById('kugofox-announcement-ticker');
   if (!tickerEl) return;
 
   try {
@@ -148,7 +148,7 @@ export async function updateAnnouncementTicker(providedEvents = null) {
 
     const activeEvent = activeEvents[0];
     const eventId = activeEvent.id || activeEvent._id || 'event_current';
-    const dismissKey = `korg_dismissed_ticker_${eventId}`;
+    const dismissKey = `kugofox_dismissed_ticker_${eventId}`;
 
     // Respect user's dismissal for this session
     if (sessionStorage.getItem(dismissKey) === 'true') {
@@ -156,8 +156,8 @@ export async function updateAnnouncementTicker(providedEvents = null) {
       return;
     }
 
-    const dot = tickerEl.querySelector('.korg-ticker-dot');
-    const textSpan = tickerEl.querySelector('#korg-ticker-text');
+    const dot = tickerEl.querySelector('.kugofox-ticker-dot');
+    const textSpan = tickerEl.querySelector('#kugofox-ticker-text');
     const ctaBtn = tickerEl.querySelector('#ticker-cta-btn');
     const closeBtn = tickerEl.querySelector('#ticker-close-btn');
 
@@ -214,14 +214,14 @@ export async function updateAnnouncementTicker(providedEvents = null) {
  * Initialize ticker and bind global event listeners.
  */
 export function initAnnouncementTicker() {
-  const tickerEl = document.getElementById('korg-announcement-ticker');
+  const tickerEl = document.getElementById('kugofox-announcement-ticker');
   if (!tickerEl) return;
 
   // Initial fetch and check
   updateAnnouncementTicker();
 
   // Listen to events update dispatched by admin panel or events manager
-  window.addEventListener('korg:eventsUpdated', (e) => {
+  window.addEventListener('kugofox:eventsUpdated', (e) => {
     const events = e.detail && e.detail.events ? e.detail.events : null;
     updateAnnouncementTicker(events);
   });

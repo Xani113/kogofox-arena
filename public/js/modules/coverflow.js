@@ -145,7 +145,7 @@ export class CoverflowGallery {
         }
 
         // 3. Trigger filter button in events filter bar
-        const filterBtn = document.querySelector(`#events-filter-bar .korg-filter-pill[data-game="${gameId}"]`);
+        const filterBtn = document.querySelector(`#events-filter-bar .kugofox-filter-pill[data-game="${gameId}"]`);
         if (filterBtn) {
           filterBtn.click();
         }
@@ -154,7 +154,7 @@ export class CoverflowGallery {
         window.scrollTo({ top: 0, behavior: 'smooth' });
         if (document.documentElement) document.documentElement.scrollTop = 0;
         if (document.body) document.body.scrollTop = 0;
-        const mainArea = document.getElementById('korg-main-area');
+        const mainArea = document.getElementById('kugofox-main-area');
         if (mainArea) mainArea.scrollTop = 0;
         const eventsView = document.getElementById('view-events');
         if (eventsView) {

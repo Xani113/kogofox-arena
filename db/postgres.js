@@ -714,7 +714,7 @@ export async function authenticateUser(identifier, password) {
   return {
     success: true,
     user: sanitizeUser(matchingUser),
-    token: 'korg_token_' + Buffer.from(matchingUser.email + ':' + Date.now()).toString('base64')
+    token: 'kugofox_token_' + Buffer.from(matchingUser.email + ':' + Date.now()).toString('base64')
   };
 }
 

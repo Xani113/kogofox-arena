@@ -16,9 +16,9 @@
     rel="stylesheet">
   <link rel="stylesheet" href="css/game-themes.css?v=2.4.0">
   <link rel="stylesheet" href="css/style.css?v=2.4.0">
-  <link rel="stylesheet" href="css/korg-layout.css?v=2.6.2">
+  <link rel="stylesheet" href="css/kugofox-layout.css?v=2.6.2">
   <link rel="stylesheet" href="css/auth-modal.css?v=2.4.0">
-  <link rel="stylesheet" href="css/korg-views.css?v=2.6.2">
+  <link rel="stylesheet" href="css/kugofox-views.css?v=2.6.2">
   <!-- Official Google Identity Services SDK -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
@@ -29,48 +29,48 @@
 
   <div class="app-layout-root">
     <!-- TOP ANNOUNCEMENT TICKER (Dynamic: only appears when an event is upcoming/live) -->
-    <div class="korg-announcement-ticker" id="korg-announcement-ticker" style="display: none;">
-      <div class="korg-ticker-content" id="korg-ticker-content">
-        <span class="korg-ticker-dot"></span>
-        <span id="korg-ticker-text"></span>
+    <div class="kugofox-announcement-ticker" id="kugofox-announcement-ticker" style="display: none;">
+      <div class="kugofox-ticker-content" id="kugofox-ticker-content">
+        <span class="kugofox-ticker-dot"></span>
+        <span id="kugofox-ticker-text"></span>
       </div>
-      <div class="korg-ticker-actions">
-        <button class="korg-ticker-cta" id="ticker-cta-btn" data-view-target="events">
+      <div class="kugofox-ticker-actions">
+        <button class="kugofox-ticker-cta" id="ticker-cta-btn" data-view-target="events">
           Register Now ➔
         </button>
-        <button class="korg-ticker-close" id="ticker-close-btn" aria-label="Dismiss Announcement" title="Dismiss announcement">×</button>
+        <button class="kugofox-ticker-close" id="ticker-close-btn" aria-label="Dismiss Announcement" title="Dismiss announcement">×</button>
       </div>
     </div>
 
-    <!-- TOP NAVIGATION BAR (Exact korg.buzz replica) -->
-    <header class="korg-topbar" id="korg-topbar">
+    <!-- TOP NAVIGATION BAR (Exact kugofox.buzz replica) -->
+    <header class="kugofox-topbar" id="kugofox-topbar">
       <!-- Left: Mobile Menu Hamburger & Brand Logo -->
-      <div class="korg-topbar-left">
-        <button class="korg-mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle Navigation Menu" title="Open Menu">
+      <div class="kugofox-topbar-left">
+        <button class="kugofox-mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle Navigation Menu" title="Open Menu">
           <span class="hamburger-bar"></span>
           <span class="hamburger-bar"></span>
           <span class="hamburger-bar"></span>
         </button>
 
         <!-- Brand Logo Left -->
-        <div class="korg-brand-box" id="brand-home-btn" data-view-target="home" style="cursor: pointer;">
-          <img src="assets/kugofox_logo.png" alt="KUGOFOX" class="korg-brand-icon">
-          <span class="korg-brand-name">KUGOFOX</span>
+        <div class="kugofox-brand-box" id="brand-home-btn" data-view-target="home" style="cursor: pointer;">
+          <img src="assets/kugofox_logo.png" alt="KUGOFOX" class="kugofox-brand-icon">
+          <span class="kugofox-brand-name">KUGOFOX</span>
         </div>
       </div>
 
       <!-- Center Nav Pills -->
-      <nav class="korg-center-nav" aria-label="Main Navigation">
-        <button class="korg-nav-pill active" data-view-target="home" id="top-nav-home">HOME</button>
-        <button class="korg-nav-pill" data-view-target="games" id="top-nav-games">Games</button>
-        <button class="korg-nav-pill" data-view-target="squads" id="top-nav-squads">Squads</button>
-        <button class="korg-nav-pill" data-view-target="events" id="top-nav-events">Events & Scrims</button>
-        <button class="korg-nav-pill" data-view-target="leaderboard" id="top-nav-leaderboard">Standings</button>
-        <button class="korg-nav-pill" data-view-target="admin" id="top-nav-admin" style="display: none; border-color: rgba(0, 240, 255, 0.35); color: #00f0ff;">⚙️ Admin</button>
+      <nav class="kugofox-center-nav" aria-label="Main Navigation">
+        <button class="kugofox-nav-pill active" data-view-target="home" id="top-nav-home">HOME</button>
+        <button class="kugofox-nav-pill" data-view-target="games" id="top-nav-games">Games</button>
+        <button class="kugofox-nav-pill" data-view-target="squads" id="top-nav-squads">Squads</button>
+        <button class="kugofox-nav-pill" data-view-target="events" id="top-nav-events">Events & Scrims</button>
+        <button class="kugofox-nav-pill" data-view-target="leaderboard" id="top-nav-leaderboard">Standings</button>
+        <button class="kugofox-nav-pill" data-view-target="admin" id="top-nav-admin" style="display: none; border-color: rgba(0, 240, 255, 0.35); color: #00f0ff;">⚙️ Admin</button>
       </nav>
 
       <!-- Right Header Actions -->
-      <div class="korg-right-actions">
+      <div class="kugofox-right-actions">
         <button class="btn-sign-in" id="sign-in-btn">
           SIGN IN
         </button>
@@ -78,12 +78,12 @@
     </header>
 
     <!-- MAIN BODY SPLIT CONTAINER (Sidebar + Main Stage) -->
-    <div class="korg-body-split">
+    <div class="kugofox-body-split">
       <!-- Backdrop for Mobile Slide-in Drawer -->
       <div class="mobile-menu-backdrop" id="mobile-menu-backdrop"></div>
 
       <!-- LEFT SIDEBAR / MOBILE NAVIGATION DRAWER -->
-      <aside class="korg-sidebar" id="korg-sidebar">
+      <aside class="kugofox-sidebar" id="kugofox-sidebar">
         <!-- Mobile Drawer Top Header (Shown only on phone/mobile) -->
         <div class="sidebar-mobile-header" id="sidebar-mobile-header">
           <div class="sidebar-mobile-brand">
@@ -223,13 +223,13 @@
       </aside>
 
       <!-- MAIN CONTENT STAGE -->
-      <main class="korg-main-area" id="korg-main-area">
+      <main class="kugofox-main-area" id="kugofox-main-area">
 
         <!-- VIEW 1: HOME (ARENA STAGE) -->
-        <div id="view-home" class="korg-view active">
+        <div id="view-home" class="kugofox-view active">
 
           <!-- HERO SECTION (Cyberpunk Enter The Fox Arena with Interactive Headphone) -->
-          <section class="korg-hero-section cyberpunk-hero-section" id="section-hero">
+          <section class="kugofox-hero-section cyberpunk-hero-section" id="section-hero">
           <!-- LEFT COLUMN: Cyberpunk Title & CTA -->
           <div class="hero-left-col">
             <!-- Cyber Protocol Badge -->
@@ -390,7 +390,7 @@
         </section>
 
         <!-- HORIZONTAL STATUS DIVIDER STRIP (Photo 1 exact replica) -->
-        <div class="korg-status-strip">
+        <div class="kugofox-status-strip">
           <div class="status-left">
             <span class="status-item"><span class="status-green-dot"></span> SYSTEM.ACTIVE</span>
             <span class="status-divider">|</span>
@@ -415,22 +415,22 @@
         </div> <!-- /view-home -->
 
         <!-- VIEW 2: CAMPUS GAMES DIRECTORY (Screenshot 3) -->
-        <div id="view-games" class="korg-view"></div>
+        <div id="view-games" class="kugofox-view"></div>
 
         <!-- VIEW 3: PLAYER FINDER / SQUADS LFG (Screenshot 1) -->
-        <div id="view-squads" class="korg-view"></div>
+        <div id="view-squads" class="kugofox-view"></div>
 
         <!-- VIEW 4: CAMPUS SCRIMS & TOURNAMENTS (Screenshot 4) -->
-        <div id="view-events" class="korg-view"></div>
+        <div id="view-events" class="kugofox-view"></div>
 
         <!-- VIEW 5: COMPETITIVE STANDINGS / CP LEADERBOARD (Screenshot 2) -->
-        <div id="view-leaderboard" class="korg-view"></div>
+        <div id="view-leaderboard" class="kugofox-view"></div>
 
         <!-- VIEW 6: ARENA ADMIN CONTROL PANEL (Events, Prize Pool, CP) -->
-        <div id="view-admin" class="korg-view"></div>
+        <div id="view-admin" class="kugofox-view"></div>
 
         <!-- FOOTER -->
-        <footer class="korg-footer">
+        <footer class="kugofox-footer">
           <div class="footer-logo-row">
             <img src="assets/kugofox_logo.png" alt="KUGOFOX" class="footer-fox-logo">
             <span class="footer-brand-title">KUGOFOX — ESPORTS ARENA</span>

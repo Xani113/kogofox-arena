@@ -173,7 +173,7 @@ export class CyberHeadphoneController {
     if (!this.container || !this.wrapper) return;
 
     // Track mouse & touch over entire hero section for immersive responsiveness
-    const trackingArea = this.container.closest('.korg-hero-section') || this.container;
+    const trackingArea = this.container.closest('.kugofox-hero-section') || this.container;
 
     let targetRotX = 0;
     let targetRotY = 0;

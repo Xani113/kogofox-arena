@@ -4,7 +4,7 @@
    ========================================================== */
 
 /* 1. TOP ANNOUNCEMENT TICKER (Photo 5) */
-.korg-announcement-ticker {
+.kugofox-announcement-ticker {
   background: linear-gradient(90deg, rgba(147, 51, 234, 0.22) 0%, rgba(59, 130, 246, 0.18) 50%, rgba(236, 72, 153, 0.22) 100%);
   border-bottom: 1px solid rgba(168, 85, 247, 0.35);
   color: #f1f5f9;
@@ -21,13 +21,13 @@
   box-shadow: 0 4px 20px rgba(147, 51, 234, 0.15);
 }
 
-.korg-ticker-content {
+.kugofox-ticker-content {
   display: flex;
   align-items: center;
   gap: 0.75rem;
 }
 
-.korg-ticker-dot {
+.kugofox-ticker-dot {
   width: 9px;
   height: 9px;
   border-radius: 50%;
@@ -41,7 +41,7 @@
   50% { transform: scale(1.3); opacity: 1; }
 }
 
-.korg-ticker-cta {
+.kugofox-ticker-cta {
   background: rgba(168, 85, 247, 0.25);
   border: 1px solid rgba(168, 85, 247, 0.5);
   color: #e9d5ff;
@@ -54,19 +54,19 @@
   text-transform: uppercase;
 }
 
-.korg-ticker-cta:hover {
+.kugofox-ticker-cta:hover {
   background: #a855f7;
   color: #fff;
   box-shadow: 0 0 15px rgba(168, 85, 247, 0.5);
 }
 
-.korg-ticker-actions {
+.kugofox-ticker-actions {
   display: flex;
   align-items: center;
   gap: 0.6rem;
 }
 
-.korg-ticker-close {
+.kugofox-ticker-close {
   background: transparent;
   border: 1px solid rgba(255, 255, 255, 0.15);
   color: #cbd5e1;
@@ -84,7 +84,7 @@
   padding: 0;
 }
 
-.korg-ticker-close:hover {
+.kugofox-ticker-close:hover {
   opacity: 1;
   color: #fff;
   background: rgba(255, 255, 255, 0.12);
@@ -93,7 +93,7 @@
 }
 
 /* 2. VIEW CONTAINERS & TRANSITIONS */
-.korg-view {
+.kugofox-view {
   display: none;
   opacity: 0;
   transition: opacity 0.25s ease-in-out;
@@ -104,7 +104,7 @@
   box-sizing: border-box;
 }
 
-.korg-view.active {
+.kugofox-view.active {
   display: block;
   opacity: 1;
   animation: fadeInView 0.25s cubic-bezier(0.16, 1, 0.3, 1);
@@ -122,14 +122,14 @@
 }
 
 /* 3. COMMON VIEW HEADERS & FILTER PILLS */
-.korg-view-header {
+.kugofox-view-header {
   margin-bottom: 2rem;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 }
 
-.korg-view-title-row {
+.kugofox-view-title-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -137,7 +137,7 @@
   gap: 1rem;
 }
 
-.korg-view-title {
+.kugofox-view-title {
   font-size: 2rem;
   font-weight: 800;
   letter-spacing: -0.02em;
@@ -149,15 +149,15 @@
   text-transform: uppercase;
 }
 
-.korg-view-subtitle {
-  color: var(--korg-text-muted, #94a3b8);
+.kugofox-view-subtitle {
+  color: var(--kugofox-text-muted, #94a3b8);
   font-size: 0.95rem;
   margin: 0;
   max-width: 800px;
   line-height: 1.5;
 }
 
-.korg-filter-bar {
+.kugofox-filter-bar {
   display: flex;
   align-items: center;
   gap: 0.6rem;
@@ -167,7 +167,7 @@
   scrollbar-width: thin;
 }
 
-.korg-filter-pill {
+.kugofox-filter-pill {
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.1);
   color: #94a3b8;
@@ -180,13 +180,13 @@
   white-space: nowrap;
 }
 
-.korg-filter-pill:hover {
+.kugofox-filter-pill:hover {
   background: rgba(255, 255, 255, 0.08);
   color: #ffffff;
   border-color: rgba(255, 255, 255, 0.25);
 }
 
-.korg-filter-pill.active {
+.kugofox-filter-pill.active {
   background: rgba(0, 240, 255, 0.15);
   border-color: #00f0ff;
   color: #00f0ff;
@@ -194,7 +194,7 @@
 }
 
 /* ACTION BUTTONS */
-.korg-btn-primary {
+.kugofox-btn-primary {
   background: linear-gradient(135deg, #00f0ff 0%, #00a8ff 100%);
   color: #030508;
   border: none;
@@ -210,12 +210,12 @@
   transition: all 0.2s ease;
 }
 
-.korg-btn-primary:hover {
+.kugofox-btn-primary:hover {
   transform: translateY(-2px);
   box-shadow: 0 0 25px rgba(0, 240, 255, 0.5);
 }
 
-.korg-btn-outline {
+.kugofox-btn-outline {
   background: transparent;
   border: 1px solid rgba(255, 255, 255, 0.18);
   color: #e2e8f0;
@@ -227,20 +227,20 @@
   transition: all 0.2s ease;
 }
 
-.korg-btn-outline:hover {
+.kugofox-btn-outline:hover {
   border-color: #00f0ff;
   color: #00f0ff;
   background: rgba(0, 240, 255, 0.05);
 }
 
 /* 4. SQUADS LFG VIEW (Photo 1) */
-.korg-squads-grid {
+.kugofox-squads-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
   gap: 1.5rem;
 }
 
-.korg-squad-card {
+.kugofox-squad-card {
   background: rgba(13, 17, 23, 0.7);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 12px;
@@ -254,26 +254,26 @@
   overflow: hidden;
 }
 
-.korg-squad-card:hover {
+.kugofox-squad-card:hover {
   border-color: rgba(0, 240, 255, 0.3);
   transform: translateY(-3px);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
 }
 
-.korg-squad-card-top {
+.kugofox-squad-card-top {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   gap: 1rem;
 }
 
-.korg-squad-identity {
+.kugofox-squad-identity {
   display: flex;
   align-items: center;
   gap: 0.9rem;
 }
 
-.korg-squad-avatar {
+.kugofox-squad-avatar {
   width: 46px;
   height: 46px;
   border-radius: 10px;
@@ -287,26 +287,26 @@
   box-shadow: 0 4px 12px rgba(0,0,0,0.3);
 }
 
-.korg-squad-names {
+.kugofox-squad-names {
   display: flex;
   flex-direction: column;
   gap: 0.2rem;
 }
 
-.korg-squad-title {
+.kugofox-squad-title {
   font-size: 1.15rem;
   font-weight: 700;
   color: #ffffff;
   margin: 0;
 }
 
-.korg-squad-game {
+.kugofox-squad-game {
   font-size: 0.8rem;
   color: #94a3b8;
   font-weight: 500;
 }
 
-.korg-squad-badges {
+.kugofox-squad-badges {
   display: flex;
   align-items: center;
   gap: 0.4rem;
@@ -314,7 +314,7 @@
   justify-content: flex-end;
 }
 
-.korg-pill-tag {
+.kugofox-pill-tag {
   font-size: 0.68rem;
   font-weight: 700;
   letter-spacing: 0.05em;
@@ -323,25 +323,25 @@
   text-transform: uppercase;
 }
 
-.korg-pill-type {
+.kugofox-pill-type {
   background: rgba(255, 255, 255, 0.06);
   color: #cbd5e1;
   border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
-.korg-pill-open {
+.kugofox-pill-open {
   background: rgba(34, 197, 94, 0.12);
   color: #4ade80;
   border: 1px solid rgba(34, 197, 94, 0.3);
 }
 
-.korg-pill-full {
+.kugofox-pill-full {
   background: rgba(239, 68, 68, 0.12);
   color: #f87171;
   border: 1px solid rgba(239, 68, 68, 0.3);
 }
 
-.korg-pill-mic {
+.kugofox-pill-mic {
   background: rgba(0, 240, 255, 0.1);
   color: #38bdf8;
   border: 1px solid rgba(0, 240, 255, 0.25);
@@ -350,7 +350,7 @@
   gap: 0.3rem;
 }
 
-.korg-squad-mid {
+.kugofox-squad-mid {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -359,60 +359,60 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-.korg-slots-wrapper {
+.kugofox-slots-wrapper {
   display: flex;
   align-items: center;
   gap: 0.6rem;
 }
 
-.korg-slots-label {
+.kugofox-slots-label {
   font-size: 0.78rem;
   font-weight: 700;
   color: #94a3b8;
   letter-spacing: 0.04em;
 }
 
-.korg-slot-dots {
+.kugofox-slot-dots {
   display: flex;
   align-items: center;
   gap: 0.35rem;
 }
 
-.korg-slot-dot {
+.kugofox-slot-dot {
   width: 9px;
   height: 9px;
   border-radius: 50%;
   transition: all 0.2s ease;
 }
 
-.korg-slot-dot.filled {
+.kugofox-slot-dot.filled {
   background: #22c55e;
   box-shadow: 0 0 8px rgba(34, 197, 94, 0.6);
 }
 
-.korg-slot-dot.empty {
+.kugofox-slot-dot.empty {
   border: 1.5px solid rgba(255, 255, 255, 0.25);
   background: transparent;
 }
 
-.korg-squad-leader {
+.kugofox-squad-leader {
   font-size: 0.8rem;
   color: #cbd5e1;
   font-weight: 500;
 }
 
-.korg-squad-leader strong {
+.kugofox-squad-leader strong {
   color: #fff;
 }
 
-.korg-squad-bottom {
+.kugofox-squad-bottom {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
 }
 
-.korg-roster-btn {
+.kugofox-roster-btn {
   background: transparent;
   border: none;
   color: #94a3b8;
@@ -426,11 +426,11 @@
   transition: color 0.2s ease;
 }
 
-.korg-roster-btn:hover {
+.kugofox-roster-btn:hover {
   color: #00f0ff;
 }
 
-.korg-join-squad-btn {
+.kugofox-join-squad-btn {
   background: rgba(0, 240, 255, 0.12);
   border: 1px solid rgba(0, 240, 255, 0.4);
   color: #00f0ff;
@@ -442,13 +442,13 @@
   transition: all 0.2s ease;
 }
 
-.korg-join-squad-btn:hover:not(:disabled) {
+.kugofox-join-squad-btn:hover:not(:disabled) {
   background: #00f0ff;
   color: #030508;
   box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
 }
 
-.korg-join-squad-btn:disabled {
+.kugofox-join-squad-btn:disabled {
   opacity: 0.4;
   cursor: not-allowed;
   border-color: rgba(255, 255, 255, 0.1);
@@ -457,7 +457,7 @@
 }
 
 /* ROSTER DRAWER */
-.korg-roster-drawer {
+.kugofox-roster-drawer {
   display: none;
   flex-direction: column;
   gap: 0.5rem;
@@ -466,11 +466,11 @@
   animation: fadeInView 0.2s ease;
 }
 
-.korg-roster-drawer.open {
+.kugofox-roster-drawer.open {
   display: flex;
 }
 
-.korg-roster-member {
+.kugofox-roster-member {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -480,7 +480,7 @@
   font-size: 0.82rem;
 }
 
-.korg-roster-member-left {
+.kugofox-roster-member-left {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -488,7 +488,7 @@
   font-weight: 600;
 }
 
-.korg-roster-member-role {
+.kugofox-roster-member-role {
   font-size: 0.72rem;
   color: #94a3b8;
   background: rgba(255, 255, 255, 0.05);
@@ -497,7 +497,7 @@
 }
 
 /* 5. COMPETITIVE STANDINGS LEADERBOARD VIEW (Photo 2) */
-.korg-standings-card {
+.kugofox-standings-card {
   background: rgba(13, 17, 23, 0.75);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 12px;
@@ -506,18 +506,18 @@
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
 }
 
-.korg-standings-table-wrapper {
+.kugofox-standings-table-wrapper {
   overflow-x: auto;
   width: 100%;
 }
 
-.korg-standings-table {
+.kugofox-standings-table {
   width: 100%;
   border-collapse: collapse;
   text-align: left;
 }
 
-.korg-standings-table th {
+.kugofox-standings-table th {
   background: rgba(255, 255, 255, 0.03);
   color: #94a3b8;
   font-size: 0.76rem;
@@ -528,7 +528,7 @@
   text-transform: uppercase;
 }
 
-.korg-standings-table td {
+.kugofox-standings-table td {
   padding: 1.1rem 1.2rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.04);
   font-size: 0.88rem;
@@ -536,18 +536,18 @@
   vertical-align: middle;
 }
 
-.korg-standings-table tr:hover td {
+.kugofox-standings-table tr:hover td {
   background: rgba(0, 240, 255, 0.03);
 }
 
-.korg-rank-cell {
+.kugofox-rank-cell {
   font-weight: 800;
   font-size: 1rem;
   color: #ffffff;
   width: 50px;
 }
 
-.korg-rank-badge {
+.kugofox-rank-badge {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -558,31 +558,31 @@
   font-weight: 800;
 }
 
-.korg-rank-1 {
+.kugofox-rank-1 {
   background: linear-gradient(135deg, #fbbf24, #d97706);
   color: #030508;
   box-shadow: 0 0 12px rgba(251, 191, 36, 0.5);
 }
 
-.korg-rank-2 {
+.kugofox-rank-2 {
   background: linear-gradient(135deg, #e2e8f0, #94a3b8);
   color: #030508;
   box-shadow: 0 0 10px rgba(226, 232, 240, 0.4);
 }
 
-.korg-rank-3 {
+.kugofox-rank-3 {
   background: linear-gradient(135deg, #f97316, #b45309);
   color: #030508;
   box-shadow: 0 0 10px rgba(249, 115, 22, 0.4);
 }
 
-.korg-player-cell {
+.kugofox-player-cell {
   display: flex;
   align-items: center;
   gap: 0.9rem;
 }
 
-.korg-player-avatar {
+.kugofox-player-avatar {
   width: 40px;
   height: 40px;
   border-radius: 8px;
@@ -594,23 +594,23 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.korg-player-meta {
+.kugofox-player-meta {
   display: flex;
   flex-direction: column;
 }
 
-.korg-player-name {
+.kugofox-player-name {
   font-weight: 700;
   color: #ffffff;
   font-size: 0.95rem;
 }
 
-.korg-player-sub {
+.kugofox-player-sub {
   font-size: 0.75rem;
   color: #94a3b8;
 }
 
-.korg-tier-badge {
+.kugofox-tier-badge {
   background: rgba(205, 127, 50, 0.15);
   border: 1px solid rgba(205, 127, 50, 0.4);
   color: #f59e0b;
@@ -621,7 +621,7 @@
   text-transform: uppercase;
 }
 
-.korg-cp-pill {
+.kugofox-cp-pill {
   background: rgba(0, 240, 255, 0.12);
   border: 1px solid rgba(0, 240, 255, 0.4);
   color: #00f0ff;
@@ -634,7 +634,7 @@
 }
 
 /* 6. GAMES DIRECTORY VIEW (Photo 3) */
-.korg-search-box {
+.kugofox-search-box {
   background: rgba(13, 17, 23, 0.7);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 10px;
@@ -646,7 +646,7 @@
   max-width: 600px;
 }
 
-.korg-search-box input {
+.kugofox-search-box input {
   background: transparent;
   border: none;
   color: #ffffff;
@@ -655,17 +655,17 @@
   outline: none;
 }
 
-.korg-search-box input::placeholder {
+.kugofox-search-box input::placeholder {
   color: #64748b;
 }
 
-.korg-games-grid {
+.kugofox-games-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 1.5rem;
 }
 
-.korg-game-item-card {
+.kugofox-game-item-card {
   background: rgba(13, 17, 23, 0.7);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 12px;
@@ -676,13 +676,13 @@
   flex-direction: column;
 }
 
-.korg-game-item-card:hover {
+.kugofox-game-item-card:hover {
   transform: translateY(-4px);
   border-color: rgba(0, 240, 255, 0.35);
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
 }
 
-.korg-game-item-banner {
+.kugofox-game-item-banner {
   height: 140px;
   width: 100%;
   background-size: cover;
@@ -690,14 +690,14 @@
   position: relative;
 }
 
-.korg-game-item-banner::after {
+.kugofox-game-item-banner::after {
   content: '';
   position: absolute;
   inset: 0;
   background: linear-gradient(0deg, rgba(13, 17, 23, 1) 0%, rgba(13, 17, 23, 0.2) 100%);
 }
 
-.korg-game-item-body {
+.kugofox-game-item-body {
   padding: 1.2rem;
   display: flex;
   flex-direction: column;
@@ -705,14 +705,14 @@
   flex: 1;
 }
 
-.korg-game-item-title {
+.kugofox-game-item-title {
   font-size: 1.2rem;
   font-weight: 800;
   color: #ffffff;
   margin: 0;
 }
 
-.korg-game-item-desc {
+.kugofox-game-item-desc {
   font-size: 0.82rem;
   color: #94a3b8;
   line-height: 1.4;
@@ -720,7 +720,7 @@
   flex: 1;
 }
 
-.korg-game-item-meta {
+.kugofox-game-item-meta {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -730,7 +730,7 @@
   border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-.korg-game-open-btn {
+.kugofox-game-open-btn {
   background: rgba(0, 240, 255, 0.1);
   border: 1px solid rgba(0, 240, 255, 0.3);
   color: #00f0ff;
@@ -746,14 +746,14 @@
   gap: 0.4rem;
 }
 
-.korg-game-open-btn:hover {
+.kugofox-game-open-btn:hover {
   background: #00f0ff;
   color: #030508;
   box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
 }
 
 /* 7. CAMPUS SCRIMS & TOURNAMENTS EVENTS VIEW (Photo 4) */
-.korg-events-status-tabs {
+.kugofox-events-status-tabs {
   display: flex;
   align-items: center;
   gap: 0.8rem;
@@ -766,7 +766,7 @@
   scrollbar-width: thin;
 }
 
-.korg-events-grid {
+.kugofox-events-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
   gap: 1.5rem;
@@ -775,7 +775,7 @@
   box-sizing: border-box;
 }
 
-.korg-event-card {
+.kugofox-event-card {
   background: rgba(13, 17, 23, 0.75);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 12px;
@@ -793,32 +793,32 @@
   word-break: break-word;
 }
 
-.korg-event-card:hover {
+.kugofox-event-card:hover {
   border-color: rgba(168, 85, 247, 0.4);
   transform: translateY(-3px);
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
 }
 
-.korg-event-top {
+.kugofox-event-top {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   gap: 1rem;
 }
 
-.korg-event-header-left {
+.kugofox-event-header-left {
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
 }
 
-.korg-event-badge-row {
+.kugofox-event-badge-row {
   display: flex;
   align-items: center;
   gap: 0.4rem;
 }
 
-.korg-event-badge {
+.kugofox-event-badge {
   background: rgba(168, 85, 247, 0.2);
   border: 1px solid rgba(168, 85, 247, 0.4);
   color: #d8b4fe;
@@ -829,7 +829,7 @@
   letter-spacing: 0.04em;
 }
 
-.korg-event-title {
+.kugofox-event-title {
   font-size: 1.25rem;
   font-weight: 800;
   color: #ffffff;
@@ -837,7 +837,7 @@
   text-transform: uppercase;
 }
 
-.korg-event-date {
+.kugofox-event-date {
   font-size: 0.84rem;
   color: #94a3b8;
   display: flex;
@@ -845,7 +845,7 @@
   gap: 0.4rem;
 }
 
-.korg-prize-pool-pill {
+.kugofox-prize-pool-pill {
   background: linear-gradient(135deg, rgba(234, 179, 8, 0.15) 0%, rgba(202, 138, 4, 0.25) 100%);
   border: 1px solid rgba(234, 179, 8, 0.5);
   color: #fde047;
@@ -859,13 +859,13 @@
   box-shadow: 0 0 15px rgba(234, 179, 8, 0.15);
 }
 
-.korg-capacity-section {
+.kugofox-capacity-section {
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
 }
 
-.korg-capacity-header {
+.kugofox-capacity-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -874,7 +874,7 @@
   font-weight: 600;
 }
 
-.korg-capacity-track {
+.kugofox-capacity-track {
   width: 100%;
   height: 6px;
   background: rgba(255, 255, 255, 0.08);
@@ -882,14 +882,14 @@
   overflow: hidden;
 }
 
-.korg-capacity-fill {
+.kugofox-capacity-fill {
   height: 100%;
   background: linear-gradient(90deg, #00f0ff, #3b82f6);
   border-radius: 9999px;
   transition: width 0.3s ease;
 }
 
-.korg-event-actions {
+.kugofox-event-actions {
   display: flex;
   align-items: center;
   gap: 0.75rem;
@@ -897,7 +897,7 @@
 }
 
 /* 8. ADMIN CONTROL PANEL VIEW */
-.korg-admin-auth-wrapper {
+.kugofox-admin-auth-wrapper {
   max-width: 440px;
   margin: 3rem auto;
   background: rgba(13, 17, 23, 0.85);
@@ -909,19 +909,19 @@
   box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
 }
 
-.korg-admin-auth-wrapper h3 {
+.kugofox-admin-auth-wrapper h3 {
   color: #fff;
   margin: 0 0 0.5rem;
   font-size: 1.4rem;
 }
 
-.korg-admin-auth-wrapper p {
+.kugofox-admin-auth-wrapper p {
   color: #94a3b8;
   font-size: 0.88rem;
   margin: 0 0 1.5rem;
 }
 
-.korg-admin-input {
+.kugofox-admin-input {
   width: 100%;
   background: rgba(0, 0, 0, 0.4);
   border: 1px solid rgba(255, 255, 255, 0.15);
@@ -934,18 +934,18 @@
   margin-bottom: 1.2rem;
 }
 
-.korg-admin-input:focus {
+.kugofox-admin-input:focus {
   border-color: #00f0ff;
   box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
 }
 
-.korg-admin-dashboard {
+.kugofox-admin-dashboard {
   display: flex;
   flex-direction: column;
   gap: 2rem;
 }
 
-.korg-admin-tabs {
+.kugofox-admin-tabs {
   display: flex;
   align-items: center;
   gap: 0.75rem;
@@ -953,7 +953,7 @@
   padding-bottom: 1rem;
 }
 
-.korg-admin-tab-btn {
+.kugofox-admin-tab-btn {
   background: transparent;
   border: none;
   color: #94a3b8;
@@ -965,22 +965,22 @@
   transition: all 0.2s ease;
 }
 
-.korg-admin-tab-btn.active {
+.kugofox-admin-tab-btn.active {
   background: rgba(0, 240, 255, 0.12);
   color: #00f0ff;
 }
 
-.korg-admin-section {
+.kugofox-admin-section {
   display: none;
   flex-direction: column;
   gap: 1.5rem;
 }
 
-.korg-admin-section.active {
+.kugofox-admin-section.active {
   display: flex;
 }
 
-.korg-admin-form-card {
+.kugofox-admin-form-card {
   background: rgba(13, 17, 23, 0.75);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 12px;
@@ -990,13 +990,13 @@
   gap: 1.2rem;
 }
 
-.korg-admin-form-row {
+.kugofox-admin-form-row {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 1rem;
 }
 
-.korg-admin-label {
+.kugofox-admin-label {
   font-size: 0.78rem;
   font-weight: 700;
   color: #94a3b8;
@@ -1006,7 +1006,7 @@
 }
 
 /* 9. MODALS (CREATE SQUAD / JOIN / REGISTRATION) */
-.korg-modal-overlay {
+.kugofox-modal-overlay {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.75);
@@ -1018,11 +1018,11 @@
   padding: 1rem;
 }
 
-.korg-modal-overlay.open {
+.kugofox-modal-overlay.open {
   display: flex;
 }
 
-.korg-modal-box {
+.kugofox-modal-box {
   background: #090d14;
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 14px;
@@ -1040,7 +1040,7 @@
   to { transform: scale(1); opacity: 1; }
 }
 
-.korg-modal-close {
+.kugofox-modal-close {
   position: absolute;
   top: 1.2rem;
   right: 1.2rem;
@@ -1052,40 +1052,40 @@
   line-height: 1;
 }
 
-.korg-modal-close:hover {
+.kugofox-modal-close:hover {
   color: #fff;
 }
 
 @media (max-width: 768px) {
-  .korg-view {
+  .kugofox-view {
     padding: 1.1rem 0.85rem 4rem;
     width: 100% !important;
     max-width: 100% !important;
     box-sizing: border-box !important;
   }
-  .korg-squads-grid,
-  .korg-events-grid,
-  .korg-games-grid {
+  .kugofox-squads-grid,
+  .kugofox-events-grid,
+  .kugofox-games-grid {
     grid-template-columns: minmax(0, 1fr) !important;
     width: 100% !important;
     max-width: 100% !important;
     gap: 1rem;
     box-sizing: border-box !important;
   }
-  .korg-event-card {
+  .kugofox-event-card {
     padding: 1.15rem 1rem !important;
     gap: 1rem !important;
   }
-  .korg-view-title {
+  .kugofox-view-title {
     font-size: 1.5rem !important;
   }
-  .korg-view-subtitle {
+  .kugofox-view-subtitle {
     font-size: 0.85rem !important;
   }
-  .korg-event-title {
+  .kugofox-event-title {
     font-size: 1.15rem !important;
   }
-  .korg-prize-pool-pill {
+  .kugofox-prize-pool-pill {
     font-size: 0.95rem !important;
     padding: 0.38rem 0.75rem !important;
   }
@@ -1093,101 +1093,101 @@
 
 /* Phone Screen Optimizations (<= 480px) */
 @media (max-width: 480px) {
-  .korg-view {
+  .kugofox-view {
     padding: 0.75rem 0.45rem 3.5rem !important;
   }
 
-  .korg-view-header {
+  .kugofox-view-header {
     margin-bottom: 1rem;
     gap: 0.35rem;
   }
 
-  .korg-view-title {
+  .kugofox-view-title {
     font-size: 1.25rem !important;
     letter-spacing: 0.01em;
   }
 
-  .korg-view-subtitle {
+  .kugofox-view-subtitle {
     font-size: 0.78rem !important;
     line-height: 1.38;
   }
 
   /* Status tabs */
-  .korg-events-status-tabs {
+  .kugofox-events-status-tabs {
     gap: 0.35rem !important;
     margin-top: 0.85rem !important;
     padding-bottom: 0.5rem !important;
     scrollbar-width: none;
   }
-  .korg-events-status-tabs::-webkit-scrollbar {
+  .kugofox-events-status-tabs::-webkit-scrollbar {
     display: none;
   }
-  .korg-events-status-tabs .korg-admin-tab-btn {
+  .kugofox-events-status-tabs .kugofox-admin-tab-btn {
     font-size: 0.8rem !important;
     padding: 0.35rem 0.65rem !important;
     flex-shrink: 0;
   }
 
   /* Filter pills */
-  .korg-filter-bar {
+  .kugofox-filter-bar {
     gap: 0.35rem !important;
     margin: 0.65rem 0 1rem !important;
     padding-bottom: 0.35rem !important;
     scrollbar-width: none;
   }
-  .korg-filter-bar::-webkit-scrollbar {
+  .kugofox-filter-bar::-webkit-scrollbar {
     display: none;
   }
-  .korg-filter-pill {
+  .kugofox-filter-pill {
     font-size: 0.72rem !important;
     padding: 0.32rem 0.62rem !important;
     flex-shrink: 0;
   }
 
   /* Compact Event Card */
-  .korg-events-grid {
+  .kugofox-events-grid {
     gap: 0.85rem !important;
   }
 
-  .korg-event-card {
+  .kugofox-event-card {
     padding: 0.9rem 0.8rem !important;
     gap: 0.75rem !important;
     border-radius: 10px !important;
   }
 
-  .korg-event-top {
+  .kugofox-event-top {
     gap: 0.5rem !important;
     align-items: flex-start;
   }
 
-  .korg-event-header-left {
+  .kugofox-event-header-left {
     min-width: 0;
     flex: 1;
     gap: 0.2rem;
   }
 
-  .korg-event-badge-row {
+  .kugofox-event-badge-row {
     gap: 0.3rem;
     flex-wrap: wrap;
   }
 
-  .korg-event-badge {
+  .kugofox-event-badge {
     font-size: 0.6rem !important;
     padding: 0.14rem 0.38rem !important;
   }
 
-  .korg-event-title {
+  .kugofox-event-title {
     font-size: 0.98rem !important;
     line-height: 1.25;
     word-break: break-word;
   }
 
-  .korg-event-date {
+  .kugofox-event-date {
     font-size: 0.72rem !important;
     gap: 0.25rem;
   }
 
-  .korg-prize-pool-pill {
+  .kugofox-prize-pool-pill {
     font-size: 0.85rem !important;
     padding: 0.28rem 0.55rem !important;
     border-radius: 6px !important;
@@ -1196,51 +1196,51 @@
     gap: 0.3rem;
   }
 
-  .korg-capacity-section {
+  .kugofox-capacity-section {
     gap: 0.3rem;
   }
 
-  .korg-capacity-header {
+  .kugofox-capacity-header {
     font-size: 0.72rem !important;
   }
 
-  .korg-capacity-track {
+  .kugofox-capacity-track {
     height: 5px;
   }
 
-  .korg-event-actions {
+  .kugofox-event-actions {
     gap: 0.45rem !important;
     margin-top: 0.2rem;
   }
 
-  .korg-event-actions .korg-btn-primary {
+  .kugofox-event-actions .kugofox-btn-primary {
     font-size: 0.78rem !important;
     padding: 0.5rem 0.75rem !important;
   }
 
-  .korg-event-actions .korg-btn-outline {
+  .kugofox-event-actions .kugofox-btn-outline {
     font-size: 0.78rem !important;
     padding: 0.5rem 0.65rem !important;
   }
 
   /* Modal responsiveness on mobile */
-  .korg-modal-overlay {
+  .kugofox-modal-overlay {
     padding: 0.5rem !important;
   }
-  .korg-modal-box {
+  .kugofox-modal-box {
     padding: 1.2rem 0.95rem !important;
     max-height: 92vh;
     overflow-y: auto;
     border-radius: 12px !important;
   }
-  .korg-modal-box div[style*="grid-template-columns: 1fr 1fr"] {
+  .kugofox-modal-box div[style*="grid-template-columns: 1fr 1fr"] {
     grid-template-columns: 1fr !important;
     gap: 0.65rem !important;
   }
 
   /* Compact styles for other views on phone */
-  .korg-squad-card,
-  .korg-game-card {
+  .kugofox-squad-card,
+  .kugofox-game-card {
     padding: 0.9rem 0.8rem !important;
   }
 }

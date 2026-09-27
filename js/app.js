@@ -56,7 +56,7 @@ class KugofoxApp {
     // Init Registration Modal with Axios IGN verification
     this.regModal.init();
 
-    // Init KORG Sign In & Create Account Modal
+    // Init KUGOFOX Sign In & Create Account Modal
     this.authModal.init();
 
     // Init core submodules
@@ -79,11 +79,11 @@ class KugofoxApp {
     // Sync Admin navigation buttons (restricted to rpmohit9@gmail.com, mkgsani9@gmail.com, gy434307@gmail.com)
     this.syncAdminAccess();
 
-    window.addEventListener('korg:adminLoggedIn', (e) => {
+    window.addEventListener('kugofox:adminLoggedIn', (e) => {
       this.syncAdminAccess({ email: e.detail?.email });
     });
 
-    window.addEventListener('korg:adminLoggedOut', () => {
+    window.addEventListener('kugofox:adminLoggedOut', () => {
       this.syncAdminAccess(this.currentUser);
     });
 
@@ -118,7 +118,7 @@ class KugofoxApp {
 
   initNavigation() {
     // Top Nav Pills
-    const topPills = document.querySelectorAll('.korg-nav-pill');
+    const topPills = document.querySelectorAll('.kugofox-nav-pill');
     topPills.forEach(pill => {
       pill.addEventListener('click', (e) => {
         e.preventDefault();
@@ -172,15 +172,15 @@ class KugofoxApp {
       userEmail = user.email.toLowerCase().trim();
     } else {
       try {
-        const stored = localStorage.getItem('korg_user');
+        const stored = localStorage.getItem('kugofox_user');
         if (stored) {
           const u = JSON.parse(stored);
           if (u && u.email) userEmail = u.email.toLowerCase().trim();
         }
       } catch (e) {}
     }
-    const adminSessionEmail = (sessionStorage.getItem('korg_admin_email') || '').toLowerCase().trim();
-    const hasAdminToken = !!sessionStorage.getItem('korg_admin_token');
+    const adminSessionEmail = (sessionStorage.getItem('kugofox_admin_email') || '').toLowerCase().trim();
+    const hasAdminToken = !!sessionStorage.getItem('kugofox_admin_token');
 
     const isAdmin = allowedEmails.includes(userEmail) || allowedEmails.includes(adminSessionEmail) || hasAdminToken;
 

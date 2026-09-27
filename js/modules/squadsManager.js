@@ -9,7 +9,7 @@ let activeGameFilter = 'all';
 
 export function getAuthUser() {
   try {
-    const raw = localStorage.getItem('korg_user_session') || localStorage.getItem('korg_user');
+    const raw = localStorage.getItem('kugofox_user_session') || localStorage.getItem('kugofox_user');
     if (raw) {
       const user = JSON.parse(raw);
       if (user && (user.id || user.email || user.username)) {
@@ -49,7 +49,7 @@ export function handleCreateSquadClick() {
   const user = getAuthUser();
   if (!user) {
     // 1. Not logged in! Set pending action flag to resume immediately after login/signup
-    sessionStorage.setItem('korg_pending_action', 'create_squad');
+    sessionStorage.setItem('kugofox_pending_action', 'create_squad');
 
     // 2. Alert notification toast
     showNotification('Please log in or sign up first to create a squad.', 'info');
@@ -80,17 +80,17 @@ export function initSquadsManager() {
   fetchSquads();
 
   // Listen for view switch to squads
-  window.addEventListener('korg:viewChanged', (e) => {
+  window.addEventListener('kugofox:viewChanged', (e) => {
     if (e.detail && e.detail.view === 'squads') {
       fetchSquads();
     }
   });
 
   // Automatically resume squad creation when user finishes logging in or signing up
-  window.addEventListener('korg:userLoggedIn', (e) => {
-    const pending = sessionStorage.getItem('korg_pending_action');
+  window.addEventListener('kugofox:userLoggedIn', (e) => {
+    const pending = sessionStorage.getItem('kugofox_pending_action');
     if (pending === 'create_squad') {
-      sessionStorage.removeItem('korg_pending_action');
+      sessionStorage.removeItem('kugofox_pending_action');
       if (typeof window.switchView === 'function') {
         window.switchView('squads');
       }
@@ -104,43 +104,43 @@ export function initSquadsManager() {
 
 function renderSquadsScaffold(container) {
   container.innerHTML = `
-    <div class="korg-view-header">
-      <div class="korg-view-title-row">
+    <div class="kugofox-view-header">
+      <div class="kugofox-view-title-row">
         <div>
-          <h1 class="korg-view-title">
+          <h1 class="kugofox-view-title">
             <span>PLAYER FINDER</span>
             <span style="color: #00f0ff; font-weight: 400; font-size: 1.4rem;">/ Squads LFG</span>
           </h1>
-          <p class="korg-view-subtitle">
+          <p class="kugofox-view-subtitle">
             Find teammates, join campus squads, or recruit players for upcoming scrims and collegiate tournaments.
           </p>
         </div>
-        <button id="btn-create-squad-modal" class="korg-btn-primary">
+        <button id="btn-create-squad-modal" class="kugofox-btn-primary">
           <span style="font-size: 1.1rem;">+</span> Create Squad
         </button>
       </div>
 
       <!-- Filter pills -->
-      <div class="korg-filter-bar" id="squads-filter-bar">
-        <button class="korg-filter-pill active" data-game="all">All Games</button>
-        <button class="korg-filter-pill" data-game="freefire">Free Fire</button>
-        <button class="korg-filter-pill" data-game="bgmi">BGMI</button>
-        <button class="korg-filter-pill" data-game="valorant">Valorant</button>
-        <button class="korg-filter-pill" data-game="mobalegends">Mobile Legends</button>
+      <div class="kugofox-filter-bar" id="squads-filter-bar">
+        <button class="kugofox-filter-pill active" data-game="all">All Games</button>
+        <button class="kugofox-filter-pill" data-game="freefire">Free Fire</button>
+        <button class="kugofox-filter-pill" data-game="bgmi">BGMI</button>
+        <button class="kugofox-filter-pill" data-game="valorant">Valorant</button>
+        <button class="kugofox-filter-pill" data-game="mobalegends">Mobile Legends</button>
       </div>
     </div>
 
     <!-- Squads Card Grid -->
-    <div class="korg-squads-grid" id="squads-grid-container">
+    <div class="kugofox-squads-grid" id="squads-grid-container">
       <div style="color: #94a3b8; padding: 2rem; text-align: center; grid-column: 1 / -1;">
         Loading active campus squads...
       </div>
     </div>
 
     <!-- Create Squad Modal -->
-    <div id="modal-create-squad" class="korg-modal-overlay">
-      <div class="korg-modal-box">
-        <button class="korg-modal-close" id="btn-close-create-squad">&times;</button>
+    <div id="modal-create-squad" class="kugofox-modal-overlay">
+      <div class="kugofox-modal-box">
+        <button class="kugofox-modal-close" id="btn-close-create-squad">&times;</button>
         <h2 style="color: #fff; margin-top: 0; font-size: 1.4rem; display: flex; align-items: center; gap: 0.5rem;">
           <span>⚡</span> Create New Squad
         </h2>
@@ -150,14 +150,14 @@ function renderSquadsScaffold(container) {
 
         <form id="form-create-squad" style="display: flex; flex-direction: column; gap: 1rem;">
           <div>
-            <label class="korg-admin-label">Squad Name</label>
-            <input type="text" id="new-squad-name" class="korg-admin-input" placeholder="e.g. Shadow Vipers" required />
+            <label class="kugofox-admin-label">Squad Name</label>
+            <input type="text" id="new-squad-name" class="kugofox-admin-input" placeholder="e.g. Shadow Vipers" required />
           </div>
 
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
             <div>
-              <label class="korg-admin-label">Game Title</label>
-              <select id="new-squad-game" class="korg-admin-input" style="background: #0f172a;">
+              <label class="kugofox-admin-label">Game Title</label>
+              <select id="new-squad-game" class="kugofox-admin-input" style="background: #0f172a;">
                 <option value="freefire">Free Fire</option>
                 <option value="bgmi">BGMI</option>
                 <option value="valorant">Valorant</option>
@@ -165,8 +165,8 @@ function renderSquadsScaffold(container) {
               </select>
             </div>
             <div>
-              <label class="korg-admin-label">Total Slots</label>
-              <select id="new-squad-slots" class="korg-admin-input" style="background: #0f172a;">
+              <label class="kugofox-admin-label">Total Slots</label>
+              <select id="new-squad-slots" class="kugofox-admin-input" style="background: #0f172a;">
                 <option value="4">4 Players (Squad)</option>
                 <option value="2">2 Players (Duo)</option>
                 <option value="5">5 Players (MOBA / Tactical)</option>
@@ -177,19 +177,19 @@ function renderSquadsScaffold(container) {
 
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
             <div>
-              <label class="korg-admin-label">Leader IGN / Name</label>
-              <input type="text" id="new-squad-leader" class="korg-admin-input" placeholder="Your in-game name" required />
+              <label class="kugofox-admin-label">Leader IGN / Name</label>
+              <input type="text" id="new-squad-leader" class="kugofox-admin-input" placeholder="Your in-game name" required />
             </div>
             <div>
-              <label class="korg-admin-label">Mic Required</label>
-              <select id="new-squad-mic" class="korg-admin-input" style="background: #0f172a;">
+              <label class="kugofox-admin-label">Mic Required</label>
+              <select id="new-squad-mic" class="kugofox-admin-input" style="background: #0f172a;">
                 <option value="true">Yes (MIC ON)</option>
                 <option value="false">No (MIC OPTIONAL)</option>
               </select>
             </div>
           </div>
 
-          <button type="submit" class="korg-btn-primary" style="margin-top: 0.5rem; justify-content: center;">
+          <button type="submit" class="kugofox-btn-primary" style="margin-top: 0.5rem; justify-content: center;">
             Confirm & Publish Squad
           </button>
         </form>
@@ -197,9 +197,9 @@ function renderSquadsScaffold(container) {
     </div>
 
     <!-- Join Squad Prompt Modal -->
-    <div id="modal-join-squad" class="korg-modal-overlay">
-      <div class="korg-modal-box">
-        <button class="korg-modal-close" id="btn-close-join-squad">&times;</button>
+    <div id="modal-join-squad" class="kugofox-modal-overlay">
+      <div class="kugofox-modal-box">
+        <button class="kugofox-modal-close" id="btn-close-join-squad">&times;</button>
         <h2 style="color: #fff; margin-top: 0; font-size: 1.4rem; display: flex; align-items: center; gap: 0.5rem;">
           <span>🎯</span> Request to Join Squad
         </h2>
@@ -210,13 +210,13 @@ function renderSquadsScaffold(container) {
         <form id="form-join-squad" style="display: flex; flex-direction: column; gap: 1rem;">
           <input type="hidden" id="join-squad-target-id" value="" />
           <div>
-            <label class="korg-admin-label">Your IGN / Name</label>
-            <input type="text" id="join-player-name" class="korg-admin-input" placeholder="e.g. Vortex_99" required />
+            <label class="kugofox-admin-label">Your IGN / Name</label>
+            <input type="text" id="join-player-name" class="kugofox-admin-input" placeholder="e.g. Vortex_99" required />
           </div>
 
           <div>
-            <label class="korg-admin-label">Preferred Role</label>
-            <select id="join-player-role" class="korg-admin-input" style="background: #0f172a;">
+            <label class="kugofox-admin-label">Preferred Role</label>
+            <select id="join-player-role" class="kugofox-admin-input" style="background: #0f172a;">
               <option value="Assaulter / Rusher">Assaulter / Rusher</option>
               <option value="Sniper">Sniper</option>
               <option value="Support / Healer">Support / Healer</option>
@@ -225,7 +225,7 @@ function renderSquadsScaffold(container) {
             </select>
           </div>
 
-          <button type="submit" class="korg-btn-primary" style="margin-top: 0.5rem; justify-content: center;">
+          <button type="submit" class="kugofox-btn-primary" style="margin-top: 0.5rem; justify-content: center;">
             Send Join Request
           </button>
         </form>
@@ -234,9 +234,9 @@ function renderSquadsScaffold(container) {
   `;
 
   // Filter clicks
-  container.querySelectorAll('#squads-filter-bar .korg-filter-pill').forEach(btn => {
+  container.querySelectorAll('#squads-filter-bar .kugofox-filter-pill').forEach(btn => {
     btn.addEventListener('click', () => {
-      container.querySelectorAll('#squads-filter-bar .korg-filter-pill').forEach(b => b.classList.remove('active'));
+      container.querySelectorAll('#squads-filter-bar .kugofox-filter-pill').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       activeGameFilter = btn.getAttribute('data-game');
       fetchSquads();
@@ -269,7 +269,7 @@ function renderSquadsScaffold(container) {
 
       const user = getAuthUser();
       if (!user) {
-        sessionStorage.setItem('korg_pending_action', 'create_squad');
+        sessionStorage.setItem('kugofox_pending_action', 'create_squad');
         if (createModal) createModal.classList.remove('open');
         showNotification('Please log in or sign up first to create your squad.', 'info');
         const app = window.kugofoxApp || window.kugofox;
@@ -295,7 +295,7 @@ function renderSquadsScaffold(container) {
         mobalegends: 'Mobile Legends'
       };
 
-      const token = localStorage.getItem('korg_auth_token');
+      const token = localStorage.getItem('kugofox_auth_token');
       const isHttpAvatar = typeof user.avatar === 'string' && (user.avatar.startsWith('http://') || user.avatar.startsWith('https://'));
 
       try {
@@ -410,7 +410,7 @@ function renderSquadCards(squads, container) {
         <p style="margin: 0; max-width: 480px; font-size: 0.92rem; line-height: 1.6; color: #94a3b8;">
           All pre-made squads have been cleared. Be the first to build a squad, recruit campus teammates, and conquer collegiate tournaments!
         </p>
-        <button id="btn-create-squad-empty" class="korg-btn-primary" style="margin-top: 0.6rem; padding: 0.75rem 1.75rem; font-size: 0.95rem;">
+        <button id="btn-create-squad-empty" class="kugofox-btn-primary" style="margin-top: 0.6rem; padding: 0.75rem 1.75rem; font-size: 0.95rem;">
           <span style="font-size: 1.1rem;">+</span> Create First Squad
         </button>
       </div>
@@ -431,78 +431,78 @@ function renderSquadCards(squads, container) {
     const dots = [];
     for (let i = 0; i < (sq.totalSlots || 4); i++) {
       if (i < (sq.filledSlots || 0)) {
-        dots.push(`<span class="korg-slot-dot filled"></span>`);
+        dots.push(`<span class="kugofox-slot-dot filled"></span>`);
       } else {
-        dots.push(`<span class="korg-slot-dot empty"></span>`);
+        dots.push(`<span class="kugofox-slot-dot empty"></span>`);
       }
     }
 
     // Avatar preview
     let avatarMarkup = '';
     if (sq.avatarImg) {
-      avatarMarkup = `<img src="${sq.avatarImg}" alt="${sq.name}" class="korg-squad-avatar" style="object-fit: cover;" />`;
+      avatarMarkup = `<img src="${sq.avatarImg}" alt="${sq.name}" class="kugofox-squad-avatar" style="object-fit: cover;" />`;
     } else if (sq.avatarIcon) {
-      avatarMarkup = `<div class="korg-squad-avatar" style="background: rgba(255,255,255,0.08);">${sq.avatarIcon}</div>`;
+      avatarMarkup = `<div class="kugofox-squad-avatar" style="background: rgba(255,255,255,0.08);">${sq.avatarIcon}</div>`;
     } else {
-      avatarMarkup = `<div class="korg-squad-avatar" style="background: ${color};">${letter}</div>`;
+      avatarMarkup = `<div class="kugofox-squad-avatar" style="background: ${color};">${letter}</div>`;
     }
 
     // Roster members
     const rosterList = (sq.roster || []).map(m => `
-      <div class="korg-roster-member">
-        <div class="korg-roster-member-left">
+      <div class="kugofox-roster-member">
+        <div class="kugofox-roster-member-left">
           <span>${m.avatar || '👤'}</span>
           <span>${m.name}</span>
         </div>
-        <span class="korg-roster-member-role">${m.role || 'Member'}</span>
+        <span class="kugofox-roster-member-role">${m.role || 'Member'}</span>
       </div>
     `).join('');
 
     return `
-      <div class="korg-squad-card" data-squad-id="${sq.id}">
-        <div class="korg-squad-card-top">
-          <div class="korg-squad-identity">
+      <div class="kugofox-squad-card" data-squad-id="${sq.id}">
+        <div class="kugofox-squad-card-top">
+          <div class="kugofox-squad-identity">
             ${avatarMarkup}
-            <div class="korg-squad-names">
-              <h3 class="korg-squad-title">${sq.name}</h3>
-              <span class="korg-squad-game">${sq.gameName || 'eSports'}</span>
+            <div class="kugofox-squad-names">
+              <h3 class="kugofox-squad-title">${sq.name}</h3>
+              <span class="kugofox-squad-game">${sq.gameName || 'eSports'}</span>
             </div>
           </div>
-          <div class="korg-squad-badges">
-            <span class="korg-pill-tag korg-pill-type">${sq.type || 'SQUAD'}</span>
-            <span class="korg-pill-tag ${isFull ? 'korg-pill-full' : 'korg-pill-open'}">
+          <div class="kugofox-squad-badges">
+            <span class="kugofox-pill-tag kugofox-pill-type">${sq.type || 'SQUAD'}</span>
+            <span class="kugofox-pill-tag ${isFull ? 'kugofox-pill-full' : 'kugofox-pill-open'}">
               ${isFull ? 'FULL' : 'OPEN'}
             </span>
-            <span class="korg-pill-tag korg-pill-mic">
+            <span class="kugofox-pill-tag kugofox-pill-mic">
               <span>🎙️</span> ${sq.micRequired ? 'MIC ON' : 'MIC OFF'}
             </span>
           </div>
         </div>
 
-        <div class="korg-squad-mid">
-          <div class="korg-slots-wrapper">
-            <span class="korg-slots-label">SLOTS: ${sq.filledSlots || 0} / ${sq.totalSlots || 4}</span>
-            <div class="korg-slot-dots">
+        <div class="kugofox-squad-mid">
+          <div class="kugofox-slots-wrapper">
+            <span class="kugofox-slots-label">SLOTS: ${sq.filledSlots || 0} / ${sq.totalSlots || 4}</span>
+            <div class="kugofox-slot-dots">
               ${dots.join('')}
             </div>
           </div>
-          <div class="korg-squad-leader">
+          <div class="kugofox-squad-leader">
             Leader: <strong>${sq.leader || 'Captain'}</strong>
           </div>
         </div>
 
-        <div class="korg-squad-bottom">
-          <button class="korg-roster-btn" data-toggle-roster="${sq.id}">
+        <div class="kugofox-squad-bottom">
+          <button class="kugofox-roster-btn" data-toggle-roster="${sq.id}">
             <span>Roster (${sq.roster ? sq.roster.length : sq.filledSlots || 0})</span>
-            <span class="korg-caret" style="transition: transform 0.2s;">▾</span>
+            <span class="kugofox-caret" style="transition: transform 0.2s;">▾</span>
           </button>
-          <button class="korg-join-squad-btn" data-join-squad="${sq.id}" ${isFull ? 'disabled' : ''}>
+          <button class="kugofox-join-squad-btn" data-join-squad="${sq.id}" ${isFull ? 'disabled' : ''}>
             ${isFull ? 'Squad Full' : 'Request to Join'}
           </button>
         </div>
 
         <!-- Collapsible Roster list -->
-        <div class="korg-roster-drawer" id="roster-drawer-${sq.id}">
+        <div class="kugofox-roster-drawer" id="roster-drawer-${sq.id}">
           ${rosterList}
         </div>
       </div>
@@ -514,7 +514,7 @@ function renderSquadCards(squads, container) {
     btn.addEventListener('click', () => {
       const sqId = btn.getAttribute('data-toggle-roster');
       const drawer = document.getElementById(`roster-drawer-${sqId}`);
-      const caret = btn.querySelector('.korg-caret');
+      const caret = btn.querySelector('.kugofox-caret');
       if (drawer) {
         drawer.classList.toggle('open');
         if (caret) {

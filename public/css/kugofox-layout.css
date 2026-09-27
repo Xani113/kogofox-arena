@@ -1,19 +1,19 @@
 /* ==========================================================
-   KUGOFOX ESPORTS ARENA - KORG.BUZZ LAYOUT & COVERFLOW
+   KUGOFOX ESPORTS ARENA - KUGOFOX.BUZZ LAYOUT & COVERFLOW
    Replicating Photo 1 (Home Stage) & Photo 2 (3D Gallery)
    ========================================================== */
 
 :root {
-  --korg-bg: #030508;
-  --korg-sidebar-bg: rgba(3, 5, 8, 0.78);
-  --korg-topbar-bg: rgba(3, 5, 8, 0.85);
-  --korg-border: rgba(255, 255, 255, 0.08);
-  --korg-border-hover: rgba(255, 255, 255, 0.25);
-  --korg-text-main: #ffffff;
-  --korg-text-muted: #94a3b8;
-  --korg-text-dim: #64748b;
-  --korg-cyan: #00f0ff;
-  --korg-magenta: #ff2a85;
+  --kugofox-bg: #030508;
+  --kugofox-sidebar-bg: rgba(3, 5, 8, 0.78);
+  --kugofox-topbar-bg: rgba(3, 5, 8, 0.85);
+  --kugofox-border: rgba(255, 255, 255, 0.08);
+  --kugofox-border-hover: rgba(255, 255, 255, 0.25);
+  --kugofox-text-main: #ffffff;
+  --kugofox-text-muted: #94a3b8;
+  --kugofox-text-dim: #64748b;
+  --kugofox-cyan: #00f0ff;
+  --kugofox-magenta: #ff2a85;
 }
 
 html {
@@ -24,7 +24,7 @@ html {
 
 body {
   background-color: #030508 !important;
-  color: var(--korg-text-main);
+  color: var(--kugofox-text-main);
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   overflow-x: hidden;
   max-width: 100vw;
@@ -46,10 +46,10 @@ body {
 }
 
 /* ================== TOP NAVIGATION BAR (Photo 1) ================== */
-.korg-topbar {
+.kugofox-topbar {
   height: 64px;
-  background: var(--korg-topbar-bg);
-  border-bottom: 1px solid var(--korg-border);
+  background: var(--kugofox-topbar-bg);
+  border-bottom: 1px solid var(--kugofox-border);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -60,14 +60,14 @@ body {
   backdrop-filter: blur(16px);
 }
 
-.korg-topbar-left {
+.kugofox-topbar-left {
   display: flex;
   align-items: center;
   gap: 0.75rem;
 }
 
 /* Mobile Menu Hamburger Button (Phone / Image 2) */
-.korg-mobile-menu-btn {
+.kugofox-mobile-menu-btn {
   display: none;
   flex-direction: column;
   justify-content: center;
@@ -84,12 +84,12 @@ body {
   transition: all 0.2s ease;
 }
 
-.korg-mobile-menu-btn:hover {
+.kugofox-mobile-menu-btn:hover {
   background: rgba(255, 255, 255, 0.1);
   border-color: rgba(255, 255, 255, 0.25);
 }
 
-.korg-mobile-menu-btn .hamburger-bar {
+.kugofox-mobile-menu-btn .hamburger-bar {
   display: block;
   width: 21px;
   height: 2.8px;
@@ -98,29 +98,29 @@ body {
   transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease, background-color 0.2s ease;
 }
 
-.korg-mobile-menu-btn.open .hamburger-bar:nth-child(1) {
+.kugofox-mobile-menu-btn.open .hamburger-bar:nth-child(1) {
   transform: translateY(6.8px) rotate(45deg);
   background: #ffffff;
 }
 
-.korg-mobile-menu-btn.open .hamburger-bar:nth-child(2) {
+.kugofox-mobile-menu-btn.open .hamburger-bar:nth-child(2) {
   opacity: 0;
   transform: scaleX(0);
 }
 
-.korg-mobile-menu-btn.open .hamburger-bar:nth-child(3) {
+.kugofox-mobile-menu-btn.open .hamburger-bar:nth-child(3) {
   transform: translateY(-6.8px) rotate(-45deg);
   background: #ffffff;
 }
 
-.korg-brand-box {
+.kugofox-brand-box {
   display: flex;
   align-items: center;
   gap: 0.75rem;
   cursor: pointer;
 }
 
-.korg-brand-icon {
+.kugofox-brand-icon {
   height: 44px;
   width: auto;
   max-width: 48px;
@@ -129,11 +129,11 @@ body {
   transition: transform 0.25s ease;
 }
 
-.korg-brand-box:hover .korg-brand-icon {
+.kugofox-brand-box:hover .kugofox-brand-icon {
   transform: scale(1.06);
 }
 
-.korg-brand-name {
+.kugofox-brand-name {
   font-family: 'Orbitron', sans-serif;
   font-weight: 900;
   font-size: 1.25rem;
@@ -141,7 +141,7 @@ body {
   letter-spacing: 0.08em;
 }
 
-.korg-center-nav {
+.kugofox-center-nav {
   display: flex;
   align-items: center;
   gap: 0.35rem;
@@ -151,12 +151,12 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.korg-nav-pill {
+.kugofox-nav-pill {
   padding: 0.45rem 1.15rem;
   border-radius: 6px;
   font-size: 0.85rem;
   font-weight: 500;
-  color: var(--korg-text-muted);
+  color: var(--kugofox-text-muted);
   background: transparent;
   border: none;
   cursor: pointer;
@@ -164,18 +164,18 @@ body {
   font-family: 'Inter', sans-serif;
 }
 
-.korg-nav-pill:hover {
+.kugofox-nav-pill:hover {
   color: #ffffff;
 }
 
-.korg-nav-pill.active {
+.kugofox-nav-pill.active {
   background: #ffffff;
   color: #000000;
   font-weight: 700;
   box-shadow: 0 2px 10px rgba(255, 255, 255, 0.3);
 }
 
-.korg-right-actions {
+.kugofox-right-actions {
   display: flex;
   align-items: center;
   gap: 0.75rem;
@@ -186,7 +186,7 @@ body {
   align-items: center;
   gap: 0.45rem;
   background: rgba(255, 255, 255, 0.03);
-  border: 1px solid var(--korg-border);
+  border: 1px solid var(--kugofox-border);
   border-radius: 6px;
   padding: 0.45rem 0.85rem;
   color: #ffffff;
@@ -199,7 +199,7 @@ body {
 }
 
 .btn-find-team:hover {
-  border-color: var(--korg-border-hover);
+  border-color: var(--kugofox-border-hover);
   background: rgba(255, 255, 255, 0.06);
 }
 
@@ -217,7 +217,7 @@ body {
   height: 36px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.03);
-  border: 1px solid var(--korg-border);
+  border: 1px solid var(--kugofox-border);
   color: #cbd5e1;
   display: flex;
   align-items: center;
@@ -228,12 +228,12 @@ body {
 
 .btn-icon-round:hover {
   color: #ffffff;
-  border-color: var(--korg-border-hover);
+  border-color: var(--kugofox-border-hover);
 }
 
 .btn-sign-in {
   background: transparent;
-  border: 1px solid var(--korg-border);
+  border: 1px solid var(--kugofox-border);
   border-radius: 6px;
   padding: 0.45rem 1rem;
   color: #ffffff;
@@ -251,7 +251,7 @@ body {
 }
 
 /* ================== BODY SPLIT & SIDEBAR (Photo 1) ================== */
-.korg-body-split {
+.kugofox-body-split {
   display: flex;
   min-height: calc(100vh - 64px);
 }
@@ -279,13 +279,13 @@ body.mobile-menu-locked {
 }
 
 /* Sidebar Navigation Drawer */
-.korg-sidebar {
+.kugofox-sidebar {
   width: 240px;
   flex-shrink: 0;
-  background: var(--korg-sidebar-bg);
+  background: var(--kugofox-sidebar-bg);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border-right: 1px solid var(--korg-border);
+  border-right: 1px solid var(--kugofox-border);
   padding: 0.5rem 0.85rem 2.5rem;
   display: flex;
   flex-direction: column;
@@ -454,7 +454,7 @@ body.mobile-menu-locked {
 
 .sidebar-divider {
   height: 1px;
-  background: var(--korg-border);
+  background: var(--kugofox-border);
   margin: 1.5rem 0.25rem;
 }
 
@@ -475,12 +475,12 @@ body.mobile-menu-locked {
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.1em;
-  color: var(--korg-text-dim);
+  color: var(--kugofox-text-dim);
 }
 
 .sb-f-link {
   font-size: 11px;
-  color: var(--korg-text-muted);
+  color: var(--kugofox-text-muted);
   background: none;
   border: none;
   cursor: pointer;
@@ -531,7 +531,7 @@ body.mobile-menu-locked {
 }
 
 /* ================== MAIN CONTENT AREA ================== */
-.korg-main-area {
+.kugofox-main-area {
   flex: 1;
   min-width: 0;
   background: transparent;
@@ -540,7 +540,7 @@ body.mobile-menu-locked {
 }
 
 /* ================== HERO SECTION (Photo 1) ================== */
-.korg-hero-section {
+.kugofox-hero-section {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -709,7 +709,7 @@ body.mobile-menu-locked {
 
 .hero-subtext {
   font-size: 1.05rem;
-  color: var(--korg-text-muted);
+  color: var(--kugofox-text-muted);
   line-height: 1.5;
   margin-bottom: 1.5rem;
   max-width: 480px;
@@ -1178,24 +1178,24 @@ body.mobile-menu-locked {
   margin-top: 0.75rem;
   font-family: 'JetBrains Mono', monospace;
   font-size: 9.5px;
-  color: var(--korg-text-dim);
+  color: var(--kugofox-text-dim);
   letter-spacing: 0.15em;
   opacity: 0.85;
 }
 
 /* ================== HORIZONTAL STATUS STRIP (Photo 1) ================== */
-.korg-status-strip {
+.kugofox-status-strip {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0.85rem 1.25rem;
   background: rgba(255, 255, 255, 0.02);
-  border-top: 1px solid var(--korg-border);
-  border-bottom: 1px solid var(--korg-border);
+  border-top: 1px solid var(--kugofox-border);
+  border-bottom: 1px solid var(--kugofox-border);
   font-family: 'JetBrains Mono', monospace;
   font-size: 11px;
   letter-spacing: 0.15em;
-  color: var(--korg-text-dim);
+  color: var(--kugofox-text-dim);
   margin: 1.5rem 0 3.5rem;
 }
 
@@ -1492,14 +1492,14 @@ body.mobile-menu-locked {
 }
 
 /* ================== GENERAL SECTION STYLING ================== */
-.korg-section {
+.kugofox-section {
   margin-bottom: 4.5rem;
 }
 
-.korg-section-header {
+.kugofox-section-header {
   margin-bottom: 1.75rem;
   padding-bottom: 0.75rem;
-  border-bottom: 1px solid var(--korg-border);
+  border-bottom: 1px solid var(--kugofox-border);
 }
 
 .sh-left {
@@ -1524,13 +1524,13 @@ body.mobile-menu-locked {
 
 .sh-desc {
   font-size: 0.9rem;
-  color: var(--korg-text-muted);
+  color: var(--kugofox-text-muted);
   margin: 0;
 }
 
 /* ================== FOOTER (Clean & Minimal) ================== */
-.korg-footer {
-  border-top: 1px solid var(--korg-border);
+.kugofox-footer {
+  border-top: 1px solid var(--kugofox-border);
   padding: 3rem 1rem 2rem;
   text-align: center;
   margin-top: 2rem;
@@ -1564,7 +1564,7 @@ body.mobile-menu-locked {
   justify-content: center;
   flex-wrap: wrap;
   gap: 0.75rem;
-  color: var(--korg-text-dim);
+  color: var(--kugofox-text-dim);
   font-size: 0.85rem;
   margin-bottom: 1rem;
 }
@@ -1584,14 +1584,14 @@ body.mobile-menu-locked {
 }
 
 .footer-copy {
-  color: var(--korg-text-dim);
+  color: var(--kugofox-text-dim);
   font-size: 0.8rem;
   margin: 0;
 }
 
 /* ================== RESPONSIVE BREAKPOINTS ================== */
 @media (max-width: 1100px) {
-  .korg-hero-section {
+  .kugofox-hero-section {
     flex-direction: column;
     text-align: center;
   }
@@ -1615,10 +1615,10 @@ body.mobile-menu-locked {
 }
 
 @media (max-width: 860px) {
-  .korg-mobile-menu-btn {
+  .kugofox-mobile-menu-btn {
     display: flex;
   }
-  .korg-sidebar {
+  .kugofox-sidebar {
     display: flex !important;
     position: fixed !important;
     top: 0 !important;
@@ -1637,21 +1637,21 @@ body.mobile-menu-locked {
     padding: 1.25rem 1rem 2.5rem !important;
     overflow-y: auto !important;
   }
-  .korg-sidebar.mobile-open {
+  .kugofox-sidebar.mobile-open {
     transform: translateX(0) !important;
     box-shadow: 16px 0 45px rgba(0, 0, 0, 0.9) !important;
   }
   .sidebar-mobile-header {
     display: flex !important;
   }
-  .korg-body-split {
+  .kugofox-body-split {
     display: block;
     width: 100%;
   }
-  .korg-main-area {
+  .kugofox-main-area {
     padding: 1.5rem 1.25rem 3rem;
   }
-  .korg-center-nav {
+  .kugofox-center-nav {
     display: none;
   }
   .hero-main-title {
@@ -1704,7 +1704,7 @@ body.mobile-menu-locked {
   justify-content: space-between;
   margin-bottom: 1.5rem;
   padding-bottom: 1rem;
-  border-bottom: 1px solid var(--korg-border);
+  border-bottom: 1px solid var(--kugofox-border);
 }
 
 .rm-header-left {
@@ -1731,14 +1731,14 @@ body.mobile-menu-locked {
 
 .rm-subtitle {
   font-size: 0.8rem;
-  color: var(--korg-text-muted);
+  color: var(--kugofox-text-muted);
   margin: 0.2rem 0 0;
 }
 
 .rm-close-btn {
   background: transparent;
-  border: 1px solid var(--korg-border);
-  color: var(--korg-text-muted);
+  border: 1px solid var(--kugofox-border);
+  color: var(--kugofox-text-muted);
   font-size: 1.5rem;
   line-height: 1;
   width: 32px;
@@ -1772,7 +1772,7 @@ body.mobile-menu-locked {
 
 .rm-hint {
   font-size: 0.8rem;
-  color: var(--korg-text-dim);
+  color: var(--kugofox-text-dim);
   margin-bottom: 0.75rem;
   line-height: 1.4;
 }
@@ -1790,7 +1790,7 @@ body.mobile-menu-locked {
   padding: 0.45rem 0.85rem;
   border-radius: 6px;
   background: rgba(255, 255, 255, 0.04);
-  border: 1px solid var(--korg-border);
+  border: 1px solid var(--kugofox-border);
   color: #cbd5e1;
   font-size: 0.8rem;
   font-weight: 600;
@@ -1843,7 +1843,7 @@ body.mobile-menu-locked {
 }
 
 .rm-text-input:focus {
-  border-color: var(--korg-cyan);
+  border-color: var(--kugofox-cyan);
   box-shadow: 0 0 12px rgba(0, 240, 255, 0.35);
 }
 
@@ -1986,7 +1986,7 @@ body.mobile-menu-locked {
 
 .rm-field-lbl {
   font-size: 11px;
-  color: var(--korg-text-muted);
+  color: var(--kugofox-text-muted);
   margin-bottom: 5px;
   display: block;
 }
@@ -1997,14 +1997,14 @@ body.mobile-menu-locked {
   justify-content: flex-end;
   gap: 0.75rem;
   margin-top: 1.5rem;
-  border-top: 1px solid var(--korg-border);
+  border-top: 1px solid var(--kugofox-border);
   padding-top: 1.25rem;
 }
 
 .btn-rm-cancel {
   background: transparent;
-  border: 1px solid var(--korg-border);
-  color: var(--korg-text-muted);
+  border: 1px solid var(--kugofox-border);
+  color: var(--kugofox-text-muted);
   font-size: 0.85rem;
   font-weight: 600;
   padding: 0.65rem 1.25rem;
@@ -2040,21 +2040,21 @@ body.mobile-menu-locked {
 /* ================== COMPREHENSIVE PHONE & MOBILE OPTIMIZATIONS ================== */
 @media (max-width: 768px) {
   .app-layout-root,
-  .korg-body-split {
+  .kugofox-body-split {
     display: block;
     width: 100% !important;
     max-width: 100vw !important;
     box-sizing: border-box !important;
     overflow-x: hidden !important;
   }
-  .korg-main-area {
+  .kugofox-main-area {
     padding: 1.1rem 0.75rem 3rem;
     width: 100% !important;
     max-width: 100vw !important;
     box-sizing: border-box !important;
     overflow-x: hidden !important;
   }
-  .korg-hero-section {
+  .kugofox-hero-section {
     flex-direction: column;
     text-align: center;
     gap: 1.5rem;
@@ -2090,19 +2090,19 @@ body.mobile-menu-locked {
 
 @media (max-width: 640px) {
   /* Top Navigation Bar on Phone */
-  .korg-topbar {
+  .kugofox-topbar {
     height: 58px;
     padding: 0 0.85rem;
   }
-  .korg-brand-name {
+  .kugofox-brand-name {
     font-size: 1.05rem;
     letter-spacing: 0.04em;
   }
-  .korg-brand-icon {
+  .kugofox-brand-icon {
     width: 30px;
     height: 30px;
   }
-  .korg-right-actions {
+  .kugofox-right-actions {
     gap: 0.5rem;
     flex-shrink: 0;
   }
@@ -2116,7 +2116,7 @@ body.mobile-menu-locked {
   }
 
   /* Main Area on Phone */
-  .korg-main-area {
+  .kugofox-main-area {
     padding: 0.75rem 0.5rem 3rem;
   }
 
@@ -2173,7 +2173,7 @@ body.mobile-menu-locked {
   }
 
   /* Status Strip on Phone */
-  .korg-status-strip {
+  .kugofox-status-strip {
     flex-direction: column;
     gap: 0.45rem;
     text-align: center;
@@ -2303,7 +2303,7 @@ body.mobile-menu-locked {
 }
 
 @media (max-width: 380px) {
-  .korg-topbar {
+  .kugofox-topbar {
     padding: 0 0.5rem;
   }
   .btn-find-team span:not(.badge-new-pill) {
