@@ -4,11 +4,32 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KUGOFOX — Esports Arena</title>
+  <title>KUGOFOX Arena | Esports Arena & Campus Tournaments</title>
   <meta name="description"
-    content="KUGOFOX — Esports Arena & Competitive Gaming Platform. Compete in verified campus scrims & tournaments for Free Fire, BGMI, Valorant, and MOBA Legends.">
+    content="Compete in verified campus esports scrims and tournaments for Free Fire, BGMI, Valorant, and MOBA Legends on KUGOFOX Arena.">
+  <link rel="canonical" href="https://www.kugofox.in/">
   <meta name="theme-color" content="#030508">
   <link rel="icon" href="assets/kugofox_logo.png">
+
+  <!-- Open Graph Meta Tags -->
+  <meta property="og:title" content="KUGOFOX Arena | Esports Arena & Campus Tournaments">
+  <meta property="og:description"
+    content="Compete in verified campus esports scrims and tournaments for Free Fire, BGMI, Valorant, and MOBA Legends on KUGOFOX Arena.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.kugofox.in/">
+  <meta property="og:image" content="https://www.kugofox.in/assets/og-share-1200x630.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="KUGOFOX Arena Esports Championship Stage">
+  <meta property="og:site_name" content="KUGOFOX Arena">
+
+  <!-- Twitter Card Meta Tags -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="KUGOFOX Arena | Esports Arena & Campus Tournaments">
+  <meta name="twitter:description"
+    content="Compete in verified campus esports scrims and tournaments for Free Fire, BGMI, Valorant, and MOBA Legends on KUGOFOX Arena.">
+  <meta name="twitter:image" content="https://www.kugofox.in/assets/og-share-1200x630.jpg">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -21,6 +42,69 @@
   <link rel="stylesheet" href="css/kugofox-views.css?v=2.6.2">
   <!-- Official Google Identity Services SDK -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+  <!-- Google Analytics 4 (GA4) with EU / UK / Swiss Consent Management -->
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('consent', 'default', {
+      'analytics_storage': 'denied',
+      'ad_storage': 'denied',
+      'wait_for_update': 500
+    });
+
+    const GA_MEASUREMENT_ID = 'G-XXXXXXXXXX'; // Replace with real GA4 Measurement ID
+
+    function loadGA4() {
+      if (window._ga4_loaded) return;
+      window._ga4_loaded = true;
+      gtag('consent', 'update', {
+        'analytics_storage': 'granted'
+      });
+      const script = document.createElement('script');
+      script.async = true;
+      script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`;
+      document.head.appendChild(script);
+      gtag('js', new Date());
+      gtag('config', GA_MEASUREMENT_ID, {
+        anonymize_ip: true,
+        send_page_view: true
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const consent = localStorage.getItem('kugofox_cookie_consent');
+      const banner = document.getElementById('cookie-consent-banner');
+      if (consent === 'accepted') {
+        loadGA4();
+        if (banner) banner.style.display = 'none';
+      } else if (consent === 'declined') {
+        if (banner) banner.style.display = 'none';
+      } else {
+        const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+        const isEuUk = /Europe|London|Dublin|Berlin|Paris|Rome|Madrid|Zurich|Warsaw|Amsterdam/i.test(timeZone);
+        if (isEuUk) {
+          if (banner) banner.style.display = 'flex';
+        } else {
+          loadGA4();
+          if (banner) banner.style.display = 'none';
+        }
+      }
+    });
+
+    function acceptCookieConsent() {
+      localStorage.setItem('kugofox_cookie_consent', 'accepted');
+      const banner = document.getElementById('cookie-consent-banner');
+      if (banner) banner.style.display = 'none';
+      loadGA4();
+    }
+
+    function declineCookieConsent() {
+      localStorage.setItem('kugofox_cookie_consent', 'declined');
+      const banner = document.getElementById('cookie-consent-banner');
+      if (banner) banner.style.display = 'none';
+    }
+  </script>
 </head>
 
 <body data-theme="all">
@@ -54,7 +138,7 @@
 
         <!-- Brand Logo Left -->
         <div class="kugofox-brand-box" id="brand-home-btn" data-view-target="home" style="cursor: pointer;">
-          <img src="assets/kugofox_logo.png" alt="KUGOFOX" class="kugofox-brand-icon">
+          <img src="assets/kugofox_logo.png" alt="KUGOFOX Gaming Arena Logo" class="kugofox-brand-icon">
           <span class="kugofox-brand-name">KUGOFOX</span>
         </div>
       </div>
@@ -87,7 +171,7 @@
         <!-- Mobile Drawer Top Header (Shown only on phone/mobile) -->
         <div class="sidebar-mobile-header" id="sidebar-mobile-header">
           <div class="sidebar-mobile-brand">
-            <img src="assets/kugofox_logo.png" alt="KUGOFOX" class="sb-m-logo">
+            <img src="assets/kugofox_logo.png" alt="KUGOFOX Mascot Logo" class="sb-m-logo">
             <span class="sb-m-title">KUGOFOX</span>
           </div>
           <button class="sidebar-close-btn" id="sidebar-close-btn" aria-label="Close Menu">
@@ -203,19 +287,19 @@
           <div class="sb-games-list" id="sb-games-list">
             <!-- 1st: BGMI -->
             <button class="sb-game-row" data-game="bgmi">
-              <img src="assets/logos/bgmi.png" alt="BGMI" class="sb-game-thumb">
+              <img src="assets/logos/bgmi.png" alt="Battlegrounds Mobile India (BGMI) official logo" class="sb-game-thumb">
               <span class="sb-game-name">BGMI</span>
             </button>
 
             <!-- 2nd: Free Fire -->
             <button class="sb-game-row active" data-game="freefire">
-              <img src="assets/logos/freefire.png" alt="Free Fire" class="sb-game-thumb">
+              <img src="assets/logos/freefire.png" alt="Garena Free Fire official logo" class="sb-game-thumb">
               <span class="sb-game-name">Free Fire</span>
             </button>
 
             <!-- 3rd: Mobile Legends -->
             <button class="sb-game-row" data-game="mobalegends">
-              <img src="assets/logos/mobalegends.png" alt="Mobile Legends" class="sb-game-thumb">
+              <img src="assets/logos/mobalegends.png" alt="Mobile Legends: Bang Bang official logo" class="sb-game-thumb">
               <span class="sb-game-name">Mobile Legends</span>
             </button>
           </div>
@@ -323,7 +407,7 @@
 
                 <!-- Exact 3/4 Perspective Headset Image with Dynamic RGB Lighting Overlay -->
                 <div class="headset-photo-wrapper">
-                  <img src="assets/hyperx_headphone_trimmed.png" alt="Esports Gaming Headset"
+                  <img src="assets/hyperx_headphone_trimmed.png" alt="HyperX Cloud II Wireless pro esports gaming headset with 360-degree spatial radar and RGB illumination"
                     class="headset-main-photo" />
 
                   <!-- Illuminated RGB Rings & Matrix LED Accents (SVG Overlay matching photo) -->
@@ -412,6 +496,143 @@
             <!-- Injected by coverflow.js: Combat Zone's vertical arena cards -->
           </div>
         </section>
+
+        <!-- ================= FAQ SECTION (Real Questions & Answers) ================= -->
+        <section class="kugofox-faq-section" id="section-faq" aria-labelledby="faq-main-heading">
+          <div class="faq-header">
+            <span class="faq-section-tag">FREQUENTLY ASKED QUESTIONS // INTEL</span>
+            <h2 class="faq-title" id="faq-main-heading">Campus Esports Intel</h2>
+            <p class="faq-subtitle">Everything you need to know about registering squads, campus scrims, and verified Combat Points.</p>
+          </div>
+
+          <div class="faq-accordion-list" role="region" aria-label="FAQ Accordion">
+            <!-- Question 1 -->
+            <div class="faq-item active">
+              <button class="faq-question-btn" aria-expanded="true">
+                <span>01. How do I register my squad for campus scrims or tournaments?</span>
+                <span class="faq-icon-arrow" aria-hidden="true">▼</span>
+              </button>
+              <div class="faq-answer-body">
+                <p>Click on <strong>Events & Scrims</strong> in the top navigation or select any active tournament card. Provide your squad name, Captain In-Game Name (IGN), official publisher Player Game UID, and contact details. Once submitted, your registration is locked into the bracket schedule.</p>
+              </div>
+            </div>
+
+            <!-- Question 2 -->
+            <div class="faq-item">
+              <button class="faq-question-btn" aria-expanded="false">
+                <span>02. Which games are officially supported on KUGOFOX Arena?</span>
+                <span class="faq-icon-arrow" aria-hidden="true">▼</span>
+              </button>
+              <div class="faq-answer-body">
+                <p>We actively host verified campus scrims and competitive collegiate tournaments for Battlegrounds Mobile India (BGMI), Garena Free Fire, Riot Games Valorant, and Mobile Legends: Bang Bang.</p>
+              </div>
+            </div>
+
+            <!-- Question 3 -->
+            <div class="faq-item">
+              <button class="faq-question-btn" aria-expanded="false">
+                <span>03. Are there entry fees or prize pools for tournaments?</span>
+                <span class="faq-icon-arrow" aria-hidden="true">▼</span>
+              </button>
+              <div class="faq-answer-body">
+                <p>Most campus weekly scrims and rookie cups are 100% free to enter. Verified championship events feature sponsored cash prize pools and seasonal Combat Points (CP) distributed directly to winning squad captains.</p>
+              </div>
+            </div>
+
+            <!-- Question 4 -->
+            <div class="faq-item">
+              <button class="faq-question-btn" aria-expanded="false">
+                <span>04. How is player verification handled and anti-cheat maintained?</span>
+                <span class="faq-icon-arrow" aria-hidden="true">▼</span>
+              </button>
+              <div class="faq-answer-body">
+                <p>Our platform performs automated verification against publisher game databases to confirm Game UIDs, active ranks, and IGN accuracy. Official campus marshals supervise match rooms and review required match-end screenshots to prevent smurfing.</p>
+              </div>
+            </div>
+
+            <!-- Question 5 -->
+            <div class="faq-item">
+              <button class="faq-question-btn" aria-expanded="false">
+                <span>05. What are Combat Points (CP) and how does the leaderboard rank squads?</span>
+                <span class="faq-icon-arrow" aria-hidden="true">▼</span>
+              </button>
+              <div class="faq-answer-body">
+                <p>Combat Points (CP) measure seasonal tournament dominance. Squads earn CP based on placement finishes, victory streaks, and elimination points. The top squads on the Standings board qualify for invitation-only seasonal finals.</p>
+              </div>
+            </div>
+
+            <!-- Question 6 -->
+            <div class="faq-item">
+              <button class="faq-question-btn" aria-expanded="false">
+                <span>06. Can I join if I don't have a full four-player squad?</span>
+                <span class="faq-icon-arrow" aria-hidden="true">▼</span>
+              </button>
+              <div class="faq-answer-body">
+                <p>Yes! Explore the <strong>Squads & LFG</strong> section to meet fellow campus gamers, join an existing college clan roster, or list yourself as a free agent seeking a team.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= REVIEWS & TESTIMONIALS SECTION (PLACEHOLDERS ONLY) ================= -->
+        <!-- NOTICE: Placeholders only. No artificial reviews are invented. Paste authentic testimonials before launch. -->
+        <section class="kugofox-reviews-section" id="section-reviews" aria-labelledby="reviews-main-heading">
+          <div class="reviews-section-header">
+            <span class="faq-section-tag">COMMUNITY VOICES // VERIFIED PLAYERS</span>
+            <h2 class="faq-title" id="reviews-main-heading">Campus Competitor Feedback</h2>
+            <p class="faq-subtitle">Authentic reviews from squad captains and collegiate tournament participants.</p>
+          </div>
+
+          <div class="reviews-grid">
+            <!-- Review Placeholder 1 -->
+            <div class="review-card placeholder-card">
+              <div class="review-status-tag">PLACEHOLDER // SQUAD CAPTAIN REVIEW 1</div>
+              <p class="review-quote">
+                "[Review Placeholder 1: Paste authentic feedback from a campus tournament captain here with their express permission. Example: Comments on seamless custom room management and bracket scheduling.]"
+              </p>
+              <div class="review-author">
+                <div class="author-avatar-placeholder" aria-hidden="true">👤</div>
+                <div class="author-meta">
+                  <span class="author-name">[Captain Name Placeholder]</span>
+                  <span class="author-role">[College / Squad Roster • BGMI / Free Fire]</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Review Placeholder 2 -->
+            <div class="review-card placeholder-card">
+              <div class="review-status-tag">PLACEHOLDER // COLLEGIATE WINNER REVIEW 2</div>
+              <p class="review-quote">
+                "[Review Placeholder 2: Paste authentic feedback from a verified campus scrim winner here with permission. Example: Comments on Combat Points leaderboard tracking and prize disbursement.]"
+              </p>
+              <div class="review-author">
+                <div class="author-avatar-placeholder" aria-hidden="true">👤</div>
+                <div class="author-meta">
+                  <span class="author-name">[Player Name Placeholder]</span>
+                  <span class="author-role">[College / Squad Roster • Valorant]</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Review Placeholder 3 -->
+            <div class="review-card placeholder-card">
+              <div class="review-status-tag">PLACEHOLDER // RECRUITER REVIEW 3</div>
+              <p class="review-quote">
+                "[Review Placeholder 3: Paste authentic feedback from a free agent or squad recruiter here with permission. Example: Experience recruiting teammates through the Squads LFG system.]"
+              </p>
+              <div class="review-author">
+                <div class="author-avatar-placeholder" aria-hidden="true">👤</div>
+                <div class="author-meta">
+                  <span class="author-name">[Player Name Placeholder]</span>
+                  <span class="author-role">[College / Squad Roster • Mobile Legends]</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p class="review-disclaimer">
+            ℹ️ <em>Awaiting real player testimonials. Kugofox Arena does not use AI-generated or simulated reviews.</em>
+          </p>
+        </section>
         </div> <!-- /view-home -->
 
         <!-- VIEW 2: CAMPUS GAMES DIRECTORY (Screenshot 3) -->
@@ -432,20 +653,67 @@
         <!-- FOOTER -->
         <footer class="kugofox-footer">
           <div class="footer-logo-row">
-            <img src="assets/kugofox_logo.png" alt="KUGOFOX" class="footer-fox-logo">
+            <img src="assets/kugofox_logo.png" alt="KUGOFOX Arena Brand Emblem" class="footer-fox-logo">
             <span class="footer-brand-title">KUGOFOX — ESPORTS ARENA</span>
           </div>
+
+          <!-- Internal Navigation Links Grid -->
+          <nav class="footer-nav-grid" aria-label="Footer Navigation">
+            <div class="footer-nav-col">
+              <h4>ARENA PLATFORM</h4>
+              <ul>
+                <li><a href="/" data-view-target="home">Arena Homepage</a></li>
+                <li><a href="/#games" data-view-target="games">Campus Games Directory</a></li>
+                <li><a href="/#squads" data-view-target="squads">Squads & LFG Finder</a></li>
+                <li><a href="/#events" data-view-target="events">Campus Tournaments & Scrims</a></li>
+                <li><a href="/#leaderboard" data-view-target="leaderboard">Competitive Standings (CP)</a></li>
+              </ul>
+            </div>
+            <div class="footer-nav-col">
+              <h4>LEGAL & TRUST</h4>
+              <ul>
+                <li><a href="/privacy">Privacy Policy</a></li>
+                <li><a href="/404">Status & Offline Protocol</a></li>
+                <li><a href="/#section-faq">Campus FAQ</a></li>
+                <li><a href="/#section-reviews">Player Testimonials</a></li>
+              </ul>
+            </div>
+            <div class="footer-nav-col">
+              <h4>CONTACT & SUPPORT</h4>
+              <ul>
+                <li><a href="mailto:support@kugofox.in">support@kugofox.in</a></li>
+                <li><a href="https://www.kugofox.in">Official Website</a></li>
+                <li><span style="color: #64748b; font-size: 0.82rem;">Marshals Active: 24/7 Matchday</span></li>
+              </ul>
+            </div>
+          </nav>
+
           <div class="footer-games-list">
-            <span class="f-game-pill"><img src="assets/logos/freefire.png" class="f-game-icon" alt="Free Fire"> Free Fire</span> •
-            <span class="f-game-pill"><img src="assets/logos/bgmi.png" class="f-game-icon" alt="BGMI"> BGMI</span> •
-            <span class="f-game-pill"><img src="assets/logos/valorant.png" class="f-game-icon" alt="Valorant"> Valorant</span> •
-            <span class="f-game-pill"><img src="assets/logos/mobalegends.png" class="f-game-icon" alt="MOBA Legends"> MOBA Legends</span>
+            <span class="f-game-pill"><img src="assets/logos/freefire.png" class="f-game-icon" alt="Free Fire official emblem"> Free Fire</span> •
+            <span class="f-game-pill"><img src="assets/logos/bgmi.png" class="f-game-icon" alt="BGMI official emblem"> BGMI</span> •
+            <span class="f-game-pill"><img src="assets/logos/valorant.png" class="f-game-icon" alt="Valorant official emblem"> Valorant</span> •
+            <span class="f-game-pill"><img src="assets/logos/mobalegends.png" class="f-game-icon" alt="MOBA Legends official emblem"> MOBA Legends</span>
           </div>
           <p class="footer-copy">
-            &copy; 2026 Kugofox Arena. All game titles belong to their respective publishers.
+            &copy; 2026 Kugofox Arena. All game titles and trademarks belong to their respective publishers.
           </p>
         </footer>
       </main>
+    </div>
+  </div>
+
+  <!-- Cookie Consent Banner (EU / UK / Swiss Privacy Compliance) -->
+  <div id="cookie-consent-banner" class="cookie-consent-banner" style="display: none;" role="region" aria-label="Cookie Preferences">
+    <div class="cc-content">
+      <span class="cc-icon" aria-hidden="true">🍪</span>
+      <div class="cc-text">
+        <strong>Cookie & Telemetry Preferences</strong>
+        <p>We use essential cookies and anonymous analytics (GA4) to coordinate tournament brackets and measure gameplay telemetry. Read our <a href="/privacy" class="cc-link">Privacy Policy</a>.</p>
+      </div>
+    </div>
+    <div class="cc-actions">
+      <button class="cc-btn cc-btn-decline" onclick="declineCookieConsent()">Essential Only</button>
+      <button class="cc-btn cc-btn-accept" onclick="acceptCookieConsent()">Accept Analytics</button>
     </div>
   </div>
 
@@ -454,6 +722,25 @@
 
   <!-- Main Application Script -->
   <script type="module" src="js/app.js?v=2.6.2"></script>
+
+  <!-- FAQ Accordion Interactive Script -->
+  <script>
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('.faq-question-btn');
+      if (btn) {
+        const item = btn.closest('.faq-item');
+        const wasActive = item.classList.contains('active');
+        document.querySelectorAll('.faq-item').forEach(i => {
+          i.classList.remove('active');
+          i.querySelector('.faq-question-btn')?.setAttribute('aria-expanded', 'false');
+        });
+        if (!wasActive) {
+          item.classList.add('active');
+          btn.setAttribute('aria-expanded', 'true');
+        }
+      }
+    });
+  </script>
 </body>
 
 </html>

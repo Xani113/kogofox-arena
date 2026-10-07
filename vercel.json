@@ -1,5 +1,6 @@
 {
   "outputDirectory": "public",
+  "cleanUrls": true,
   "headers": [
     {
       "source": "/(.*)",
@@ -7,12 +8,25 @@
         {
           "key": "Cache-Control",
           "value": "public, max-age=0, must-revalidate"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "SAMEORIGIN"
+        },
+        {
+          "key": "Strict-Transport-Security",
+          "value": "max-age=63072000; includeSubDomains; preload"
         }
       ]
     }
   ],
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/index.js?__path=$1" },
-    { "source": "/((?!api/).*)", "destination": "/index.html" }
+    { "source": "/privacy", "destination": "/privacy.html" },
+    { "source": "/thank-you", "destination": "/thank-you.html" }
   ]
 }

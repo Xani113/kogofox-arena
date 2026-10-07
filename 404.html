@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404 - Arena Sector Not Found | KUGOFOX Arena</title>
+  <meta name="description" content="The requested page or tournament arena was not found on KUGOFOX Arena. Return to active campus scrims and standings.">
+  <meta name="robots" content="noindex, follow">
+  <meta name="theme-color" content="#030508">
+  <link rel="icon" href="/assets/kugofox_logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Orbitron:wght@600;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/game-themes.css?v=2.4.0">
+  <link rel="stylesheet" href="/css/style.css?v=2.4.0">
+  <style>
+    :root {
+      --bg-dark: #030508;
+      --card-bg: rgba(15, 20, 32, 0.85);
+      --neon-cyan: #00f0ff;
+      --neon-pink: #ff2a85;
+      --border-cyan: rgba(0, 240, 255, 0.35);
+      --text-muted: #8899ac;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background-color: var(--bg-dark);
+      color: #f1f5f9;
+      font-family: 'Inter', -apple-system, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+      overflow-x: hidden;
+      background-image: 
+        radial-gradient(circle at 50% 20%, rgba(0, 240, 255, 0.08) 0%, transparent 60%),
+        radial-gradient(circle at 80% 80%, rgba(255, 42, 133, 0.06) 0%, transparent 50%),
+        linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
+    }
+    .header-bar {
+      width: 100%;
+      max-width: 1200px;
+      padding: 1.5rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .brand-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      color: #fff;
+    }
+    .brand-logo {
+      width: 40px;
+      height: 40px;
+      object-fit: contain;
+    }
+    .brand-name {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 900;
+      letter-spacing: 0.1em;
+      background: linear-gradient(135deg, #ffffff 40%, var(--neon-cyan) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .status-chip {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      color: #ef4444;
+      background: rgba(239, 68, 68, 0.12);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      padding: 0.35rem 0.8rem;
+      border-radius: 9999px;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      background-color: #ef4444;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #ef4444;
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.8); }
+    }
+    .error-container {
+      width: 100%;
+      max-width: 780px;
+      margin: auto;
+      padding: 2.5rem 1.5rem;
+      text-align: center;
+    }
+    .glitch-code {
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(5rem, 15vw, 9rem);
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: 0.05em;
+      background: linear-gradient(135deg, #ffffff 30%, var(--neon-cyan) 70%, var(--neon-pink) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 30px rgba(0, 240, 255, 0.3);
+      margin-bottom: 0.5rem;
+    }
+    .sector-badge {
+      display: inline-block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      color: var(--neon-cyan);
+      background: rgba(0, 240, 255, 0.08);
+      border: 1px solid var(--border-cyan);
+      padding: 0.4rem 1rem;
+      border-radius: 4px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+    }
+    .error-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(1.4rem, 4vw, 2rem);
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 1rem;
+    }
+    .error-desc {
+      font-size: 1.05rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      max-width: 580px;
+      margin: 0 auto 2.5rem;
+    }
+    .action-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      max-width: 650px;
+      margin: 0 auto 2rem;
+    }
+    .nav-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      padding: 0.9rem 1.25rem;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-decoration: none;
+      transition: all 0.25s ease;
+      font-family: 'Inter', sans-serif;
+    }
+    .nav-btn-primary {
+      background: linear-gradient(135deg, #00f0ff 0%, #0088cc 100%);
+      color: #030508;
+      box-shadow: 0 0 20px rgba(0, 240, 255, 0.35);
+      border: 1px solid #00f0ff;
+    }
+    .nav-btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 30px rgba(0, 240, 255, 0.6);
+      color: #000;
+    }
+    .nav-btn-secondary {
+      background: rgba(255, 255, 255, 0.04);
+      color: #e2e8f0;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(10px);
+    }
+    .nav-btn-secondary:hover {
+      background: rgba(0, 240, 255, 0.1);
+      border-color: var(--neon-cyan);
+      color: var(--neon-cyan);
+      transform: translateY(-2px);
+    }
+    .helpful-links-box {
+      margin-top: 2rem;
+      padding: 1.25rem;
+      background: var(--card-bg);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      display: inline-flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 1.5rem;
+    }
+    .hl-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .hl-link {
+      color: var(--neon-cyan);
+      text-decoration: none;
+      font-size: 0.88rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    .hl-link:hover {
+      color: #fff;
+      text-decoration: underline;
+    }
+    footer {
+      width: 100%;
+      padding: 1.5rem;
+      text-align: center;
+      font-size: 0.8rem;
+      color: #64748b;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+  </style>
+</head>
+<body>
+  <!-- Header Bar -->
+  <header class="header-bar">
+    <a href="/" class="brand-link" title="Return to KUGOFOX Arena Home">
+      <img src="/assets/kugofox_logo.png" alt="KUGOFOX Logo" class="brand-logo">
+      <span class="brand-name">KUGOFOX</span>
+    </a>
+    <div class="status-chip" role="status">
+      <span class="status-dot"></span>
+      <span>SECTOR OFFLINE (404)</span>
+    </div>
+  </header>
+
+  <!-- Error Stage -->
+  <main class="error-container">
+    <div class="glitch-code" aria-hidden="true">404</div>
+    <div class="sector-badge">ZONE PROTOCOL ERROR // UNKNOWN DESTINATION</div>
+    <h1 class="error-title">This Arena Sector Does Not Exist</h1>
+    <p class="error-desc">
+      The tournament page, scrim room link, or arena profile you requested has been relocated or expired. Return to the active stadium to rejoin your squad.
+    </p>
+
+    <!-- Main Navigation Actions -->
+    <div class="action-grid">
+      <a href="/" class="nav-btn nav-btn-primary" title="Return to Kugofox Arena Homepage">
+        <span>⚡ Return to Arena Home</span>
+      </a>
+      <a href="/#events" class="nav-btn nav-btn-secondary" title="View Campus Tournaments and Scrims">
+        <span>🏆 Tournaments & Scrims</span>
+      </a>
+      <a href="/#squads" class="nav-btn nav-btn-secondary" title="Find Squads and Teammates">
+        <span>👥 Squads & LFG</span>
+      </a>
+      <a href="/#leaderboard" class="nav-btn nav-btn-secondary" title="View Competitive Standings">
+        <span>📊 Standings & CP</span>
+      </a>
+    </div>
+
+    <!-- Quick Links Bar -->
+    <div class="helpful-links-box">
+      <span class="hl-label">Popular Zones:</span>
+      <a href="/#games" class="hl-link">Campus Games Directory</a>
+      <a href="/privacy" class="hl-link">Privacy Policy</a>
+      <a href="mailto:support@kugofox.in" class="hl-link">Contact Marshals</a>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2026 KUGOFOX Arena. Verified Campus Esports Platform. All game titles belong to their respective publishers.</p>
+  </footer>
+</body>
+</html>

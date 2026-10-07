@@ -223,6 +223,8 @@ function renderEventsScaffold(container) {
 
         <form id="form-event-register" style="display: flex; flex-direction: column; gap: 1rem;">
           <input type="hidden" id="event-reg-target-id" value="" />
+          <!-- Anti-Spam Honeypot Field -->
+          <input type="text" name="_hp_website" id="event-reg-hp" tabindex="-1" autocomplete="off" aria-hidden="true" style="position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; pointer-events: none;" />
           <div>
             <label class="kugofox-admin-label">Squad / Team Name</label>
             <input type="text" id="event-reg-team" class="kugofox-admin-input" placeholder="e.g. Apex Predators" required />
@@ -311,6 +313,7 @@ function renderEventsScaffold(container) {
       const gameId = document.getElementById('event-reg-gameid').value.trim();
       const email = document.getElementById('event-reg-email').value.trim() || user.email;
       const phone = document.getElementById('event-reg-phone').value.trim();
+      const hpValue = document.getElementById('event-reg-hp')?.value || '';
       const token = localStorage.getItem('kugofox_auth_token');
 
       try {
@@ -328,6 +331,7 @@ function renderEventsScaffold(container) {
             gameType: 'freefire',
             email,
             phone,
+            _hp_website: hpValue,
             userId: user.id || null
           })
         });
@@ -336,12 +340,14 @@ function renderEventsScaffold(container) {
         if (data.success) {
           regModal.classList.remove('open');
           formReg.reset();
-          // Locally increment registration count for feedback
           const ev = allEvents.find(ev => ev.id === eventId);
           if (ev) ev.registeredSquads = (ev.registeredSquads || 0) + 1;
           renderEventCards(filterEvents());
 
-          showToast(`Squad "${teamName}" registered successfully! Slot confirmed.`, 'success');
+          showToast(`Squad "${teamName}" registered! Redirecting to confirmation...`, 'success');
+          setTimeout(() => {
+            window.location.href = '/thank-you';
+          }, 600);
         } else {
           alert(data.error || 'Registration failed');
         }

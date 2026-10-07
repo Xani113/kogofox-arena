@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /thank-you
+Disallow: /demo.html
+Disallow: /api/
+
+Sitemap: https://www.kugofox.in/sitemap.xml

@@ -116,10 +116,45 @@ export function initViewController() {
   }
 }
 
+const VIEW_METADATA = {
+  home: {
+    title: 'KUGOFOX Arena | Esports Arena & Campus Tournaments',
+    desc: 'Compete in verified campus esports scrims and tournaments for Free Fire, BGMI, Valorant, and MOBA Legends on KUGOFOX Arena.'
+  },
+  games: {
+    title: 'Campus Games Directory | KUGOFOX Arena',
+    desc: 'Browse supported collegiate gaming titles including BGMI, Free Fire, Valorant, and MOBA Legends on KUGOFOX Arena.'
+  },
+  squads: {
+    title: 'Squads & LFG Player Finder | KUGOFOX Arena',
+    desc: 'Recruit teammates, join verified campus squads, and build competitive rosters for collegiate tournaments.'
+  },
+  events: {
+    title: 'Campus Tournaments & Scrims | KUGOFOX Arena',
+    desc: 'Register for scheduled campus scrims, live championship matches, and competitive esports brackets with verified prize pools.'
+  },
+  leaderboard: {
+    title: 'Competitive Standings & Leaderboard | KUGOFOX Arena',
+    desc: 'Track collegiate rankings, Combat Points (CP), win streaks, and season standings across all competitive titles.'
+  },
+  admin: {
+    title: 'Admin Control Panel | KUGOFOX Arena',
+    desc: 'Authorized tournament marshal portal for event scheduling, scorekeeping, and Combat Points allocation.'
+  }
+};
+
 export function switchView(viewName, updateHash = true, extra = null) {
   if (!VIEWS.includes(viewName)) return;
 
   currentView = viewName;
+
+  // Update dynamic page title and meta description
+  const meta = VIEW_METADATA[viewName] || VIEW_METADATA.home;
+  document.title = meta.title;
+  const metaDescEl = document.querySelector('meta[name="description"]');
+  if (metaDescEl) {
+    metaDescEl.setAttribute('content', meta.desc);
+  }
 
   // 1. Toggle view containers
   VIEWS.forEach(v => {

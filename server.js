@@ -38,10 +38,12 @@ const __dirname = path.dirname(__filename);
 const PORT = process.env.PORT || 5173;
 
 const MIME_TYPES = {
-  '.html': 'text/html',
-  '.css': 'text/css',
-  '.js': 'application/javascript',
-  '.json': 'application/json',
+  '.html': 'text/html; charset=UTF-8',
+  '.css': 'text/css; charset=UTF-8',
+  '.js': 'application/javascript; charset=UTF-8',
+  '.json': 'application/json; charset=UTF-8',
+  '.xml': 'application/xml; charset=UTF-8',
+  '.txt': 'text/plain; charset=UTF-8',
   '.jpg': 'image/jpeg',
   '.jpeg': 'image/jpeg',
   '.png': 'image/png',
@@ -93,6 +95,22 @@ function parseRequestBody(req) {
   });
 }
 
+// In-memory Rate Limiter (sliding 1-minute window per IP)
+const ipRateLimitMap = new Map();
+function isRateLimited(ip, maxRequests = 35, windowMs = 60000) {
+  const now = Date.now();
+  const record = ipRateLimitMap.get(ip);
+  if (!record || now > record.resetAt) {
+    ipRateLimitMap.set(ip, { count: 1, resetAt: now + windowMs });
+    return false;
+  }
+  if (record.count >= maxRequests) {
+    return true;
+  }
+  record.count++;
+  return false;
+}
+
 export async function handleRequest(req, res) {
   const parsedUrl = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
   let reqPath = parsedUrl.pathname;
@@ -117,8 +135,18 @@ export async function handleRequest(req, res) {
     return res.end();
   }
 
+  const clientIp = (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || req.socket.remoteAddress || '127.0.0.1';
+
   /* ================= REST API ROUTES (POSTGRESQL) ================= */
   if (reqPath.startsWith('/api/')) {
+    // Server-side Rate Limiting on mutations (Spam protection)
+    if ((req.method === 'POST' || req.method === 'PUT') && isRateLimited(clientIp, 35, 60000)) {
+      return sendJSON(res, 429, {
+        success: false,
+        error: 'Rate limit exceeded. Please wait a moment before trying again.'
+      });
+    }
+
     try {
       // 1. Database Status
       if (reqPath === '/api/db-status' && req.method === 'GET') {
@@ -156,11 +184,27 @@ export async function handleRequest(req, res) {
       // 2. Authentication
       if (reqPath === '/api/auth/register' && req.method === 'POST') {
         const payload = await parseRequestBody(req);
+
+        // Anti-spam honeypot detection
+        if (payload._hp_website && typeof payload._hp_website === 'string' && payload._hp_website.trim().length > 0) {
+          console.warn(`[Anti-Spam] Bot detected via honeypot in auth/register from IP ${clientIp}`);
+          return sendJSON(res, 200, { success: true, message: 'Account registered successfully!' });
+        }
+
         if (!payload.username || !payload.email || !payload.password) {
           return sendJSON(res, 400, { error: 'Username, email and password are required.' });
         }
 
-        const existingEmail = await findUserByEmail(payload.email);
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(payload.email.trim())) {
+          return sendJSON(res, 400, { error: 'Please enter a valid email address.' });
+        }
+
+        if (payload.password.length < 6) {
+          return sendJSON(res, 400, { error: 'Password must be at least 6 characters.' });
+        }
+
+        const existingEmail = await findUserByEmail(payload.email.trim().toLowerCase());
         if (existingEmail) {
           return sendJSON(res, 409, { error: 'Email already registered. Please login.' });
         }
@@ -336,8 +380,27 @@ export async function handleRequest(req, res) {
       // 4. Registration for Tournaments
       if (reqPath === '/api/tournaments/register' && req.method === 'POST') {
         const payload = await parseRequestBody(req);
+
+        // Anti-spam honeypot detection
+        if (payload._hp_website && typeof payload._hp_website === 'string' && payload._hp_website.trim().length > 0) {
+          console.warn(`[Anti-Spam] Bot detected via honeypot in tournaments/register from IP ${clientIp}`);
+          return sendJSON(res, 200, {
+            success: true,
+            message: 'Tournament registration submitted successfully!'
+          });
+        }
+
         if (!payload.tournamentId || !payload.teamName || !payload.captainName || !payload.email || !payload.phone) {
           return sendJSON(res, 400, { error: 'Missing required registration fields' });
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(payload.email.trim())) {
+          return sendJSON(res, 400, { error: 'Please enter a valid email address.' });
+        }
+
+        if (payload.teamName.trim().length < 2 || payload.teamName.trim().length > 50) {
+          return sendJSON(res, 400, { error: 'Team name must be between 2 and 50 characters.' });
         }
 
         // Verify captain Player ID if provided
@@ -564,19 +627,53 @@ export async function handleRequest(req, res) {
   }
 
   /* ================= STATIC ASSET SERVER ================= */
-  let filePath = path.join(__dirname, reqPath === '/' ? 'index.html' : reqPath);
+  // Route aliases for clean URLs
+  const routeAliases = {
+    '/privacy': 'privacy.html',
+    '/thank-you': 'thank-you.html',
+    '/404': '404.html',
+    '/sitemap': 'sitemap.xml',
+    '/robots': 'robots.txt'
+  };
+
+  let targetRelative = routeAliases[reqPath] || (reqPath === '/' ? 'index.html' : reqPath.replace(/^\//, ''));
+  let filePath = path.join(__dirname, targetRelative);
 
   // If not found in root, check public folder
   if (!fs.existsSync(filePath)) {
-    filePath = path.join(__dirname, 'public', reqPath === '/' ? 'index.html' : reqPath);
+    filePath = path.join(__dirname, 'public', targetRelative);
   }
 
-  // SPA fallback for client-side routing
-  const ext = path.extname(filePath).toLowerCase();
-  if (!fs.existsSync(filePath) && (!ext || ext === '.html')) {
-    filePath = fs.existsSync(path.join(__dirname, 'index.html'))
-      ? path.join(__dirname, 'index.html')
-      : path.join(__dirname, 'public', 'index.html');
+  // Security headers helper
+  const securityHeaders = {
+    'X-Content-Type-Options': 'nosniff',
+    'X-Frame-Options': 'SAMEORIGIN',
+    'Referrer-Policy': 'strict-origin-when-cross-origin'
+  };
+
+  if (!fs.existsSync(filePath) || fs.statSync(filePath).isDirectory()) {
+    // Return custom 404 page with authentic HTTP 404 status code
+    const notFoundPath = fs.existsSync(path.join(__dirname, '404.html'))
+      ? path.join(__dirname, '404.html')
+      : path.join(__dirname, 'public', '404.html');
+
+    if (fs.existsSync(notFoundPath)) {
+      return fs.readFile(notFoundPath, (err, data) => {
+        if (err) {
+          res.writeHead(404, { 'Content-Type': 'text/plain; charset=UTF-8', ...securityHeaders });
+          return res.end('404 Not Found');
+        }
+        res.writeHead(404, {
+          'Content-Type': 'text/html; charset=UTF-8',
+          'Cache-Control': 'no-cache',
+          ...securityHeaders
+        });
+        res.end(data);
+      });
+    }
+
+    res.writeHead(404, { 'Content-Type': 'text/plain; charset=UTF-8', ...securityHeaders });
+    return res.end('404 Not Found');
   }
 
   const finalExt = path.extname(filePath).toLowerCase();
@@ -584,17 +681,13 @@ export async function handleRequest(req, res) {
 
   fs.readFile(filePath, (err, data) => {
     if (err) {
-      if (err.code === 'ENOENT') {
-        res.writeHead(404, { 'Content-Type': 'text/plain' });
-        res.end('404 Not Found');
-      } else {
-        res.writeHead(500, { 'Content-Type': 'text/plain' });
-        res.end('500 Server Error');
-      }
+      res.writeHead(500, { 'Content-Type': 'text/plain; charset=UTF-8', ...securityHeaders });
+      res.end('500 Server Error');
     } else {
       res.writeHead(200, {
         'Content-Type': contentType,
-        'Cache-Control': 'no-cache'
+        'Cache-Control': 'public, max-age=3600',
+        ...securityHeaders
       });
       res.end(data);
     }

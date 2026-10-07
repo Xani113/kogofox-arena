@@ -28,8 +28,21 @@ function copyFolderSync(from, to) {
   });
 }
 
-// Copy static entry files and assets
-const itemsToCopy = ['index.html', 'demo.html', 'css', 'js', 'assets', 'components', 'lib'];
+// Copy static entry files, pages, and assets
+const itemsToCopy = [
+  'index.html',
+  '404.html',
+  'privacy.html',
+  'thank-you.html',
+  'sitemap.xml',
+  'robots.txt',
+  'demo.html',
+  'css',
+  'js',
+  'assets',
+  'components',
+  'lib'
+];
 
 // Clean stale items in public before copying
 itemsToCopy.forEach(item => {

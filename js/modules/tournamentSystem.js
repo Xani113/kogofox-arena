@@ -336,6 +336,9 @@ export class TournamentSystem {
             </div>
           </div>
 
+          <!-- Anti-Spam Honeypot Field -->
+          <input type="text" name="_hp_website" id="reg-hp" tabindex="-1" autocomplete="off" aria-hidden="true" style="position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; pointer-events: none;">
+
           <div class="form-actions">
             <button type="submit" class="btn-kugofox btn-full">
               💾 Save & Issue Pass
@@ -358,16 +361,22 @@ export class TournamentSystem {
       const teamName = document.getElementById('reg-team-name').value;
       const captain = document.getElementById('reg-captain').value;
       const discord = document.getElementById('reg-discord').value;
+      const hp = document.getElementById('reg-hp')?.value || '';
       const memberInputs = Array.from(document.querySelectorAll('.roster-member'));
       const members = [captain, ...memberInputs.map(i => i.value.trim()).filter(Boolean)];
 
       const newRegistration = {
+        tournamentId: 'tourney_' + Date.now(),
         game,
         tag,
         teamName,
+        captainName: captain,
         captain,
+        email: captain.includes('@') ? captain : 'captain@campus.kugofox.in',
+        phone: '9999999999',
         discord,
         members,
+        _hp_website: hp,
         timestamp: new Date().toISOString()
       };
 
@@ -390,9 +399,11 @@ export class TournamentSystem {
       localStorage.setItem('kugofox_registrations', JSON.stringify(this.userRegistrations));
 
       sound.playVictory();
-      this.app.showToast(`[${tag}] ${teamName} registered!!`, 'success');
+      this.app.showToast(`[${tag}] ${teamName} registered! Redirecting...`, 'success');
       modalOverlay.style.display = 'none';
-      this.render();
+      setTimeout(() => {
+        window.location.href = '/thank-you';
+      }, 600);
     });
   }
 }
